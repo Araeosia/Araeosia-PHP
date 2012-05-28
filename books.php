@@ -24,20 +24,18 @@ if ($currentbookbeingread == $name) {
 	$type = "readtime";
 	$oldbookid = $currentbookrow['booknumber'];
 }
-
-// Equate old book ID to old book name
-
+$time = time();
 // Set type
 if ($alreadyread != "true" && $stuff == "true") {
 	$type = "readstart";
-	mysql_query("INSERT INTO books ('id', 'name', 'booknumber', 'bookstart') VALUES('NULL', '$name', '$booknumber', UNIX_TIMESTAMP(now()))");
+	mysql_query("INSERT INTO books (id, name, booknumber, bookstart) VALUES('NULL', '$name', '$booknumber', '$time'");
 } elseif ( $alreadyread == "true") {
 	$type = "alreadyread";
 } elseif ( $alreadyread == "true") {
 	$type = "queststart";
 	if ( $questset == 1) {
-		mysql_query("INSERT INTO permissions ('id', 'name', 'type', 'permission') VALUES ('$maxid', '$name', '1', 'book.completed.1.8')");
-		mysql_query("INSERT INTO books ('id', 'name', 'booknumber', 'bookstart') VALUES('NULL', '$name', '$booknumber', UNIX_TIMESTAMP(now()))");
+		mysql_query("INSERT INTO permissions (id, name, type, permission) VALUES ('NULL', '$name', '1', 'book.completed.1.8')");
+		mysql_query("INSERT INTO books (id, name, booknumber, bookstart) VALUES('NULL', '$name', '$booknumber', '$time')");
         }
 }
 		
