@@ -15,7 +15,7 @@ while($row = mysql_fetch_array($query2)){
 }
 if($args[1]=="help"){
     // Echo the help message
-    echo "";
+    echo "§c----- Groups -----\n§b/group help §f- Display groups help\n§b/group current §f- Displays information about your current group\n§b/group list §f- Displays a list of who is in your current group\n§b/group tp <player> §f- Teleports you to the specified player for 150 coins\n§b/group leave §f- Leaves your current group\n§b/group create [Name] §f- Creates a new group with the specified name\n§b/group modify name [New Name] §f- Renames your current group to this name (Group admins only)\n§b/group modify alladd [true/false] §f- Allow everyone in the group to add other members (Group admins only)\§b/group invite [Player] §f- Invites player to group";
 }elseif($args[1]=="current" || $args[1]=="info"){
     // Fetch information about the player's group
     if($querymast==false){ die('§4You are not in a group!'); }
