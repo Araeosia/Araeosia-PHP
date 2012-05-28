@@ -4,8 +4,7 @@ $name = $_POST[player];
 $args = $_POST[args];
 
 // Fetch death location
-mysql_connect("localhost", "website", "fXsRx0GEGw9M") or die(mysql_error());
-mysql_select_db("Araeosia") or die(mysql_error());
+include('includes/mysql.php');
 $playerX = $args[1];
 $playerY = $args[2];
 $playerZ = $args[3];
