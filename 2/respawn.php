@@ -12,74 +12,88 @@ $possible = array(
 	"Araeosia2A" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array(),
+		"world" => array(),
+		"name" => array()
 	),
 	"Araeosia2B" => array(
 		"X" => array(),
 		"Y" => array(),
 		"Z" => array()
+		"world" => array(),
+		"name" => array()
 	),
 	"Araeosia2C" => array(
 		"X" => array(),
 		"Y" => array(),
 		"Z" => array()
+		"world" => array(),
+		"name" => array()
 	),
 	"Araeosia2D" => array(
 		"X" => array(),
 		"Y" => array(),
 		"Z" => array()
+		"world" => array(),
+		"name" => array()
 	),
 	"Araeosia2E" => array(
 		"X" => array(),
 		"Y" => array(),
 		"Z" => array()
+		"world" => array(),
+		"name" => array()
 	),
 	"Araeosia2F" => array(
 		"X" => array(),
 		"Y" => array(),
 		"Z" => array()
+		"world" => array(),
+		"name" => array()
 	),
 	"Araeosia2G" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array() 
+		"world" => array(),
+		"name" => array()
 	),
 	"Araeosia2H" => array(
 		"X" => array(),
 		"Y" => array(),
 		"Z" => array()
+		"world" => array(),
+		"name" => array()
 	),
 	"Araeosia2I" => array(
 		"X" => array(),
 		"Y" => array(),
 		"Z" => array()
+		"world" => array(),
+		"name" => array()
 	)
+$keys = array_keys($possible[$playerWorld]);
+$active = mysql_query("SELECT * FROM Respawns WHERE world='$playerWorld'");
+$active = mysql_fetch_array($active);
+$active = $active[active];
+$active = explode(',', $active);
 // Figure out what world
 if(!isset($type)){
-	switch($playerWorld){
-		case "Araeosia2A":
-			break;
-		case "Araeosia2B":
-			break;
-		case "Araeosia2C":
-			break;
-		case "Araeosia2D":
-			break;
-		case "Araeosia2E":
-			break;
-		case "Araeosia2F":
-			break;
-		case "Araeosia2G":
-			break;
-		case "Araeosia2H":
-			break;
-		case "Araeosia2I":
-			break;
-		default:
-			echo "Cannot find what world to teleport you to! Aborting and teleporting you to the spawn point.\nPlease inform an administrator of this error: WORLD_DEFAULT";
-			echo "/Command/ExecuteBukkitCommand:mvspawn ".$name.";\n";
-			break;
+	// Regular respawns
+	$array = $possible[$playerWorld];
+	foreach($keys as $key){
+		if(in_array($key, $active)){ $dist[$key] = sqrt( (pow($playerX-$array[$key]["X"]), 2)+(pow($playerZ-$array[$key]["Z"]), 2)); }
 	}
+	$min = min($dist);
+	$flipped = array_flip($min);
+	$loc = $flipped[$min];
+	$location = array(
+		"X" => $array[X][$loc],
+		"Y" => $array[Y][$loc],
+		"Z" => $array[Z][$loc],
+		"world" => $array[world][$loc],
+		"name" => $array[name][$loc]
+	);
 }elseif($type=="dungeon"){
 	$questquery = mysql_query("SELECT * FROM Quests WHERE name='$name'");
 	$questrow = mysql_fetch_array($questquery);
@@ -115,6 +129,13 @@ if(!isset($type)){
 			break;
 	}
 }
+$money = mysql_query("SELECT * FROM iConomy WHERE username='$name'");
+$money = mysql_fetch_array($money);
+$money = $money[balance];
+$rand = rand(7, 13)*.01;
+$lost = ceil($rand*$money);
+$left = $money-$lost;
+mysql_query("UPDATE iConomy SET balance='$left' WHERE username='$name'");
 if(isset($location)){
 	echo "/Command/ExecuteBukkitCommand:mvtp e:".$location[world].":".$location[X].",".$location[Y].",".$location[Z].";\n";
 	echo "§cYou died and lost §2$".$lost."§c, leaving you with §2$".$left."§c.\n";
