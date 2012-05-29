@@ -19,9 +19,9 @@ $currentquestperm = $currentrow['permission'];
 $RespawnAX = array('-212.5', '486.5', '-962.5', '-234.5', '-260.5', '729.5', '242.5', '-636.5', '454', '262', '770');
 $RespawnAY = array('73', '68', '73', '70', '76', '68', '74', '74', '73', '74', '78');
 $RespawnAZ = array('-183.5', '-125.5', '989.5', '213.5', '677.5', '700.5', '-899.5', '-167.5', '-723', '211', '-21');
-$RespawnTX = "-300.5";
-$RespawnTY = "69";
-$RespawnTZ = "-52.5";
+$RespawnTX = -300.5;
+$RespawnTY = 69;
+$RespawnTZ = -52.5;
 // Check to see what world the player is in
 if($world == "Araeosia_instance"){
 	if($currentquestperm == "quest.current.dungeon.5.1"){
