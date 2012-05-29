@@ -19,56 +19,56 @@ $possible = array(
 	"Araeosia2B" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array(),
 		"world" => array(),
 		"name" => array()
 	),
 	"Araeosia2C" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array(),
 		"world" => array(),
 		"name" => array()
 	),
 	"Araeosia2D" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array(),
 		"world" => array(),
 		"name" => array()
 	),
 	"Araeosia2E" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array(),
 		"world" => array(),
 		"name" => array()
 	),
 	"Araeosia2F" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array(),
 		"world" => array(),
 		"name" => array()
 	),
 	"Araeosia2G" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array() 
+		"Z" => array(),
 		"world" => array(),
 		"name" => array()
 	),
 	"Araeosia2H" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array(),
 		"world" => array(),
 		"name" => array()
 	),
 	"Araeosia2I" => array(
 		"X" => array(),
 		"Y" => array(),
-		"Z" => array()
+		"Z" => array(),
 		"world" => array(),
 		"name" => array()
 	)
