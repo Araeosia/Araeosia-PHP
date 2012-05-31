@@ -14,7 +14,10 @@ while($row = mysql_fetch_array($query)){
 		while($row2 = mysql_fetch_array($query2)){
 			array_push($completed, $row2[book]);
 		}
+		$msgtosend = "§aYou finished reading the §bBook of ".$bookarray[name]."§a.";
 		// I should connect to the server and send a message to the player, but that requires the new messaging backbone which I don't have yet.
+		// Push the message to the MSGBot's list
+//		mysql_query("INSERT INTO MSGTOSEND (id, recipient, message) VALUES ('NULL', '$name', '$msgtosend')");
 		$count = count($completed);
 		switch($count){
 			case 8:
