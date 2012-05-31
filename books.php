@@ -4,6 +4,7 @@ $args = $_POST[args];
 $name = $_POST[player];
 $booknumber = $args[2];
 
+// Includes
 include("includes/mysql.php");
 include("includes/books.php");
 
@@ -20,7 +21,6 @@ $completedquery = mysql_query("SELECT * FROM bookscompleted WHERE name='$name'")
 while($completedrow = mysql_fetch_array($completed)){
 	array_push($completed, $completedrow[book]);
 }
-if($_REQUEST[debug]==true){ var_dump($completed); }
 
 // MySQL table "books": id (auto-inc, integer) | name (text) | booknum (int) | timestart (time)
 // Is a book currently being read?
