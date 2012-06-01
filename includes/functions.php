@@ -1,4 +1,26 @@
 <?php
+
+function pythagoras($a,$b,$c,$precision=4)
+{
+	($a) ? $a = pow($a,2) : $find .= 'a';
+	($b) ? $b = pow($b,2) : $find .= 'b';
+	($c) ? $c = pow($c,2) : $find .= 'c';
+	
+	switch ($find)
+	{
+		case 'a':
+			return round(sqrt($c - $b),$precision);
+		break;
+		case 'b':
+			return round(sqrt($c - $a),$precision);
+		break;
+		case 'c':
+			return round(sqrt($a + $b),$precision);
+		break;
+	}
+	
+	return false;
+}
 class Bcrypt {
   private $rounds;
   public function __construct($rounds = 12) {

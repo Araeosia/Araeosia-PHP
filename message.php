@@ -1,8 +1,6 @@
 <?php
 // Define variables
-$servers = array('RPG', 'Free');
-$ips = array( 'RPG' => '192.168.5.106', 'Free' => '192.168.5.104');
-$ports = array( 'RPG' => 25566, 'Free' => 25565);
+include('includes/servers.php');
 // Connect to MySQL
 include('includes/mysql.php');
 // Check to see if the player has opted-out
