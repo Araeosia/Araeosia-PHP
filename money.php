@@ -132,6 +132,7 @@ if($X=="-315" && $Y=="76" && $Z=="56" && $W=="Araeosia") { $block = 108; }
 if($X=="-273" && $Y=="74" && $Z=="40" && $W=="Araeosia") { $block = 109; }
 if($X=="-242" && $Y=="16" && $Z=="314" && $W=="Araeosia") { $block = 110; }
 if($X=="510" && $Y=="69" && $Z=="-130" && $W=="Araeosia") { $block = "D"; }
+if($X=="705" && $Y=="66" && $Z=="657" && $W=="Araeosia") { $block = 111; }
 
 // Generate a random amount of money
 $amount = rand(5,20);
