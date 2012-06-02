@@ -95,7 +95,7 @@ if (!isset($questname) && $newplayer != "true") {
   echo "§6You currently don't have a quest.\n";
 }
 if ($newplayer != "true") {
-  echo "§3You currently have §d" . number_format($iconomyvalue) . " §3dollars.\n";
+  echo "§3You currently have §6$" . number_format($iconomyvalue) . " §3dollars.\n";
 }
 if (isset($bookwaitingnumber)) {
   echo "§5You have finished reading the Book of " . $bookname . ".";
