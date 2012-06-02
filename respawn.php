@@ -11,121 +11,57 @@ $playerZ = $args[3];
 $world = $args[4];
 
 // Fetch current quest permission
-$currenttable = mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'")
-or die(mysql_error());  
-$currentrow = mysql_fetch_array( $currenttable );
+$currentrow = mysql_fetch_array( mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'") );
 $currentquestperm = $currentrow['permission'];
 // Respawn locations
-$RespawnAX = array('-212.5', '486.5', '-962.5', '-234.5', '-260.5', '729.5', '242.5', '-636.5', '454', '262', '770');
-$RespawnAY = array('73', '68', '73', '70', '76', '68', '74', '74', '73', '74', '78');
-$RespawnAZ = array('-183.5', '-125.5', '989.5', '213.5', '677.5', '700.5', '-899.5', '-167.5', '-723', '211', '-21');
-$RespawnTX = -300.5;
-$RespawnTY = 69;
-$RespawnTZ = -52.5;
-// Check to see what world the player is in
-if($world == "Araeosia_instance"){
-	if($currentquestperm == "quest.current.dungeon.5.1"){
-		$RespawnX = "-0.5";
-		$RespawnY = "64";
-		$RespawnZ = "42.5";
-		$spawnlocation = "The Dungeon";
-	} elseif ($currentquestperm == "quest.current.archeologist.4.1"){
-		$RespawnX = "-314.5";
-		$RespawnY = "64";
-		$RespawnZ = "-59.5";
-		$spawnlocation = "The ruins";
-	} else {
-		echo "§4Error! §cCannot find where to respawn you!\n";
-		echo "§cDefaulting to respawn at Araeos City. \n§aPlease tell a staff member about this error.\n";
-		echo "/Command/ExecuteConsoleCommand:mvtp " . $name . " e:Araeosia:-212.5,73,-183.5;";
-		exit;
-	}
-}
-if($world == "Araeosia_tutorial2"){
-  $RespawnX = $RespawnTX;
-  $RespawnY = $RespawnTY;
-  $RespawnZ = $RespawnTZ;
-  $spawnlocation = "The Tutorial";
-}
-if($world == "Araeosia"){
-// Calculate distance to each respawn location
-  $RespawnDist[0] = sqrt(pow(($playerX-$RespawnAX['0']), 2))+sqrt(pow(($playerZ-$RespawnAZ['0']), 2));
-  $RespawnDist[1] = sqrt(pow(($playerX-$RespawnAX['1']), 2))+sqrt(pow(($playerZ-$RespawnAZ['1']), 2));
-  $RespawnDist[2] = sqrt(pow(($playerX-$RespawnAX['2']), 2))+sqrt(pow(($playerZ-$RespawnAZ['2']), 2));
-  $RespawnDist[3] = sqrt(pow(($playerX-$RespawnAX['3']), 2))+sqrt(pow(($playerZ-$RespawnAZ['3']), 2));
-  $RespawnDist[4] = sqrt(pow(($playerX-$RespawnAX['4']), 2))+sqrt(pow(($playerZ-$RespawnAZ['4']), 2));
-  $RespawnDist[5] = sqrt(pow(($playerX-$RespawnAX['5']), 2))+sqrt(pow(($playerZ-$RespawnAZ['5']), 2));
-  $RespawnDist[6] = sqrt(pow(($playerX-$RespawnAX['6']), 2))+sqrt(pow(($playerZ-$RespawnAZ['6']), 2));
-  $RespawnDist[7] = sqrt(pow(($playerX-$RespawnAX['7']), 2))+sqrt(pow(($playerZ-$RespawnAZ['7']), 2));
-  $RespawnDist[8] = sqrt(pow(($playerX-$RespawnAX['8']), 2))+sqrt(pow(($playerZ-$RespawnAZ['8']), 2));
-// Calculate the minimum of the distances
-  $min = min($RespawnDist);
-  if($min == $RespawnDist[0]){
-    $spawnlocation = "Araeos City";
-    $RespawnX = $RespawnAX[0];
-    $RespawnY = $RespawnAY[0];
-    $RespawnZ = $RespawnAZ[0];
-  }
-  if($min == $RespawnDist[1]){
-    $spawnlocation = "Everstone City";
-    $RespawnX = $RespawnAX[1];
-    $RespawnY = $RespawnAY[1];
-    $RespawnZ = $RespawnAZ[1];
-  }
-  if($min == $RespawnDist[2]){
-    $spawnlocation = "Crystalton";
-    $RespawnX = $RespawnAX[2];
-    $RespawnY = $RespawnAY[2];
-    $RespawnZ = $RespawnAZ[2];
-  }
-  if($min == $RespawnDist[3]){
-    $spawnlocation = "Darmouth";
-    $RespawnX = $RespawnAX[3];
-    $RespawnY = $RespawnAY[3];
-    $RespawnZ = $RespawnAZ[3];
-  }
-  if($min == $RespawnDist[4]){
-    $spawnlocation = "Talltree Point";
-    $RespawnX = $RespawnAX[4];
-    $RespawnY = $RespawnAY[4];
-    $RespawnZ = $RespawnAZ[4];
-  }
-  if($min == $RespawnDist[5]){
-    $spawnlocation = "Strongport";
-    $RespawnX = $RespawnAX[5];
-    $RespawnY = $RespawnAY[5];
-    $RespawnZ = $RespawnAZ[5];
-  }
-  if($min == $RespawnDist[6]){
-    $spawnlocation = "Coalmoor";
-    $RespawnX = $RespawnAX[6];
-    $RespawnY = $RespawnAY[6];
-    $RespawnZ = $RespawnAZ[6];
-  }
-  if($min == $RespawnDist[7]){
-    $spawnlocation = "Westcliff Plains Village";
-    $RespawnX = $RespawnAX[7];
-    $RespawnY = $RespawnAY[7];
-    $RespawnZ = $RespawnAZ[7];
-  }
-  if($min == $RespawnDist[8]){
-    $spawnlocation = "Fivepiece Island";
-    $RespawnX = $RespawnAX[8];
-    $RespawnY = $RespawnAY[8];
-    $RespawnZ = $RespawnAZ[8];
-  }
-  if($min == $RespawnDist[9]){
-    $spawnlocation = "NewTown";
-    $RespawnX = $RespawnAX[9];
-    $RespawnY = $RespawnAY[9];
-    $RespawnZ = $RespawnAZ[9];
-  }
-  if($min == $RespawnDist[10]){
-    $spawnlocation = "The Bridge";
-    $RespawnX = $RespawnAX[10];
-    $RespawnY = $RespawnAY[10];
-    $RespawnZ = $RespawnAZ[10];
-  }
+$RespawnPTs = array('Araeos City', 'Everstone City', 'Crystalton', 'Darmouth', 'Talltree Point', 'Strongport', 'Coalmoor', 'Westcliff Plains Village', 'Cle Elum', 'The Bridge');
+$RespawnCoords = array(
+	'Araeos City' => array( 'X' => -212.5, 'Y' => 73, 'Z' => -183.5, 'name' => 'Araeos City' ),
+	'Everstone City' => array( 'X' => 486.5, 'Y' => 68, 'Z' => -125.5, 'name' => 'Everstone City' ),
+	'Crystalton' => array( 'X' => -962.5, 'Y' => 73, 'Z' => 989.5, 'name' => 'Crystalton' ),
+	'Darmouth' => array( 'X' => -234.5, 'Y' => 70, 'Z' => 213.5, 'name' => 'Darmouth' ),
+	'Talltree Point' => array( 'X' => -260.5, 'Y' => 76, 'Z' => 677.5, 'name' => 'Talltree Point' ),
+	'Strongport' => array( 'X' => 729.5, 'Y' => 68, 'Z' => 700.5, 'name' => 'Strongport' ),
+	'Coalmoor' => array( 'X' => 242.5, 'Y' => 74, 'Z' => -899.5, 'name' => 'Coalmoor' ),
+	'Westcliff Plains Village' => array( 'X' => -636.5, 'Y' => 74, 'Z' => -167.5, 'name' => 'Westcliff Plains Village' ),
+	'Fivepiece Island' => array( 'X' => 454, 'Y' => 73, 'Z' => -723, 'name' => 'Fivepiece Island' ),
+	'Cle Elum' => array( 'X' => 262, 'Y' => 74, 'Z' => 211, 'name' => 'Cle Elum' ),
+	'The Bridge' => array( 'X' => 770, 'Y' => 78, 'Z' => -21, 'name' => 'The Bridge'), );
+// Figure out which world
+switch($world){
+	case "Araeosia_tutorial2":
+		$RespawnArray = array( 'X' => -300.5, 'Y' => 69, 'Z' => -52.5, 'name' => 'The Tutorial');
+		break;
+	case "Araeosia_instance":
+		switch($currentquest){
+			case "quest.current.dungeon.5.1":
+				$RespawnArray = array( 'X' => -0.5, 'Y' => 64, 'Z' => 42.5, 'name' => 'The Dungeon' );
+				break;
+			case "quest.current.archeologist.4.1":
+				$RespawnArray = array( 'X' => -314.5, 'Y' => 64, 'Z' => -59.5, 'name' => 'The Ruins' );
+				break;
+			default:
+				die("§4Error! §cCannot find where to respawn you!\n§cDefaulting to respawn at Araeos City. \n§aPlease tell a staff member about this error.\n/Command/ExecuteConsoleCommand:mvtp " . $name . " e:Araeosia:-212.5,73,-183.5;");
+				break;
+		}
+		break;
+	case "Araeosia":
+		$mins = array();
+		// Most of the work happens here. Calculates and pushes the distance to each respawn point...
+		foreach($RespawnCoords as $RespawnPT){
+			$dist = sqrt(pow(($playerX-$RespawnPT[X]), 2)+pow(($playerZ-$RespawnPT[Z]), 2));
+			$push = array($RespawnPT[name] => $dist);
+			array_push($mins, $push);
+		}
+		// ...then figures out which is the smallest and sets the respawn array to it's coordinates.
+		$min = min($mins);
+		$minflipped = array_flip($mins);
+		$minname = $minflipped[$min];
+		$RespawnArray = $RespawnCoords[$minname];
+		break;
+	default:
+		die("§4Error! §cCannot find where to respawn you!\n§cDefaulting to respawn at Araeos City. \n§aPlease tell a staff member about this error.\n/Command/ExecuteConsoleCommand:mvtp ".$name." e:Araeosia:-212.5,73,-183.5;");
+		break;
 }
 // Fetch current iConomy balance
 $lname = strtolower($name);
@@ -133,13 +69,10 @@ $iconomytable = mysql_query("SELECT * FROM iConomy WHERE username='$lname' AND s
 or die(mysql_error());
 $iconomyrow = mysql_fetch_array( $iconomytable );
 $iconomyvalue = $iconomyrow['balance'];
-$lostrand = rand(7,13);
-if($lostrand<10){$lostrand = "0" . $lostrand;}
-$lostdecimal = "0." . $lostrand;
-$lost = ceil($iconomyvalue*$lostdecimal);
+$lostrand = rand(7,13)/100;
+$lost = ceil($iconomyvalue*$lostrand);
 $leftover = $iconomyvalue-$lost;
-mysql_query("DELETE FROM iConomy WHERE username='$lname' AND status='0'") or die(mysql_error());
-mysql_query("INSERT INTO iConomy (id, username, balance, status) VALUES('NULL', '$lname', '$leftover', '0')") or die(mysql_error());
+mysql_query("UPDATE iConomy SET balance='$leftover' WHERE name='$name'");
 $lostf = number_format($lost);
 $leftoverf = number_format($leftover);
 // Echo results to player and execute commands
