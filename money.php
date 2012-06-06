@@ -1,4 +1,5 @@
 <?php
+// This file handles the money blocks and quest blocks on the Araeosia RPG server.
 // Fetch variables
 $args = $_POST[args];
 $X = $args[1];

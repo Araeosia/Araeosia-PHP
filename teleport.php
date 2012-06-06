@@ -1,4 +1,6 @@
 <?php
+// This file handles teleports on the 2 ships and 4 airships in Araeosia.
+// Fetch variables
 $name = $_POST[player];
 $args = $_POST[args];
 $blockX = $args[1];

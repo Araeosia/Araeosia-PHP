@@ -1,4 +1,5 @@
 <?php
+// This file handles the MotD for the other Araeosia servers, since they don't need the complex code for the RPG server.
 $name = $_POST[player];
 $world = $_POST[playerWorld];
 // World handling

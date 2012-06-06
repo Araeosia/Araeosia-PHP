@@ -1,4 +1,5 @@
 <?php
+// This file handles picking where to respawn the player. It's uglyh4x around line 80, but there isn't much I can do about that because of the way Multiverse-Core handles respawns. It's executed the moment you hit "Respawn"
 // Fetch variables
 $name = $_POST[player];
 $args = $_POST[args];

@@ -1,4 +1,5 @@
 <?php
+// This file handles the /who command used on all Araeosia servers.
 // Fetch variables
 $name=$_POST[player];
 include('includes/functions.php');

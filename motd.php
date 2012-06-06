@@ -1,4 +1,5 @@
 <?php
+// This file handles the MotD for the Araeosia RPG server. It needs major recoding to work better and cleaner.
 // System Variables
 date_default_timezone_set('EST');
 

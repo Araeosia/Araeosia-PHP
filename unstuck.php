@@ -1,4 +1,5 @@
 <?php
+// This file handles the /unstuck command, locating the nearest Health Shack, then teleporting the player to that Health Shack.
 // Fetch variables
 $name = $_POST[player];
 $args = $_POST[args];
@@ -19,7 +20,7 @@ if($row[name] == $name){
     $timeleft = time-$row[timestamp];
 }
 
-// Check for completion
+// Check for completion. This is handled by CommandHelper automatically. If you understand the code, you can actually bypass the 20 second wait ;)
 if($args[1] != "fin"){
     echo "§cYou will be spawned at the nearest Health Shack in 20 seconds\n";
     echo "/Command/ExecuteBukkitCommand:ws unstuck fin;";

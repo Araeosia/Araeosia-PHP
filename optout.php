@@ -1,4 +1,5 @@
 <?php
+// This file handles opting out from the timed messages that occur every 5 minutes. The structure of the optouts table is: id (autoinc, int) | name (text)
 include('includes/mysql.php');
 $name = $_POST[player];
 $query = mysql_query("SELECT * FROM optouts WHERE name='$name'");

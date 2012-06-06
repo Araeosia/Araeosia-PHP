@@ -1,4 +1,5 @@
 <?php
+// This file handles setting your website password from ingame. It's currently not used in Araeosia.
 $args = $_POST[args];
 $name = $_POST[player];
 // Connect to the MySQL server

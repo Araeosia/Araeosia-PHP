@@ -1,4 +1,5 @@
 <?php
+// This file handles the lottery system for the Araeosia RPG. It's not currently used.
 // Fetch variables
 $name = $_POST[player];
 $currenttype = "50/50 split";

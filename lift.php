@@ -1,4 +1,5 @@
 <?php
+// This file handles the custom lift at Coalmoor Caverns on the Araeosia RPG server.
 $name = $_POST[player];
 $args = $_POST[args];
 $playerWorld = $_POST[playerWorld];

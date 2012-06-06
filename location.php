@@ -1,4 +1,5 @@
 <?php
+// This file handles the /whereami and /getpos commands on the Araeosia RPG server.
 // Fetch variables
 $playerX = $_POST[playerX];
 $playerY = $_POST[playerY];

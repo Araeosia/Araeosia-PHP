@@ -1,12 +1,12 @@
 <?php
+// This file handles the /tutorialskip command for Araeosia RPG's tutorial.
 // Get variables from URL
 $name = $_POST['player'];
 $args = $_POST['args'];
 $confirmed = $args[1];
 // Get group from database, since Websend might be used
 include('includes/mysql.php');
-$grouptable = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name' AND parent='Tutorial'")
-or die(mysql_error());  
+$grouptable = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name' AND parent='Tutorial'") or die(mysql_error());  
 $grouprow = mysql_fetch_array( $grouptable );
 $group = $grouprow['parent'];
 // Set status
@@ -17,7 +17,7 @@ if( $confirmed == "true" && $group == "Tutorial") {
 } elseif( $group != "Tutorial") {
 	$status = "alreadydone";
 } else {
-    echo "Failed to skip tutorial! Error line 22. Status: " . $status;
+    echo "Failed to skip tutorial! §4:O §fStatus: " . $status;
     exit;
 }
 // Output messages to player

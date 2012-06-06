@@ -1,4 +1,5 @@
 <?php
+// This file handles the custom questing journal on the Araeosia RPG server.
 // Fetch variables
 $name = $_POST['player'];
 $args = $_POST['args'];

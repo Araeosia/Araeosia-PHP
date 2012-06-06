@@ -1,4 +1,5 @@
 <?php
+// This file is executed by cron every 5 minutes. It handles things such as message timed message sending.
 include('includes/passwords.php');
 include('includes/servers.php');
 $msgs = array( "§bDon't forget to check out the forums at §bhttp://forums.araeosia.com/ §b!", "§bDid you know that you can disable these messages with §c/optout§b?");
@@ -16,6 +17,7 @@ foreach($servers as $server){
 		// Only reason this query would fail is if the server is down. Report it
 		$players = array();
 	}
+	// Msgs is formatted like this: id (autoinc) | msgnum (int) | player (text)
 	$query = mysql_query("SELECT * FROM Msgs");
 	while($row = $query){
 		$msgsent[$row[player]] = $row[msgnum]
