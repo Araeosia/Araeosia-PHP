@@ -11,40 +11,26 @@ $world = $_POST[playerWorld];
 include('includes/mysql.php');
 
 // Retrieve current quest
-$currenttable = mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'")
-or die(mysql_error());  
-$currentrow = mysql_fetch_array( $currenttable );
+$currentrow = mysql_fetch_array( mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'") );
 $currentquestperm = $currentrow['permission'];
 
 // Retrieve lastlogout timestamp
-$logouttable = mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission='last-logout-time'")
-or die(mysql_error());
-$logoutrow = mysql_fetch_array( $logouttable );
+$logoutrow = mysql_fetch_array( mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission='last-logout-time'") );
 $logouttimestamp = $logoutrow['value'];
+// Convert timestamp to human readable
+$logouttime = date("F jS h:i:s A", $logouttimestamp);
 
 // Retrieve iConomy balance
-$iconomytable = mysql_query("SELECT * FROM iConomy WHERE username='$name' AND status=0")
-or die(mysql_error());
-$iconomyrow = mysql_fetch_array( $iconomytable );
+$iconomyrow = mysql_fetch_array( mysql_query("SELECT * FROM iConomy WHERE username='$name' AND status=0") );
 $iconomyvalue = $iconomyrow['balance'];
 
 // Check if current group is Tutorial
-$groupTtable = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name' AND parent='Tutorial'")
-or die(mysql_error()); 
-$groupTrow = mysql_fetch_array( $groupTtable );
-$groupT = $groupTrow['parent'];
-if($groupT=="Tutorial"){ $group="Tutorial"; }
-$grouptable = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name'") or die(mysql_error());
-$grouprow = mysql_fetch_array($grouptable);
-$group2 = $grouprow['parent'];
-if(!isset($group2)){ $group="Tutorial"; }
+$groups = array();
+$groupTquery = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name'");
+while($row = mysql_fetch_array($groupTquery)){ array_push($groups, $row[parent]); }
 
 // If user is broke, set $iconomyvalue to 0 rather than null
-if (!isset($iconomyvalue)) {
-  $iconomyvalue = "0.00";
-}
-// Convert timestamp to human readable
-$logouttime = date("F jS h:i:s A", $logouttimestamp);
+if (!isset($iconomyvalue)) { $iconomyvalue = "0.00"; }
 
 // Quest name determining
 $questA = explode(".",$currentquestperm);
@@ -75,10 +61,14 @@ $booknumber = $booksrow['booknumber'];
 include("includes/books.php");
 
 // Turn world name into worldnamef
-if($world=="Araeosia" || $world=="Araeosia_instance"){
-	$worldnamef = "Araeosia";
-} elseif($world=="Araeosia_tutorial2"){
-	$worldnamef = "The Araeosia Tutorial";
+switch($world){
+	case "Araeosia_instance":
+	case "Araeosia":
+		$worldnamef = "Araeosia";
+		break;
+	case "Araeosia_tutorial2":
+		$worldnamef = "The Tutorial";
+		break;
 }
 
 // Print message to player
@@ -89,16 +79,8 @@ if ($newplayer) {
 	echo "/Command/ExecuteBukkitCommand:ch leave Araeosia;";
 	echo "§eYou can skip this tutorial using §9/tutorialskip§f.\n§cUntil you finish the tutorial, your chat is muted.\n§eTo begin the tutorial, right click on §6Gordon_Cassidy.\n§7There will be more useful information here after the tutorial.";
 }
-if (isset($questname) && $newplayer != "true") {
-  echo "§6Your current quest is §3" . $questname . "\n";
-}
-if (!isset($questname) && $newplayer != "true") {
-  echo "§6You currently don't have a quest.\n";
-}
-if ($newplayer != "true") {
-  echo "§3You currently have §6$" . number_format($iconomyvalue) . " §3dollars.\n";
-}
-if (isset($bookwaitingnumber)) {
-  echo "§5You have finished reading the Book of " . $bookname . ".";
-}
+if (isset($questname)) { echo "§6Your current quest is §3" . $questname . "\n"; }
+if (!isset($questname) && $newplayer != "true") { echo "§6You currently don't have a quest.\n"; }
+if ($newplayer != "true") { echo "§3You currently have §6$" . number_format($iconomyvalue) . " §3dollars.\n"; }
+if (isset($bookwaitingnumber)) { echo "§5You have finished reading the Book of " . $bookname . "."; }
 ?>
