@@ -6,6 +6,32 @@ $playerZ = $_POST[playerZ];
 $world = $_POST[playerWorld];
 $name = $_POST[player];
 
+function compass($deg){
+	if($deg<0 && $deg>=22.5){ $dir = "North"; }
+	if($deg<22.5 && $deg>=67.5){ $dir = "Northeast"; }
+	if($deg<67.5 && $deg>=112.5){ $dir = "East"; }
+	if($deg<112.5 && $deg>=157.5){ $dir = "Southeast"; }
+	if($deg<157.5 && $deg>=202.5){ $dir = "South"; }
+	if($deg<202.5 && $deg>=247.5){ $dir = "Southwest"; }
+	if($deg<247.5 && $deg>=292.5){ $dir = "West"; }
+	if($deg<292.5 && $deg>=337.5){ $dir = "Northwest"; }
+	if($deg<337.5 && $deg>=0){ $dir = "North"; }
+	return $dir;
+}
+function GetDegree($x, $y)
+{
+  // we don't want to cause division by zero
+  if($x == 0) $x = 1 / 10000;
+      
+  $deg = rad2deg(atan(abs($y / $x)));
+      
+  if($y >= 0) $deg = $x < 0 ? 180 - $deg : $deg;
+  else        $deg = $x < 0 ? 180 + $deg : 360 - $deg;
+      
+  return $deg;
+      
+}
+
 include("includes/functions.php");
 include('includes/mysql.php');
 // City locations
@@ -28,20 +54,20 @@ $CitiesCoords = array(
 // Check for worlds
 switch($world){
 	case "Araeosia_tutorial2":
-		die("§cYou are currently in §bThe Tutorial§c.\n");
+		die("Â§cYou are currently in Â§bThe TutorialÂ§c.\n");
 		break;
 	case "Araeosia_instance":
 		$row = mysql_fetch_array(mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'"));
 		$currentquest = $row[permission];
 		switch($currentquest){
 			case "quest.current.dungeon.5.1":
-				die("§cYou are currently in §bThe Dungeon§c.\n");
+				die("Â§cYou are currently in Â§bThe DungeonÂ§c.\n");
 				break;
 			case "quest.current.archeologist.4.1":
-				die("§cYou are currently in §bThe Ruins§c.\n");
+				die("Â§cYou are currently in Â§bThe RuinsÂ§c.\n");
 				break;
 			default:
-				die("§c...I'm....not sure where you are.....");
+				die("Â§c...I'm....not sure where you are.....");
 				break;
 		}
 		break;
@@ -57,10 +83,27 @@ switch($world){
 		// ...then figures out which is the smallest and sets the respawn array to it's coordinates.
 		$min = min($mins);
 		$minname = $minsname[$min];
-		echo "§cThe closest city to your current location is §b".$minname."§c.\n";
+		echo "Â§cThe closest city to your current location is Â§b".$minname."Â§c.\n";
+		// Calculate the direction to the city.
+		$CityCoord = $CitiesCoords[$minname];
+		$X = $playerX-$CityCoord[X];
+		$Z = $playerZ-$CityCoord[Z];
+		echo $X." ".$Z."\n";
+		$atan = atan2($X, $Z);
+		$deg = rad2deg($atan)+180;
+		if($deg<0 && $deg>=22.5){ $dir = "North"; }
+		if($deg<22.5 && $deg>=67.5){ $dir = "Northeast"; }
+		if($deg<67.5 && $deg>=112.5){ $dir = "East"; }
+		if($deg<112.5 && $deg>=157.5){ $dir = "Southeast"; }
+		if($deg<157.5 && $deg>=202.5){ $dir = "South"; }
+		if($deg<202.5 && $deg>=247.5){ $dir = "Southwest"; }
+		if($deg<247.5 && $deg>=292.5){ $dir = "West"; }
+		if($deg<292.5 && $deg>=337.5){ $dir = "Northwest"; }
+		if($deg<337.5 && $deg>=0){ $dir = "North"; }
+		echo $dir;
 		break;
 	default:
-		die("§c...I'm....not sure where you are.....");
+		die("Â§c...I'm....not sure where you are.....");
 		break;
 }
 ?>

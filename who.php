@@ -7,7 +7,7 @@ include('includes/staff.php');
 foreach($servers as $server){
 	$Query = new MinecraftQuery();
 	try{
-		$Query->Connect( $ips[$server], $ports[$server], 1 );
+		$Query->Connect( $ips[$server], $ports[mc][$server], 1 );
 		$players = $Query->GetPlayers();
 	}catch(MinecraftQueryException $e){
 		// Only reason this query would fail is if the server is down. Report it
