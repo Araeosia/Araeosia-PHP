@@ -7,7 +7,7 @@ $query = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name'"
 $groups = array();
 while($row = mysql_fetch_array($query)){ array_push($groups, $row[parent]); }
 $iconomyvalue = mysql_fetch_array( mysql_query("SELECT * FROM iConomy WHERE username='$name'"));
-$iconomyvalue = $iconomyvalue[value];
+$iconomyvalue = $iconomyvalue[balance];
 switch($world){
 	case "Araeosia_instance":
 	case "Araeosia":
@@ -17,7 +17,7 @@ switch($world){
 		$worldnamef = "The Tutorial";
 		break;
 }
-$query = mysql_fetch_array(mysql_query("SELECT * FROM permissions WHERE permission LIKE quest.current.%.%.%"))
+$query = mysql_fetch_array(mysql_query("SELECT * FROM permissions WHERE permission LIKE quest.current.%.%.%"));
 $quest = $query[permission];
 $questexploded=explode($quest, '.');
 switch($questexploded[2]){
@@ -49,7 +49,7 @@ switch($questexploded[2]){
 		$questname = "UNKNOWN QUEST NAME";
 		break;
 }
-if(in_array("Tutorial", $groups)){ echo "§2Welcome to Araeosia, §b".$name."\n/Command/ExecuteBukkitCommand:ch join Tutorial;\n/Command/ExecuteBukkitCommand:ch leave Araeosia;\n§eYou can skip this tutorial using §9/tutorialskip§f.\n§cUntil you finish the tutorial, your chat is muted.\n§eTo begin the tutorial, right click on §6Gordon_Cassidy.\n§7There will be more useful information here after the tutorial.";}
+if(in_array("Tutorial", $groups)){ echo "§2Welcome to Araeosia, §b".$name."\n/Command/ExecuteBukkitCommand:ch join Tutorial;\n/Command/ExecuteBukkitCommand:ch leave Araeosia;\n§eYou can skip this tutorial using §9/tutorialskip§f.\n§cUntil you finish the tutorial, your chat is muted.\n§eTo begin the tutorial, right click on §6Gordon_Cassidy.\n§7There will be more useful information here after the tutorial.";}else{ echo "§2Welcome to Araeosia, §b".$name."\n§cThis MotD function seems to be broken right now.\n§bNag §4AgentKid §bif you want it fixed.\n"; }
 if(in_array("1", $groups)){ echo "§3You currently have §6$" . number_format($iconomyvalue) . " §3dollars.\n"; }
 if(isset($quest)){ echo "§2Your current quest is §7".$questname."§2.\n"; }
 ?>
