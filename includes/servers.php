@@ -1,4 +1,5 @@
 <?php
+// This file contains the IP addresses and ports for each of Araeosia's servers, viewed from inside Araeosia's local network. They are not accessible from outside the network, so don't even bother ;) The $ports array also has subarrays for Websend and mcqueries. This file is used for things such as messaging players from PHP and querying each server for players.
 $servers = array('RPG', 'Freebuild', 'Modded', 'Sandbox');
 $ips = array( 'RPG' => '192.168.5.106', 'Freebuild' => '192.168.5.104', 'Modded' => '192.168.5.106', 'Sandbox' => '192.168.5.106');
 $ports = array(

@@ -1,5 +1,5 @@
 <?php
-
+// This file contains general functions that are used in more than one place, such as Bcrypt and the minecraft query. I've placed them here to both keep them out of the way and also to shorten the length of the PHP files.
 function pythagoras($a,$b,$c,$precision=4)
 {
 	($a) ? $a = pow($a,2) : $find .= 'a';

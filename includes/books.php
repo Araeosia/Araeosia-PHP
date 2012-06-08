@@ -1,4 +1,5 @@
 <?php
+// This file is used in book.php for handling the custom books on Araeosia. It contains one large array, $books, that has subarrays for each book.
 $books = array(
     0 => array(
     	"num" => 0,

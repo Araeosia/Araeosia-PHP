@@ -51,5 +51,5 @@ switch($questexploded[2]){
 }
 if(in_array("Tutorial", $groups)){ echo "§2Welcome to Araeosia, §b".$name."\n/Command/ExecuteBukkitCommand:ch join Tutorial;\n/Command/ExecuteBukkitCommand:ch leave Araeosia;\n§eYou can skip this tutorial using §9/tutorialskip§f.\n§cUntil you finish the tutorial, your chat is muted.\n§eTo begin the tutorial, right click on §6Gordon_Cassidy.\n§7There will be more useful information here after the tutorial.";}
 if(in_array("1", $groups)){ echo "§3You currently have §6$" . number_format($iconomyvalue) . " §3dollars.\n"; }
-if(isset($quest)){ echo "§2Your current quest is §7".$questname.".\n"; }
+if(isset($quest)){ echo "§2Your current quest is §7".$questname."§2.\n"; }
 ?>
