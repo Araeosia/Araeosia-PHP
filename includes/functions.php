@@ -1,7 +1,6 @@
 <?php
 // This file contains general functions that are used in more than one place, such as Bcrypt and the minecraft query. I've placed them here to both keep them out of the way and also to shorten the length of the PHP files.
-function pythagoras($a,$b,$c,$precision=4)
-{
+function pythagoras($a,$b,$c,$precision=4){
 	($a) ? $a = pow($a,2) : $find .= 'a';
 	($b) ? $b = pow($b,2) : $find .= 'b';
 	($c) ? $c = pow($c,2) : $find .= 'c';
@@ -237,12 +236,10 @@ class minecraft {
     }
 
 }
-class MinecraftQueryException extends Exception
-{
+class MinecraftQueryException extends Exception{
 	// Exception thrown by MinecraftQuery class
 }
-class MinecraftQuery
-{
+class MinecraftQuery{
 	/*
 	 * Class written by xPaw
 	 *
@@ -405,6 +402,7 @@ class MinecraftQuery
 		return SubStr( $Data, 5 );
 	}
 }
+class JSONAPI {
 /**
  * A PHP class for access Minecraft servers that have Bukkit with the {@link http://github.com/alecgorge/JSONAPI JSONAPI} plugin installed.
  * 
@@ -416,7 +414,6 @@ class MinecraftQuery
  * @package JSONAPI
  * @since Alpha 5
  */
-class JSONAPI {
 	public $host;
 	public $port;
 	public $salt;
