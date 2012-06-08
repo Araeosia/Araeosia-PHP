@@ -69,8 +69,7 @@ if($block == "D" && $perm == "quest.current.caverncatastrophe.5.0"){
 if(!is_int($block)&&!$special){ die("You do not currently have the quest for this loot block."); }
 // Echo to player
 mysql_query("INSERT INTO MoneyBlocks (id, user, block) VALUES ('NULL', '$name', '$block')");
-if($special == "true") { die($specialmsg1); }
-if(!isset($status)) { echo "§4An error occurred. Please try again.\nIf this error persists, please contact the administration."; }
+if($special) { die($specialmsg1); }
 if($give&&!$lucky) { echo "/Command/ExecuteConsoleCommand:money give " . $name . " " . $amount . ";\n§6You picked up §2$" . $amount . "§6, giving you a total of §2$" . $newtotal . "§6 dollars!"; }
 if($give&&$lucky) { echo "/Command/ExecuteConsoleCommand:money give " . $name . " " . $amount . ";\n§6You found a jackpot block, which contained §2$" . $amount . "§6! This gives you a total of §2$" . $newtotal . "§6 dollars!"; }
 ?>
