@@ -23,6 +23,7 @@ $msg = "§bWelcome to the Araeosia Freebuild Server, ".$name."!\n";
 $msg = $msg."§3You are currently in ".$worldname."§3.\n";
 $msg = $msg."§eOnline (".$onlinect."/512): §b".$online."§e.\n";
 $msg = $msg."§cNews: §e/news\n";
+$msg = $msg."§4FusionCraft has adopted a No-Mercy policy. §e/nomercy§4 for info."
 $msg = $msg."§4Rules: §e/rules - Updated 2-4-2012\n";
 echo $msg;
 ?>
