@@ -16,7 +16,8 @@ $iconomyrow = mysql_fetch_array( mysql_query("SELECT * FROM iConomy WHERE userna
 $iconomyvalue = $iconomyrow['balance'];
 // Include the moneyblock locations
 include('includes/blocks.php');
-$block = $blocks[$X." ".$Y." ".$Z." ".$W];
+$searchquery = $X." ".$Y." ".$Z." ".$W;
+$block = $blocks[$searchquery];
 
 // Generate a random amount of money
 $amount = rand(5,20);

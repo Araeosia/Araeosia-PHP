@@ -3,9 +3,9 @@
 $blocks = array(
 	"774 59 717 Araeosia" => 1,
 	"740 59 688 Araeosia" => 2,
-	"758 75 688 Araeosia" => 3,
-	"-345 63 -81 Araeosia" => 4,
-	"-343 63 -81 Araeosia" => "A",
+	"758 75 623 Araeosia" => 3,
+	"-345 63 -81 Araeosia_tutorial2" => 4,
+	"-343 63 -81 Araeosia_tutorial2" => "A",
 	"727 67 705 Araeosia" => 5,
 	"728 67 705 Araeosia" => 6,
 	"729 67 705 Araeosia" => 7,
