@@ -20,7 +20,7 @@ foreach($servers as $server){
 			if(in_array($player,$staffranks[admin])){$player="§4".$player;}elseif(in_array($player,$staffranks[moderator])){$player = "§a".$player;}else{$player = "§b".$player; }
 			array_push($playersfinal, $player);
 		}
-		echo "§c------- §b".$server." §c-------\n";
+		echo "§c------- §bAraeosia ".$server." §c-------\n";
 	if(count($playersfinal)!=0 && $playersfinal!=false){
 		echo "§aOnline§f: ".implode('§f, ', $playersfinal)."\n";
 	}else{
