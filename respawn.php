@@ -1,8 +1,8 @@
 <?php
 // This file handles picking where to respawn the player. It's uglyh4x around line 80, but there isn't much I can do about that because of the way Multiverse-Core handles respawns. It's executed the moment you hit "Respawn"
 // Fetch variables
-$name = $_POST[player];
-$args = $_POST[args];
+$name = $_POST['player'];
+$args = $_POST['args'];
 
 // Fetch death location
 include('includes/mysql.php');
@@ -51,8 +51,8 @@ switch($world){
 		$minsname = array();
 		$mins = array();
 		foreach($RespawnCoords as $RespawnPT){
-			$dist = sqrt(pow(($playerX-$RespawnPT[X]), 2)+pow(($playerZ-$RespawnPT[Z]), 2));
-			$minsname[$dist] = $RespawnPT[name];
+			$dist = sqrt(pow(($playerX-$RespawnPT['X']), 2)+pow(($playerZ-$RespawnPT['Z']), 2));
+			$minsname[$dist] = $RespawnPT['name'];
 			array_push($mins, floor($dist));
 		}
 		// ...then figures out which is the smallest and sets the respawn array to it's coordinates.
@@ -77,7 +77,7 @@ $lostf = number_format($lost);
 $leftoverf = number_format($leftover);
 // Echo results to player and execute commands
 sleep(1);
-echo "/Command/ExecuteConsoleCommand:mvtp " . $name . " e:" . $RespawnArray[world] . ":" . $RespawnArray[X] . "," . $RespawnArray[Y] . "," . $RespawnArray[Z] . ";\n";
-echo "§cYou died and were respawned at §e" . $RespawnArray[name] . "§c.\n";
+echo "/Command/ExecuteConsoleCommand:mvtp " . $name . " e:" . $RespawnArray['world'] . ":" . $RespawnArray['X'] . "," . $RespawnArray['Y'] . "," . $RespawnArray['Z'] . ";\n";
+echo "§cYou died and were respawned at §e" . $RespawnArray['name'] . "§c.\n";
 echo "§eYou lost §2$" . $lostf . " §ewhen you died, leaving you with §2$" . $leftoverf . " §eleft.";
 ?>​
