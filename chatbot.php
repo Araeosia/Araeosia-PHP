@@ -11,7 +11,7 @@ while(1){
 			$jsonapi = new JSONAPI($ips[$server], $ports['jsonapi'][$server]);
 			$players = $jsonapi->call('getPlayerNames', array());
 			$players = $players['success'];
-			foreach($players as $player){ if(in_array($channelsin[$row['channel']], $player)){ $jsonapi->call('message', array($player, html_entity_decode($row['message']))); }
+			foreach($players as $player){ if(in_array($channelsin[$row['channel']], $player)){ $jsonapi->call('message', array($player, html_entity_decode($row['message']))); }}
 		}
 	}
 }
