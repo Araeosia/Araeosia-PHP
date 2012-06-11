@@ -6,7 +6,7 @@ include('includes/mysql.php');
 include('includes/functions.php');
 $timestamp = "[".date('m-d-y H:i:s', time())."] ";
 $log = $timestamp."Attempting to cycle through ".implode($servers, ', ').".\n";
-$msgs = array( "§4[S] §aCheck out the forums at §bforums.araeosia.com§a!", "§bServer maintenance happens nightly around 1AM-2AM EST", "§bThe world map for Araeosia RPG is available at map.araeosia.com", "§4[S] §bYou can disable these messages with §c/optout§b!", "§4[S] §bAraeosia is accepting staff applications on the forums!", "§bAraeosia RPG is currently in beta testing! Help us find bugs!");
+$msgs = array( "§4[S] §aCheck out the forums at §bforums.araeosia.com§a!", "§bServer maintenance happens nightly around 1AM-2AM EST", "§bThe world map for Araeosia RPG is available at map.araeosia.com", "§4[S] §bYou can disable these messages with §c/optout§b!", "§4[S] §bAraeosia is accepting staff applications on the forums!", "§bAraeosia RPG is currently in beta testing! Help us find bugs!", "§bAraeosia has adopted a No-Mercy policy. §e/nomercy §bfor info.");
 $query = mysql_query("SELECT * FROM optouts");
 $optouts = array();
 while($row = mysql_fetch_array($query)){ array_push($optouts, $row['name']); }
@@ -41,4 +41,5 @@ foreach($servers as $server){
 }
 $logfile = fopen('/home/agentkid/logs/messages.log', 'w');
 fwrite($logfile, $log);
+fclose($logfile);
 ?>
