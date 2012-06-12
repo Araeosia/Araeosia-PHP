@@ -39,7 +39,7 @@ foreach($servers as $server){
 		}else{ $log = $log.$timestamp."Skipped player ".$player." on ".$server." due to opt-out.\n"; }
 	}
 }
-$logfile = fopen('/home/agentkid/logs/messages.log', 'w');
+$logfile = fopen('/home/agentkid/logs/messages.log', 'a');
 fwrite($logfile, $log);
 fclose($logfile);
 ?>
