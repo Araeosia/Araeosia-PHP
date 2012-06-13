@@ -1,15 +1,15 @@
 <?php
 // This file handles the /unstuck command, locating the nearest Health Shack, then teleporting the player to that Health Shack.
 // Fetch variables
-$name = $_POST[player];
-$args = $_POST[args];
+$name = $_POST['player'];
+$args = $_POST['args'];
 
 // Fetch death location
 include('includes/mysql.php');
-$playerX = $_POST[playerX];
-$playerY = $_POST[playerY];
-$playerZ = $_POST[playerZ];
-$world = $_POST[playerWorld];
+$playerX = $_POST['playerX'];
+$playerY = $_POST['playerY'];
+$playerZ = $_POST['playerZ'];
+$world = $_POST['playerWorld'];
 
 // Connect to MySQL server
 include('includes/mysql.php');

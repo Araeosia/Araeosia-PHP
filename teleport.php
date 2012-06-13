@@ -1,8 +1,8 @@
 <?php
 // This file handles teleports on the 2 ships and 4 airships in Araeosia.
 // Fetch variables
-$name = $_POST[player];
-$args = $_POST[args];
+$name = $_POST['player'];
+$args = $_POST['args'];
 $blockX = $args[1];
 $blockY = $args[2];
 $blockZ = $args[3];
@@ -59,7 +59,7 @@ if($blockX=="-339" && $blockY=="71" && $blockZ=="55" && $blockWorld=="Araeosia")
 } else { exit; }
 $check = mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission='quest.current.ships.1.0'");
 $checkrow = mysql_fetch_array($check);
-if($permrow[name]!=$name){ die('§cYou must complete the mission §2Ship Travel §c before riding.'); }
+if($permrow['name']!=$name){ die('§cYou must complete the mission §2Ship Travel §c before riding.'); }
 // Destination locations
 $dests = array(
     0 => array( "X" => -341.5, "Y" => 71.5, "Z" => 55.5, "world" => "Araeosia"),
@@ -73,13 +73,13 @@ $dests = array(
 $isin = array();
 $isinquery = mysql_query("SELECT * FROM ShipsCheckin WHERE name='$name'");
 while($isinrow = mysql_fetch_array($isinquery)){
-    array_push($isin, $isinrow[loc]);
+    array_push($isin, $isinrow['loc']);
 }
 // Lets see if the player is registered here already
 if(!in_array($locid, $isin)){
     echo '§cYou are now registered at §b' . $location . '§c. Left click for info.';
     mysql_query("INSERT INTO ShipsCheckin (id, name, loc) VALUES('NULL', '$name', '$locid')") or die(mysql_error());
-    if($checkrow[name]==$name){ die('§e[A] §bSailor_Bryan§f: Good work, now come back here.'); }
+    if($checkrow['name']==$name){ die('§e[A] §bSailor_Bryan§f: Good work, now come back here.'); }
     exit;
 }
 // Lets see if the player is registered at the destination
@@ -94,7 +94,7 @@ if($click == "Left"){
 if($click == "Right"){
     $moneyquery = mysql_query("SELECT * FROM iConomy WHERE username='$name'") or die(mysql_error());
     $moneyrow = mysql_fetch_array($moneyquery);
-    $currentmoney = $moneyrow[balance];
+    $currentmoney = $moneyrow['balance'];
     $newmoney = $currentmoney-$money;
     if($newmoney<0){
         echo "§cYou only had §2$" . $currentmoney . "§c, but needed §2$" . $money . "§c to ride this ship.\n";

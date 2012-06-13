@@ -41,13 +41,13 @@ $completedarray = array();
 
 // Fill the array
 while ($completedrow = mysql_fetch_array( $completedtable )) {
-  array_push($completedarray, $completedrow[permission]);
+  array_push($completedarray, $completedrow['permission']);
 }
 
 // Get current quest
 $currenttable = mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'") or die(mysql_error()); 
 $currentrow = mysql_fetch_array($currenttable);
-$currentperm = $currentrow[permission];
+$currentperm = $currentrow['permission'];
 
 // Create output array for Available quests
 $namearraya = array();

@@ -1,11 +1,11 @@
 <?php
 // This file handles the /whereami and /getpos commands on the Araeosia RPG server.
 // Fetch variables
-$playerX = $_POST[playerX];
-$playerY = $_POST[playerY];
-$playerZ = $_POST[playerZ];
-$world = $_POST[playerWorld];
-$name = $_POST[player];
+$playerX = $_POST['playerX'];
+$playerY = $_POST['playerY'];
+$playerZ = $_POST['playerZ'];
+$world = $_POST['playerWorld'];
+$name = $_POST['player'];
 
 function compass($deg){
 	if($deg<0 && $deg>=22.5){ $dir = "North"; }

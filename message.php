@@ -7,7 +7,7 @@ include('includes/mysql.php');
 $query = mysql_query("SELECT * FROM optouts");
 $optouts = array();
 while($row = mysql_fetch_array($query)){
-	array_push($optouts, $row[name]);
+	array_push($optouts, $row['name']);
 }
 // Query each server
 $players = array();

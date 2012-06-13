@@ -1,12 +1,12 @@
 <?php
 // This file handles the money blocks and quest blocks on the Araeosia RPG server.
 // Fetch variables
-$args = $_POST[args];
+$args = $_POST['args'];
 $X = $args[1];
 $Y = $args[2];
 $Z = $args[3];
-$name = $_POST[player];
-$W = $_POST[playerWorld];
+$name = $_POST['player'];
+$W = $_POST['playerWorld'];
 
 // Connect to MySQL database
 include('includes/mysql.php');
@@ -44,7 +44,7 @@ if(!isset($block)){ exit; }elseif($blockdone == $block) { die("§eYou've already
 
 // Get current quests
 $questquery = mysql_fetch_array(mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'"));
-$perm = $questquery[permission];
+$perm = $questquery['permission'];
 
 // Check if this block is a special mission block
 if($block == "A") {

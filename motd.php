@@ -1,13 +1,13 @@
 <?php
-$name = $_POST[player];
-$world = $_POST[playerWorld];
+$name = $_POST['player'];
+$world = $_POST['playerWorld'];
 // Includes
 include('includes/mysql.php');
 $query = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name'");
 $groups = array();
 while($row = mysql_fetch_array($query)){ array_push($groups, $row[parent]); }
 $iconomyvalue = mysql_fetch_array( mysql_query("SELECT * FROM iConomy WHERE username='$name'"));
-$iconomyvalue = $iconomyvalue[balance];
+$iconomyvalue = $iconomyvalue['balance'];
 switch($world){
 	case "Araeosia_instance":
 	case "Araeosia":
@@ -18,7 +18,7 @@ switch($world){
 		break;
 }
 $query = mysql_fetch_array(mysql_query("SELECT * FROM permissions WHERE permission LIKE quest.current.%.%.%"));
-$quest = $query[permission];
+$quest = $query['permission'];
 $questexploded=explode($quest, '.');
 switch($questexploded[2]){
 	case "tutorial":
