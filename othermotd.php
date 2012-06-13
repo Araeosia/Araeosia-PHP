@@ -1,7 +1,7 @@
 <?php
 // This file handles the MotD for the other Araeosia servers, since they don't need the complex code for the RPG server.
-$name = $_POST[player];
-$world = $_POST[playerWorld];
+$name = $_POST['player'];
+$world = $_POST['playerWorld'];
 // World handling
 switch($world){
 	case "Main_nether":
@@ -15,7 +15,7 @@ switch($world){
 		break;
 }
 
-$online = $_POST[onlinePlayers];
+$online = $_POST['onlinePlayers'];
 $onlinect = count($online);
 $online = implode($online, '§e, §b');
 
