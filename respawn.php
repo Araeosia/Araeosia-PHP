@@ -12,8 +12,8 @@ $playerY = $args[2];
 $playerZ = $args[3];
 $world = $args[4];
 // Fetch the respawn location
-$respawnloc = new Locator();
-$RespawnArray = $respawnloc->respawncoords($playerX, $playerZ, $world);
+$respawnloc = new MCFunctions();
+$RespawnArray = $respawnloc->respawncoords($name, $playerX, $playerZ, $world);
 
 // Fetch current iConomy balance
 $lname = strtolower($name);

@@ -34,8 +34,8 @@ if($args[1] != "fin"){
 }
 
 // Fetch the location
-$respawnloc = new Locator();
-$RespawnArray = $respawnloc->respawncoords($playerX, $playerZ, $world);
+$respawnloc = new MCFunctions();
+$RespawnArray = $respawnloc->respawncoords($name, $playerX, $playerZ, $world);
 
 // Echo results to player and execute commands
 echo "/Command/ExecuteConsoleCommand:mvtp " . $name . " e:" . $RespawnArray['world'] . ":" . $RespawnArray['X'] . "," . $RespawnArray['Y'] . "," . $RespawnArray['Z'] . ";\n";

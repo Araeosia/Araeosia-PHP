@@ -508,7 +508,7 @@ class JSONAPI {
 		return json_decode($this->curl($url), true);
 	}
 }
-class Locator {
+class MCFunctions {
 	private function compass($degrees){
 		$rounded = round($degrees/45);
 		switch($rounded){
@@ -553,7 +553,7 @@ class Locator {
 		$dist = round($distprecise, $precision);
 		return $dist;
 	}
-	public function respawncoords($X, $Z, $W='Araeosia'){
+	public function respawncoords($P, $X, $Z, $W='Araeosia'){
 		$RespawnCoords = array(
 			'Araeos City' => array( 'X' => -212.5, 'Y' => 73, 'Z' => -183.5, 'name' => 'Araeos City', 'world' => 'Araeosia' ),
 			'Everstone City' => array( 'X' => 486.5, 'Y' => 68, 'Z' => -125.5, 'name' => 'Everstone City', 'world' => 'Araeosia' ),
@@ -581,30 +581,53 @@ class Locator {
 				$RespawnArray = array('X'=>-300.5,'Y'=>69,'Z'=>-52.5,'name'=>'The Tutorial','world'=>'Araeosia_tutorial2');
 				break;
 			case "Araeosia_instance":
-				$quest = mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'");
-				$quest = $quest['permission'];
-				switch($quest){
-					case "quest.current.dungeon.5.1":
-						$RespawnArray = array( 'X' => -0.5, 'Y' => 64, 'Z' => 42.5, 'name' => 'The Dungeon', 'world' => 'Araeosia_instance' );
-						break;
-					case "quest.current.archeologist.4.1":
-						$RespawnArray = array( 'X' => -314.5, 'Y' => 64, 'Z' => -59.5, 'name' => 'The Ruins', 'world' => 'Araeosia_instance' );
-						break;
-					default:
-						$RespawnArray = array( 'X' => -212.5, 'Y' => 73, 'Z' => -183.5, 'name' => 'Araeos City', 'world' => 'Araeosia' );
-						break;
-				}
+				$quest = $this->getquest($P);
+				$RespawnArray = $quest['RespawnArray'];
 				break;
 		}
 		return $RespawnArray;
 	}
-}
-class MCFunctions {
+	public function getloc($P, $X, $Z, $W='Araeosia'){
+		switch($W){
+			case "Araeosia_tutorial2":
+				die("§cYou are currently in §bThe Tutorial§c.\n");
+				break;
+			case "Araeosia_instance":
+				$quest = $this->getquest($P);
+				$quest = $quest['RespawnArray'];
+				die("§cYou are currently in §b".$quest['name']."§c.\n");
+				break;
+			case "Araeosia":
+				break;
+	}
 	public function tpplayer($player, $X, $Y, $Z, $W){
 		
 	}
 	public function msgplayer($player, $msg){
 		
+	}
+	public function getquest($player){
+		$quest = mysql_query("SELECT * FROM permission WHERE permission LIKE quest.current.%.%.%");
+		$quest = $quest['permission'];
+		$questdata = array(
+		"quest.current.dungeon.5.1" => array(
+			"RespawnArray" => array( 'X' => -0.5, 'Y' => 64, 'Z' => 42.5, 'name' => 'The Dungeon', 'world' => 'Araeosia_instance' ),
+			"Giver" => "Adventurer Finn?",
+			"Name" => "The Dungeon, Part 5",
+			"Part" => 5,
+		),
+		"quest.current.archeologist.4.1" => array(
+			"RespawnArray" => array( 'X' => -314.5, 'Y' => 64, 'Z' => -59.5, 'name' => 'The Ruins', 'world' => 'Araeosia_instance' ),
+			"Giver" => "The Archeologist?",
+			"Name" => "The Archeologist, Part 4",
+			"Part" => 4
+		)
+		);
+		if($quest!=false){
+			return $questdata[$quest];
+		}else{
+			return null;
+		}
 	}
 }
 ?>
