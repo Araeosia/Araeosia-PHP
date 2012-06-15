@@ -545,6 +545,9 @@ class Locator {
 		}
 		return $direction;
 	}
+	private function getangle($X1, $Z1, $X2, $Z2){
+		
+	}
 	public function getdist($X1, $Z1, $X2, $Z2, $precision=2){
 		$distprecise = sqrt(pow(($X2-$X1), 2)+pow(($Z2-$Z1), 2));
 		$dist = round($distprecise, $precision);
@@ -572,6 +575,7 @@ class Locator {
 					$minnames[$min]=$RespawnCoord['name'];
 				}
 				$RespawnArray = $RespawnCoords[$minnames[min($mins)]];
+				$RespawnArray['dist'] = min($mins);
 				break;
 			case "Araeosia_tutorial2":
 				$RespawnArray = array('X'=>-300.5,'Y'=>69,'Z'=>-52.5,'name'=>'The Tutorial','world'=>'Araeosia_tutorial2');
@@ -593,6 +597,14 @@ class Locator {
 				break;
 		}
 		return $RespawnArray;
+	}
+}
+class MCFunctions {
+	public function tpplayer($player, $X, $Y, $Z, $W){
+		
+	}
+	public function msgplayer($player, $msg){
+		
 	}
 }
 ?>
