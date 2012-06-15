@@ -34,7 +34,7 @@ foreach($servers as $server){
 				// New player :o
 				mysql_query("INSERT INTO Msgs (id, name, msgnum) VALUES ('NULL', '$player', '0')");
 				$json->call('sendMessage', array($player, $msgs[0]));
-				$log = $log.$timestamp."Echoed message 0 to ".$player." on ".$server.".\n";
+				$log = $log.$timestamp."New player: ".$player.". Echoing first message on ".$server.".\n";
 			}
 		}else{ $log = $log.$timestamp."Skipped player ".$player." on ".$server." due to opt-out.\n"; }
 	}

@@ -1,5 +1,5 @@
 <?php
-$name = $_POST[player];
+$name = $_POST['player'];
 $playerX = $_POST[playerX];
 $playerY = $_POST[playerY];
 $playerZ = $_POST[playerZ];

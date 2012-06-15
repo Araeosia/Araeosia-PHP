@@ -2,6 +2,7 @@
 // This file handles the MotD for the other Araeosia servers, since they don't need the complex code for the RPG server.
 $name = $_POST['player'];
 $world = $_POST['playerWorld'];
+include('includes/staff.php');
 // World handling
 switch($world){
 	case "Main_nether":
@@ -16,8 +17,13 @@ switch($world){
 }
 
 $online = $_POST['onlinePlayers'];
+$playersfinal = array();
+foreach($online as $player){
+	if(in_array($player,$staffranks['admin'])){$player="§4".$player;}elseif(in_array($player,$staffranks['moderator'])){$player = "§a".$player;}else{$player = "§b".$player; }
+	array_push($playersfinal, $player);
+}
 $onlinect = count($online);
-$online = implode($online, '§e, §b');
+$online = implode($playersfinal, '§e, ');
 
 $msg = "§bWelcome to the Araeosia Freebuild Server, ".$name."!\n";
 $msg = $msg."§3You are currently in ".$worldname."§3.\n";
