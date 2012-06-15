@@ -21,31 +21,21 @@ function pythagoras($a,$b,$c,$precision=4){
 	return false;
 }
 class Bcrypt {
-  private $rounds;
-  public function __construct($rounds = 12) {
-    if(CRYPT_BLOWFISH != 1) {
-      throw new Exception("bcrypt not supported in this installation. See http://php.net/crypt");
+	private $rounds;
+	public function __construct($rounds = 12) {
+		if(CRYPT_BLOWFISH != 1) { throw new Exception("bcrypt not supported in this installation. See http://php.net/crypt"); }
+		$this->rounds = $rounds;
+	}
+	public function hash($input) {
+		$hash = crypt($input, $this->getSalt());
+		if(strlen($hash) > 13) {return $hash; }
+		return false;
     }
-
-    $this->rounds = $rounds;
-  }
-
-  public function hash($input) {
-    $hash = crypt($input, $this->getSalt());
-
-    if(strlen($hash) > 13)
-      return $hash;
-
-    return false;
-  }
-
-  public function verify($input, $existingHash) {
-    $hash = crypt($input, $existingHash);
-
-    return $hash === $existingHash;
-  }
-
-  private function getSalt() {
+	public function verify($input, $existingHash) {
+		$hash = crypt($input, $existingHash);
+		return $hash === $existingHash;
+	}
+	private function getSalt() {
     $salt = sprintf('$2a$%02d$', $this->rounds);
 
     $bytes = $this->getRandomBytes(16);
@@ -54,9 +44,8 @@ class Bcrypt {
 
     return $salt;
   }
-
-  private $randomState;
-  private function getRandomBytes($count) {
+	private $randomState;
+	private function getRandomBytes($count) {
     $bytes = '';
 
     if(function_exists('openssl_random_pseudo_bytes') &&
@@ -95,8 +84,7 @@ class Bcrypt {
 
     return $bytes;
   }
-
-  private function encodeBytes($input) {
+	private function encodeBytes($input) {
     // The following is code from the PHP Password Hashing Framework
     $itoa64 = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -518,6 +506,93 @@ class JSONAPI {
 		$url = $this->makeURLMultiple($methods, $args);
 
 		return json_decode($this->curl($url), true);
+	}
+}
+class Locator {
+	private function compass($degrees){
+		$rounded = round($degrees/45);
+		switch($rounded){
+			case 0:
+				$direction = "East";
+				break;
+			case 1:
+				$direction = "Northeast";
+				break;
+			case 2:
+				$direction = "North";
+				break;
+			case 3:
+				$direction = "Northwest";
+				break;
+			case 4:
+				$direction = "West";
+				break;
+			case 5:
+				$direction = "Southwest";
+				break;
+			case 6:
+				$direction = "South";
+				break;
+			case 7:
+				$direction = "Southeast";
+				break;
+			case 8:
+				$direction = "East";
+				break;
+			default:
+				$direction = "Unknown Direction";
+				break;
+		}
+		return $direction;
+	}
+	public function getdist($X1, $Z1, $X2, $Z2, $precision=2){
+		$distprecise = sqrt(pow(($X2-$X1), 2)+pow(($Z2-$Z1), 2));
+		$dist = round($distprecise, $precision);
+		return $dist;
+	}
+	public function respawncoords($X, $Z, $W='Araeosia'){
+		$RespawnCoords = array(
+			'Araeos City' => array( 'X' => -212.5, 'Y' => 73, 'Z' => -183.5, 'name' => 'Araeos City', 'world' => 'Araeosia' ),
+			'Everstone City' => array( 'X' => 486.5, 'Y' => 68, 'Z' => -125.5, 'name' => 'Everstone City', 'world' => 'Araeosia' ),
+			'Crystalton' => array( 'X' => -962.5, 'Y' => 73, 'Z' => 989.5, 'name' => 'Crystalton', 'world' => 'Araeosia' ),
+			'Darmouth' => array( 'X' => -234.5, 'Y' => 70, 'Z' => 213.5, 'name' => 'Darmouth', 'world' => 'Araeosia' ),
+			'Talltree Point' => array( 'X' => -260.5, 'Y' => 76, 'Z' => 677.5, 'name' => 'Talltree Point', 'world' => 'Araeosia' ),
+			'Strongport' => array( 'X' => 729.5, 'Y' => 68, 'Z' => 700.5, 'name' => 'Strongport', 'world' => 'Araeosia' ),
+			'Coalmoor' => array( 'X' => 242.5, 'Y' => 74, 'Z' => -899.5, 'name' => 'Coalmoor', 'world' => 'Araeosia' ),
+			'Westcliff Plains Village' => array( 'X' => -636.5, 'Y' => 74, 'Z' => -167.5, 'name' => 'Westcliff Plains Village', 'world' => 'Araeosia' ),
+			'Fivepiece Island' => array( 'X' => 454, 'Y' => 73, 'Z' => -723, 'name' => 'Fivepiece Island', 'world' => 'Araeosia' ),
+			'Cle Elum' => array( 'X' => 262, 'Y' => 74, 'Z' => 211, 'name' => 'Cle Elum', 'world' => 'Araeosia' ),
+			'The Bridge' => array( 'X' => 770, 'Y' => 78, 'Z' => -21, 'name' => 'The Bridge', 'world' => 'Araeosia' ));
+		switch($W){
+			case "Araeosia":
+				$mins = array();
+				foreach($RespawnCoords as $RespawnCoord){
+					$min = $this->getdist($X, $Z, $RespawnCoord['X'], $RespawnCoord['Z'], 0);
+					array_push($mins, $min);
+					$minnames[$min]=$RespawnCoord['name'];
+				}
+				$RespawnArray = $RespawnCoords[$minnames[min($mins)]];
+				break;
+			case "Araeosia_tutorial2":
+				$RespawnArray = array('X'=>-300.5,'Y'=>69,'Z'=>-52.5,'name'=>'The Tutorial','world'=>'Araeosia_tutorial2');
+				break;
+			case "Araeosia_instance":
+				$quest = mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission LIKE'quest.current.%.%.%'");
+				$quest = $quest['permission'];
+				switch($quest){
+					case "quest.current.dungeon.5.1":
+						$RespawnArray = array( 'X' => -0.5, 'Y' => 64, 'Z' => 42.5, 'name' => 'The Dungeon', 'world' => 'Araeosia_instance' );
+						break;
+					case "quest.current.archeologist.4.1":
+						$RespawnArray = array( 'X' => -314.5, 'Y' => 64, 'Z' => -59.5, 'name' => 'The Ruins', 'world' => 'Araeosia_instance' );
+						break;
+					default:
+						$RespawnArray = array( 'X' => -212.5, 'Y' => 73, 'Z' => -183.5, 'name' => 'Araeos City', 'world' => 'Araeosia' );
+						break;
+				}
+				break;
+		}
+		return $RespawnArray;
 	}
 }
 ?>
