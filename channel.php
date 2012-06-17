@@ -4,7 +4,7 @@ $name = $_POST['player'];
 $server = $_GET['s'];
 if($name!='AgentKid' && $name!='console'){die('§4This is still a work-in-progress.'); }
 $args = $_POST['args'];
-$channel = strtoupper($args[2]);
+if(isset($args[2])){ $channel=strtoupper($args[2]); }
 $arg1 = strtoupper($args[1]);
 
 // Includes
@@ -21,39 +21,58 @@ $channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c
 $query = mysql_fetch_array(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'") or die(mysql_error()));
 $currentChannel = $query['channel'];
 $channelsIn = array();
-$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='2'");
+$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='2'") or die(mysql_error());
 while($row=mysql_fetch_array($query)){ array_push($channelsIn, $row['channel']); }
 
 // Most of the actual code
 if(in_array($arg1, $channels)){
 // So they want to focus on that channel specifically.
-	if($currentChannel==$arg1){ die('§cYou are already in §'.$channelColors[$arg1].$channelFullNames[$arg1].' §c!'); }
-//	if(!in_array($channelsIn))
-	die();
-}
+	if($currentChannel==$arg1){ die('§cYou are already in the §'.$channelColors[$arg1].$channelFullNames[$arg1].' §cchannel!'); }
+	if(!in_array($arg1, $channelsIn)){
+		// Join the room
+		mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$channel', '2')") or die(mysql_error());
+		echo "§aYou joined the §".$channelColors[$arg1].$channelFullNames[$arg1]." §achannel!\n";
+	}
+	// Set focus on the room
+	mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name'") or die(mysql_error());
+	echo "§aYou set focus on the §".$channelColors[$arg1].$channelFullNames[$arg1]." §achannel!\n";
+}else{
 
-switch($args[1]){
+switch($arg1){
 	case "HELP":
 		echo "Nag AgentKid to write the help message!\n";
 		break;
 	case "ENTER":
 	case "JOIN":
-		if(!in_array($channel, $channels)){ die('§cInvalid channel or usage! Channel list: §a/ch list§c.'); }
-# This always returns one row, so no point in going further with this.
-		if($currentChannel==$channel){ die('§cYou are already in §'.$channelColors[$toJoin].$channelFullNames[$channel].'§c!'); }
-		if($channel=="S" && !in_array(strtolower($name), $staff)){ die('§cYou cannot join §'.$channelColors[$channel].$channelFullNames[$channel].'§c!'); }
-		mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$channel', '1')");
-		echo "§aYou have joined the §".$channelColors[$channel].$channelFullNames[$channel]." §achannel!\n";
-		break;
+		if(!in_array($channel, $channels)){ die("§cInvalid channel or usage! Channel list: §a/ch list§c.\n"); }
+		if(!in_array($arg1, $channelsIn)){
+			// Join the room
+			mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$channel', '2')") or die(mysql_error());
+			echo "§aYou joined the §".$channelColors[$channel].$channelFullNames[$channel]." §achannel!\n";
+		}
+		// Set focus on the room
+		mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name'") or die(mysql_error());
+		echo "§aYou set focus on the §".$channelColors[$channel].$channelFullNames[$channel]." §achannel!\n";
 	case "QUIT":
 	case "EXIT":
 	case "LEAVE":
-		if(!in_array($channel, $channels)){ die('§cInvalid channel! Usage: §a/ch leave [channel]'); }
+		if(!in_array($channel, $channels)){ die("§cInvalid channel! Usage: §a/ch leave [channel]\n"); }
 		if($channel!=$currentChannel)
+		break;
+	case "WHO":
+		$inChannel=array();
+		foreach($channelsIn as $ch){
+			$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$ch'");
+			while($row = mysql_fetch_array($query)){ array_push($inChannel[$ch], $row['name']); }
+			echo "§".$channelColors[$ch]."------- ".$channelFullNames[$ch]." -------\n";
+			echo "§b".implode('§f, §b', $channelsIn[$ch])."\n";
+			if(count($channelsIn[$ch]==0)){ echo "§fNo one else is in this channel!\n"; }
+		}
 		break;
 	case "LIST":
 		break;
 	default:
 		echo "§cUnknown command! §a/ch help§c for help.\n";
+}
 }
 ?>
