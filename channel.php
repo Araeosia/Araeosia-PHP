@@ -12,6 +12,9 @@ include('includes/mysql.php');
 include('includes/functions.php');
 include('includes/passwords.php');
 
+// Because I can't think of a cleaner way to do this at 6AM after an all-nighter.
+if($channel=="ARAEOSIA"){$channel="A";}elseif($channel=="STAFF"){$channel="S";}elseif($channel=="TRADE"){$channel="T";}elseif($channel=="HELP"){$channel="H";}elseif($channel=="LOCAL"){$channel="L";}elseif($channel=="GROUP"){$channel="G";}elseif($channel=="FOREIGNLANGUAGE"){$channel="FL";}elseif($channel=="MODDED"){$channel="M";}
+
 // Static variables
 $channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M');
 $channelFullNames = array('A' => 'Araeosia', 'S' => 'Staff', 'T' => 'Trade', 'H' => 'Help', 'L' => 'Local', 'G' => 'Group', 'FL' => 'Foreign Language', 'M' => 'Modded');
@@ -46,6 +49,7 @@ switch($arg1){
 	case "ENTER":
 	case "JOIN":
 		if(!in_array($channel, $channels)){ die("§cInvalid channel or usage! Channel list: §a/ch list§c.\n"); }
+		if($currentChannel==$channel){ die("§cYou are already focused on the §".$channelColors[$channel].$channelFullNames[$channel]."§c channel!\n"); }
 		if(!in_array($arg1, $channelsIn) && $currentChannel!=$channel){
 			// Join the room
 			mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$channel', '2')") or die(mysql_error());
@@ -54,11 +58,12 @@ switch($arg1){
 		// Set focus on the room
 		mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name'") or die(mysql_error());
 		echo "§aYou set focus on the §".$channelColors[$channel].$channelFullNames[$channel]." §achannel!\n";
+		break;
 	case "QUIT":
 	case "EXIT":
 	case "LEAVE":
 		if(!in_array($channel, $channels)){ die("§cInvalid channel! Usage: §a/ch leave [channel]\n"); }
-		if($channel!=$currentChannel)
+		if($channel!=$currentChannel){}
 		break;
 	case "WHO":
 		$inChannel=array();
@@ -75,6 +80,7 @@ switch($arg1){
 		}
 		break;
 	case "LIST":
+		echo "";
 		break;
 	default:
 		echo "§cUnknown command! §a/ch help§c for help.\n";
