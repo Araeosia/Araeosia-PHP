@@ -19,7 +19,8 @@ $channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c
 
 // Generic queries
 // Type 1 means you're speaking in that room, Type 2 means that you're just in that room and listening.
-$query = mysql_fetch_array(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'") or die(mysql_error()));
+$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'");
+$query = mysql_fetch_array($query);
 $currentChannel = $query['channel'];
 $channelsIn = array();
 $query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='2'") or die(mysql_error());
@@ -38,7 +39,6 @@ if(in_array($arg1, $channels)){
 	mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name'") or die(mysql_error());
 	echo "§aYou set focus on the §".$channelColors[$arg1].$channelFullNames[$arg1]." §achannel!\n";
 }else{
-
 switch($arg1){
 	case "HELP":
 		echo "Nag AgentKid to write the help message!\n";
@@ -62,12 +62,16 @@ switch($arg1){
 		break;
 	case "WHO":
 		$inChannel=array();
+		echo "§".$channelColors[$currentChannel]."------- ".$channelFullNames[$currentChannel]." -------\n";
+		$inChannel[$currentChannel]=array();
+		$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$currentChannel'");
+		while($row = mysql_fetch_array($query)){ array_push($inChannel[$currentChannel], $row['name']); }
+		if(count($channelsIn[$currentChannel]==0)){ echo "§fNo one else is in this channel!\n"; }else{ echo "§b".implode('§f, §b', $channelsIn[$ch])."\n"; }
 		foreach($channelsIn as $ch){
 			$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$ch'");
 			while($row = mysql_fetch_array($query)){ array_push($inChannel[$ch], $row['name']); }
 			echo "§".$channelColors[$ch]."------- ".$channelFullNames[$ch]." -------\n";
-			echo "§b".implode('§f, §b', $channelsIn[$ch])."\n";
-			if(count($channelsIn[$ch]==0)){ echo "§fNo one else is in this channel!\n"; }
+			if(count($channelsIn[$ch]==0)){ echo "§fNo one else is in this channel!\n"; }else{ echo "§b".implode('§f, §b', $channelsIn[$ch])."\n"; }
 		}
 		break;
 	case "LIST":
