@@ -17,6 +17,7 @@ switch($world){
 		$worldnamef = "The Tutorial";
 		break;
 }
+if(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name'")==false){ mysql_query("INSERT INTO ChannelsIn (id, name, channel) VALUES ('NULL', '$name', 'A')"); }
 $query = mysql_fetch_array(mysql_query("SELECT * FROM permissions WHERE permission LIKE quest.current.%.%.%"));
 $quest = $query['permission'];
 $questexploded=explode($quest, '.');

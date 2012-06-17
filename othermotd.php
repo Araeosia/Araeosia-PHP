@@ -2,6 +2,7 @@
 // This file handles the MotD for the other Araeosia servers, since they don't need the complex code for the RPG server.
 $name = $_POST['player'];
 $world = $_POST['playerWorld'];
+include('includes/mysql.php');
 include('includes/staff.php');
 // World handling
 switch($world){
@@ -15,6 +16,7 @@ switch($world){
 		$worldname = $world;
 		break;
 }
+if(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name'")==false){ mysql_query("INSERT INTO ChannelsIn (id, name, channel) VALUES ('NULL', '$name', 'A')"); }
 
 $online = $_POST['onlinePlayers'];
 $playersfinal = array();
