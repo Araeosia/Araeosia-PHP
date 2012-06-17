@@ -15,6 +15,6 @@ foreach($servers as $server){
 	$JSONAPI->call('broadcast', array($finalmsgout));
 }
 $logfile = fopen('/home/agentkid/logs/chat.log', 'a');
-fwrite($logfile, $log);
+fwrite($logfile, str_replace(array('§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§0', '§a', '§b', '§c', '§d', '§e', '§f'), '', $log));
 fclose($logfile);
 ?>
