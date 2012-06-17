@@ -18,7 +18,7 @@ if(in_array("Admin", $groups)){ $prefix = "§4"; }
 if(in_array("Head-Admin", $groups)){ $prefix = "§4"; }
 
 unset($servers[$serversending]);
-$finalmsgout = $prefix.$name." §e".$type." §6Araeosia-".$serversending;
+$finalmsgout = $prefix.$name." §e".$type." §6Araeosia-".$serversending."§e.";
 foreach($servers as $server){
 	$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 	$JSONAPI->call('broadcast', array($finalmsgout));
