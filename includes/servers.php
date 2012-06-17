@@ -5,7 +5,7 @@ $ips = array( 'RPG' => '192.168.5.106', 'Freebuild' => '192.168.5.104', 'Modded'
 $ports = array(
 	'mc' => array('RPG' => 25566, 'Freebuild' => 25565, 'Modded' => 25567, 'Sandbox' => 25569, '2' => 25570),
 	'websend' => array('RPG' => 4445, 'Freebuild' => 4445, 'Modded' => 4446, 'Sandbox' => 4447, '2' => '4448'),
-	'jsonapi' => array('RPG' => 20059, 'Freebuild' => 20059, 'Modded' => 20061, 'Sandbox' => 20063, '2' => 20065),
+	'jsonapi' => array('RPG' => 20059, 'Freebuild' => 20059, 'Modded' => 20062, 'Sandbox' => 20065, '2' => 20068),
 	'mysql' => array('RPG' => 3306, 'Freebuild' => 3306, 'Modded' => NULL, 'Sandbox' => 3306, '2' => 3306)
 );
 ?>
