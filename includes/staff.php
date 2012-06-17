@@ -3,6 +3,6 @@
 $staff = array('agentkid', 'jasonbbb711', 'anoki123', 'canadiancellist', 'bratboy44', 'veryredgir', 'akwest', 'drsilverbullet', 'turkeymilk');
 $staffranks = array(
 	"admin" => array('AgentKid', 'jasonbbb711', 'CanadianCellist', 'VeryRedGir'),
-	"moderator" => array('bratboy44', 'Akwest', 'DrSilverbullet', 'turkeymilk')
+	"moderator" => array('bratboy44', 'DDRRPP', 'Akwest', 'DrSilverbullet', 'turkeymilk')
 );
 ?>
