@@ -14,4 +14,7 @@ foreach($servers as $server){
 	$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 	$JSONAPI->call('broadcast', array($finalmsgout));
 }
+$logfile = fopen('/home/agentkid/logs/chat.log', 'a');
+fwrite($logfile, $log);
+fclose($logfile);
 ?>

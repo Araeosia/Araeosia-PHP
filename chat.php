@@ -13,8 +13,12 @@ if(in_array($name, $staffranks['admin'])){ $prefix = "§4"; }elseif(in_array($na
 $msg = implode(' ', $args);
 unset($servers[$serversending]);
 $finalmsgout = "§e[A] §f[§9".$world."§f] ".$prefix.$name."§f: ".$msg."\n";
+$log = $timestamp.$finalmsgout;
 foreach($servers as $server){
 	$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 	$JSONAPI->call('broadcast', array($finalmsgout));
 }
+$logfile = fopen('/home/agentkid/logs/chat.log', 'a');
+fwrite($logfile, $log);
+fclose($logfile);
 ?>
