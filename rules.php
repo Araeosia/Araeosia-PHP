@@ -34,5 +34,6 @@ if($args[1]!='global'){
 	echo "§b5. §f- §aDo not argue in global chat.\n";
 	echo "§b6. §f- §aShould you have a problem, consult a moderator.\n";
 	echo "§b7. §f- §aShould you have a problem with a moderator, consult an Admin.\n";
+	echo "§b7. §f- §aNo advertising non-Araeosia servers.\n";
 }
 ?>
