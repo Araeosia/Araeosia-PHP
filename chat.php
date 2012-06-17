@@ -9,8 +9,16 @@ include('includes/servers.php');
 include('includes/staff.php');
 include('includes/functions.php');
 include('includes/passwords.php');
-if(in_array($name, $staffranks['admin'])){ $prefix = "§4"; }elseif(in_array($name, $staffranks['moderator'])){ $prefix = "§a"; }else{ $prefix = "§b"; }
-$msg = implode(' ', $args);
+include('includes/mysql.php');
+$query = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name'");
+$groups = array();
+while($row = mysql_fetch_array($query)){array_push($groups, $row['parent']);}
+$type = $args[0];
+$prefix = "§b";
+if(in_array("Veteran", $groups)){ $prefix = "§2"; }
+if(in_array("Moderator", $groups)){ $prefix = "§a"; }
+if(in_array("Admin", $groups)){ $prefix = "§4"; }
+if(in_array("Head-Admin", $groups)){ $prefix = "§4"; }$msg = implode(' ', $args);
 unset($servers[$serversending]);
 $finalmsgout = "§e[A] §f[§9".$world."§f] ".$prefix.$name."§f: ".$msg."\n";
 $log = $timestamp.$finalmsgout;
