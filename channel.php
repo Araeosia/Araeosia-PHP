@@ -18,6 +18,7 @@ $channelFullNames = array('A' => 'Araeosia', 'S' => 'Staff', 'T' => 'Trade', 'H'
 $channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7');
 
 // Generic queries
+// Type 1 means you're speaking in that room, Type 2 means that you're just in that room and listening.
 $query = mysql_fetch_array(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'") or die(mysql_error()));
 $currentChannel = $query['channel'];
 $channelsIn = array();
@@ -30,7 +31,7 @@ if(in_array($arg1, $channels)){
 	if($currentChannel==$arg1){ die('§cYou are already in the §'.$channelColors[$arg1].$channelFullNames[$arg1].' §cchannel!'); }
 	if(!in_array($arg1, $channelsIn)){
 		// Join the room
-		mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$channel', '2')") or die(mysql_error());
+		mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$arg1', '2')") or die(mysql_error());
 		echo "§aYou joined the §".$channelColors[$arg1].$channelFullNames[$arg1]." §achannel!\n";
 	}
 	// Set focus on the room
@@ -45,7 +46,7 @@ switch($arg1){
 	case "ENTER":
 	case "JOIN":
 		if(!in_array($channel, $channels)){ die("§cInvalid channel or usage! Channel list: §a/ch list§c.\n"); }
-		if(!in_array($arg1, $channelsIn)){
+		if(!in_array($arg1, $channelsIn) && $currentChannel!=$channel){
 			// Join the room
 			mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$channel', '2')") or die(mysql_error());
 			echo "§aYou joined the §".$channelColors[$channel].$channelFullNames[$channel]." §achannel!\n";
