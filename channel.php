@@ -8,9 +8,9 @@ if(isset($args[2])){ $channel=strtoupper($args[2]); }
 $arg1 = strtoupper($args[1]);
 
 // Includes
-include('includes/mysql.php');
-include('includes/functions.php');
-include('includes/passwords.php');
+include_once('includes/mysql.php');
+include_once('includes/functions.php');
+include_once('includes/passwords.php');
 
 // Because I can't think of a cleaner way to do this at 6AM after an all-nighter.
 if($channel=="ARAEOSIA"){$channel="A";}elseif($channel=="STAFF"){$channel="S";}elseif($channel=="TRADE"){$channel="T";}elseif($channel=="HELP"){$channel="H";}elseif($channel=="LOCAL"){$channel="L";}elseif($channel=="GROUP"){$channel="G";}elseif($channel=="FOREIGNLANGUAGE"){$channel="FL";}elseif($channel=="MODDED"){$channel="M";}
@@ -66,24 +66,39 @@ switch($arg1){
 		if(!in_array($channel, $channels)){ die("§cInvalid channel! Usage: §a/ch leave [channel]\n"); }
 		if($channel!=$currentChannel && !in_array($channel, $channelsIn)){ die("§cYou are not in the §".$channelColors[$channel].$channelFullNames[$channel]." §cchannel!\n"); }
 		if(count($channelsIn)==0){ die("§cYou cannot leave the only channel you're in! Join another first."); }
+		mysql_query("DELETE FROM ChannelsIn WHERE name='$name' AND channel='$channel'");
+		echo "§aYou left the §".$channelColors[$channel].$channelFullNames[$channel]." §achannel!\n";
+		$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'");
+		if(mysql_fetch_array($query)==false){}
 		break;
 	case "WHO":
+		$allplayers = array();
+		foreach($servers as $server){
+			$jsonapi = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+			$output = $jsonapi->call('getPlayerNames', array());
+			$players = $output['success'];
+			$allplayers = array_merge($allplayers, $players);
+		}
 		$inChannel=array();
 		echo "§".$channelColors[$currentChannel]."------- ".$channelFullNames[$currentChannel]." -------\n";
 		$inThisChannel=array();
 		$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$currentChannel'") or die(mysql_error());
 		while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
-		echo "§b".implode('§f, §b', $inThisChannel)."\n";
+		$finalInThisChannel = array();
+		foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){ array_push($finalInThisChannel, $pl); } }
+		echo "§b".implode('§f, §b', $finalInThisChannel)."\n";
 		foreach($channelsIn as $ch){
 			$inThisChannel=array();
+			$finalInThisChannel=array();
 			$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$ch'");
 			while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
 			echo "§".$channelColors[$ch]."------- ".$channelFullNames[$ch]." -------\n";
-			echo "§b".implode('§f, §b', $inThisChannel)."\n";
+			foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){ array_push($finalInThisChannel, $pl); } }
+			echo "§b".implode('§f, §b', $finalInThisChannel)."\n";
 		}
 		break;
 	case "LIST":
-		echo "Here's a channel list.";
+		echo "-------- Channels --------\n§eAraeosia - A - The main channel\n§aStaff - S - The staff channel\n§bTrade - T - The trade channel\n§9Help - H - The help channel\n§cLocal - L - The Local Channel\n§6Group - G - The group channel\n§5ForeignLanguage - FL - The foreign language channel\n§7Modded - M - The modded server's channel";
 		break;
 	default:
 		echo "§cUnknown command! §a/ch help§c for help.\n";
