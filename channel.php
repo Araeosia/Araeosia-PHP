@@ -39,12 +39,13 @@ if(in_array($arg1, $channels)){
 		echo "§aYou joined the §".$channelColors[$arg1].$channelFullNames[$arg1]." §achannel!\n";
 	}
 	// Set focus on the room
-	mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name'") or die(mysql_error());
+	mysql_query("UPDATE ChannelsIn SET type='2' WHERE name='$name'") or die(mysql_error());
+	mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name' AND channel='$arg1'") or die(mysql_error());
 	echo "§aYou set focus on the §".$channelColors[$arg1].$channelFullNames[$arg1]." §achannel!\n";
 }else{
 switch($arg1){
 	case "HELP":
-		echo "Nag AgentKid to write the help message!\n";
+		echo "§a/ch help §f- §bDisplays this help message.\n§a/ch join [channel] §f- §bJoins the specified channel.\n§a/ch leave [channel] §f- §bLeaves the specified channel.\n§a/ch who §f- §bDisplays online members in your channel.\n§a/ch list §f- §bLists all available channels.\n";
 		break;
 	case "ENTER":
 	case "JOIN":
@@ -63,24 +64,26 @@ switch($arg1){
 	case "EXIT":
 	case "LEAVE":
 		if(!in_array($channel, $channels)){ die("§cInvalid channel! Usage: §a/ch leave [channel]\n"); }
-		if($channel!=$currentChannel){}
+		if($channel!=$currentChannel && !in_array($channel, $channelsIn)){ die("§cYou are not in the §".$channelColors[$channel].$channelFullNames[$channel]." §cchannel!\n"); }
+		if(count($channelsIn)==0){ die("§cYou cannot leave the only channel you're in! Join another first."); }
 		break;
 	case "WHO":
 		$inChannel=array();
 		echo "§".$channelColors[$currentChannel]."------- ".$channelFullNames[$currentChannel]." -------\n";
-		$inChannel[$currentChannel]=array();
-		$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$currentChannel'");
-		while($row = mysql_fetch_array($query)){ array_push($inChannel[$currentChannel], $row['name']); }
-		if(count($channelsIn[$currentChannel]==0)){ echo "§fNo one else is in this channel!\n"; }else{ echo "§b".implode('§f, §b', $channelsIn[$ch])."\n"; }
+		$inThisChannel=array();
+		$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$currentChannel'") or die(mysql_error());
+		while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
+		echo "§b".implode('§f, §b', $inThisChannel)."\n";
 		foreach($channelsIn as $ch){
+			$inThisChannel=array();
 			$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$ch'");
-			while($row = mysql_fetch_array($query)){ array_push($inChannel[$ch], $row['name']); }
+			while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
 			echo "§".$channelColors[$ch]."------- ".$channelFullNames[$ch]." -------\n";
-			if(count($channelsIn[$ch]==0)){ echo "§fNo one else is in this channel!\n"; }else{ echo "§b".implode('§f, §b', $channelsIn[$ch])."\n"; }
+			echo "§b".implode('§f, §b', $inThisChannel)."\n";
 		}
 		break;
 	case "LIST":
-		echo "";
+		echo "Here's a channel list.";
 		break;
 	default:
 		echo "§cUnknown command! §a/ch help§c for help.\n";
