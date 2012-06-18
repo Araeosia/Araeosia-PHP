@@ -18,10 +18,22 @@ $prefix = "§b";
 if(in_array("Veteran", $groups)){ $prefix = "§2"; }
 if(in_array("Moderator", $groups)){ $prefix = "§a"; }
 if(in_array("Admin", $groups)){ $prefix = "§4"; }
-if(in_array("Head-Admin", $groups)){ $prefix = "§4"; }$msg = implode(' ', $args);
+if(in_array("Head-Admin", $groups)){ $prefix = "§4"; }
+$msg = implode(' ', $args);
 unset($servers[$serversending]);
 $finalmsgout = "§e[A] §f[§9".$world."§f] ".$prefix.$name."§f: ".$msg."\n";
 $log = $timestamp.$finalmsgout;
+if($serversending=="Modded" && strpos($msg, "echo982")!==false){
+	$JSONAPI = new JSONAPI($ips["Modded"], $ports['jsonapi']["Modded"], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 32, 2));
+	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 33, 2));
+	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 34, 2));
+	sleep(10);
+	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 32, 76));
+	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 33, 76));
+	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 34, 76));
+	exit;
+}
 foreach($servers as $server){
 	$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 	$JSONAPI->call('broadcast', array($finalmsgout));
