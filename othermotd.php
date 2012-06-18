@@ -16,7 +16,7 @@ switch($world){
 		$worldname = $world;
 		break;
 }
-if(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name'")==false){ mysql_query("INSERT INTO ChannelsIn (id, name, channel) VALUES ('NULL', '$name', 'A')"); }
+if(mysql_fetch_array(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name'"))==false){ echo "/Command/ExecuteBukkitCommand:/ch join A;\n"; }
 
 $online = $_POST['onlinePlayers'];
 $playersfinal = array();
