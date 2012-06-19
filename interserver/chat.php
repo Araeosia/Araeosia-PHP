@@ -11,20 +11,11 @@ include('includes/functions.php');
 include('includes/passwords.php');
 include('includes/mysql.php');
 include('includes/channels.php');
-$query = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name'");
-$groups = array();
-while($row = mysql_fetch_array($query)){array_push($groups, $row['parent']);}
-$type = $args[0];
-$prefix = "§b";
-if(in_array("Veteran", $groups)){ $prefix = "§2"; }
-if(in_array("Moderator", $groups)){ $prefix = "§a"; }
-if(in_array("Admin", $groups)){ $prefix = "§4"; }
-if(in_array("Head-Admin", $groups)){ $prefix = "§4"; }
 $msg = implode(' ', $args);
 $query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'") or die(mysql_error());
 $channel = mysql_fetch_array($query);
 $channel = $channel['channel'];
-$finalmsgout = "§".$channelColors[$channel]."[".$channel."]"." §f[§9".$world."§f] ".$prefix.$name."§f: ".$msg."\n";
+$finalmsgout = "§".$channelColors[$channel]."[".$channel."]"." §f[§9".$world."§f] ".getFullName($name)."§f: ".$msg."\n";
 $log = $timestamp.$finalmsgout;
 if($serversending=="Modded" && strpos($msg, "echo982")!==false){
 	$JSONAPI = new JSONAPI($ips["Modded"], $ports['jsonapi']["Modded"], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);

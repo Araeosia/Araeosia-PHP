@@ -22,27 +22,37 @@ function pythagoras($a,$b,$c,$precision=4){
 	return false;
 }
 function getPrimaryGroup($player){
-	
+	include('includes/mysql.php');
+	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
+	$groups = array();
+	while($row = mysql_fetch_array($query)){ array_push($groups, $row['group']); }
+	$primaryGroup = "default";
+	if(in_array('Veteran', $groups)){ $primaryGroup = "Veteran"; }
+	if(in_array('Supporter', $groups)){ $primaryGroup = "Supporter"; }
+	if(in_array('Moderator', $groups)){ $primaryGroup = "Moderator"; }
+	if(in_array('Admin', $groups)){ $primaryGroup = "Admin"; }
+	if(in_array('Head-Admin', $groups)){ $primaryGroup = "Head-Admin"; }
+	return $primaryGroup;
 }
 function getFullName($player){
 	switch(getPrimaryGroup($player)){
 		case "Veteran":
-			$prefix = "§2";
+			$prefix = "Â§2";
 			break;
 		case "Moderator":
-			$prefix = "§a";
+			$prefix = "Â§a";
 			break;
 		case "Supporter":
-			$prefix = "§1";
+			$prefix = "Â§1";
 			break;
 		case "Admin":
-			$prefix = "§4";
+			$prefix = "Â§4";
 			break;
 		case "Head-Admin":
-			$prefix = "§4";
+			$prefix = "Â§4";
 			break;
 		default:
-			$prefix = "§b";
+			$prefix = "Â§b";
 			break;
 	}
 	$playername = $prefix.$player;
@@ -618,18 +628,18 @@ class MCFunctions {
 	public function getloc($P, $X, $Z, $W='Araeosia'){
 		switch($W){
 			case "Araeosia_tutorial2":
-				die("§cYou are currently in §bThe Tutorial§c.\n");
+				die("Â§cYou are currently in Â§bThe TutorialÂ§c.\n");
 				break;
 			case "Araeosia_instance":
 				$quest = $this->getquest($P);
 				$quest = $quest['RespawnArray'];
-				die("§cYou are currently in §b".$quest['name']."§c.\n");
+				die("Â§cYou are currently in Â§b".$quest['name']."Â§c.\n");
 				break;
 			case "Araeosia":
 				$city = $this->respawncoords($P, $X, $Z, $W);
 				$city = $city['RespawnArray'];
 				$direction = compass(getangle($X, $Z, $city['X'], $city['Z'], 0));
-				die("§cThe closest city is §b".$city['name']."§c.\n§aIt is roughly ".$city['dist']." meters ".$direction." of you.\n");
+				die("Â§cThe closest city is Â§b".$city['name']."Â§c.\nÂ§aIt is roughly ".$city['dist']." meters ".$direction." of you.\n");
 				break;
 		}
 	}

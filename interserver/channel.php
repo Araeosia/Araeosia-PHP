@@ -87,12 +87,8 @@ switch($arg1){
 		$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$currentChannel'") or die(mysql_error());
 		while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
 		$finalInThisChannel = array();
-		foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){
-				if(in_array($pl, $staffranks['admin'])){ $pl = "§4".$pl; }
-				if(in_array($pl, $staffranks['moderator'])){ $pl = "§a".$pl; }
-				array_push($finalInThisChannel, $pl);
-			}}
-		echo "§b".implode('§f, §b', $finalInThisChannel)."\n";
+		foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){array_push($finalInThisChannel, getFullName($pl));}}
+		echo "§b".implode('§f, ', $finalInThisChannel)."\n";
 		foreach($channelsIn as $ch){
 			$inThisChannel=array();
 			$finalInThisChannel=array();
@@ -100,11 +96,7 @@ switch($arg1){
 			while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
 			if(count($inThisChannel!=1)){
 				echo "§".$channelColors[$ch]."------- ".$channelFullNames[$ch]." -------\n";
-				foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){
-					if(in_array($pl, $staffranks['admin'])){ $pl = "§4".$pl; }
-					if(in_array($pl, $staffranks['moderator'])){ $pl = "§a".$pl; }
-					array_push($finalInThisChannel, $pl); 
-					}}
+				foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){array_push($finalInThisChannel, getFullName($pl));}}
 				echo "§b".implode('§f, §b', $finalInThisChannel)."\n";
 			}
 		}

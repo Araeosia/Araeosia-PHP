@@ -8,18 +8,10 @@ include('includes/staff.php');
 include('includes/functions.php');
 include('includes/passwords.php');
 include('includes/mysql.php');
-$query = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name'");
-$groups = array();
-while($row = mysql_fetch_array($query)){array_push($groups, $row['parent']);}
 $type = $args[0];
-$prefix = "§b";
-if(in_array("Veteran", $groups)){ $prefix = "§2"; }
-if(in_array("Moderator", $groups)){ $prefix = "§a"; }
-if(in_array("Admin", $groups)){ $prefix = "§4"; }
-if(in_array("Head-Admin", $groups)){ $prefix = "§4"; }
 
 unset($servers[$serversending]);
-$finalmsgout = $prefix.$name." §e".$type." §6Araeosia-".$serversending."§e.";
+$finalmsgout = getFullName($name)." §e".$type." §6Araeosia-".$serversending."§e.";
 $log = $timestamp.$finalmsgout."\n";
 foreach($servers as $server){
 	$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
