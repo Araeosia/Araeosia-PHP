@@ -1,7 +1,7 @@
 <?php
 // Fetch variables
-$args = $_POST[args];
-$name = $_POST[player];
+$args = $_POST['args'];
+$name = $_POST['player'];
 $booknumber = $args[2];
 
 // Includes
@@ -19,15 +19,15 @@ $seconds = ceil($divisor_for_seconds);
 $completed = array();
 $completedquery = mysql_query("SELECT * FROM bookscompleted WHERE name='$name'");
 while($completedrow = mysql_fetch_array($completed)){
-	array_push($completed, $completedrow[book]);
+	array_push($completed, $completedrow['book']);
 }
 
 // MySQL table "books": id (auto-inc, integer) | name (text) | booknum (int) | timestart (time)
 // Is a book currently being read?
 $currentrow = mysql_fetch_array( mysql_query("SELECT * FROM books WHERE name='$name'") );
-if ($currentrow[name] == $name) {
+if ($currentrow['name'] == $name) {
 	$type = "readtime";
-	$oldbookid = $currentrow[booknum];
+	$oldbookid = $currentrow['booknum'];
 }
 $time = time();
 // Set type
