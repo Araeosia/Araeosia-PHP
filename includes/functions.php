@@ -1,5 +1,6 @@
 <?php
 // This file contains general functions that are used in more than one place, such as Bcrypt and the minecraft query. I've placed them here to both keep them out of the way and also to shorten the length of the PHP files.
+include('includes/servers.php');
 function pythagoras($a,$b,$c,$precision=4){
 	($a) ? $a = pow($a,2) : $find .= 'a';
 	($b) ? $b = pow($b,2) : $find .= 'b';
@@ -19,6 +20,33 @@ function pythagoras($a,$b,$c,$precision=4){
 	}
 	
 	return false;
+}
+function getPrimaryGroup($player){
+	
+}
+function getFullName($player){
+	switch(getPrimaryGroup($player)){
+		case "Veteran":
+			$prefix = "§2";
+			break;
+		case "Moderator":
+			$prefix = "§a";
+			break;
+		case "Supporter":
+			$prefix = "§1";
+			break;
+		case "Admin":
+			$prefix = "§4";
+			break;
+		case "Head-Admin":
+			$prefix = "§4";
+			break;
+		default:
+			$prefix = "§b";
+			break;
+	}
+	$playername = $prefix.$player;
+	return $playername;
 }
 class Bcrypt {
 	private $rounds;
@@ -598,7 +626,12 @@ class MCFunctions {
 				die("§cYou are currently in §b".$quest['name']."§c.\n");
 				break;
 			case "Araeosia":
+				$city = $this->respawncoords($P, $X, $Z, $W);
+				$city = $city['RespawnArray'];
+				$direction = compass(getangle($X, $Z, $city['X'], $city['Z'], 0));
+				die("§cThe closest city is §b".$city['name']."§c.\n§aIt is roughly ".$city['dist']." meters ".$direction." of you.\n");
 				break;
+		}
 	}
 	public function tpplayer($player, $X, $Y, $Z, $W){
 		
