@@ -2,7 +2,6 @@
 // Dynamic variables
 $name = $_POST['player'];
 $server = $_GET['s'];
-if($name!='AgentKid' && $name!='console'){die('§4This is still a work-in-progress.'); }
 $args = $_POST['args'];
 if(isset($args[2])){ 
 	$channel=strtoupper($args[2]);
@@ -14,11 +13,8 @@ $arg1 = strtoupper($args[1]);
 include_once('includes/mysql.php');
 include_once('includes/functions.php');
 include_once('includes/passwords.php');
-
-// Static variables
-$channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M', 'RP');
-$channelFullNames = array('A' => 'Araeosia', 'S' => 'Staff', 'T' => 'Trade', 'H' => 'Help', 'L' => 'Local', 'G' => 'Group', 'FL' => 'Foreign Language', 'M' => 'Modded', 'RP' => 'Roleplay');
-$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3');
+include_once('includes/channels.php');
+include_once('includes/staff.php');
 
 // Generic queries
 // Type 1 means you're speaking in that room, Type 2 means that you're just in that room and listening.
@@ -69,7 +65,13 @@ switch($arg1){
 		mysql_query("DELETE FROM ChannelsIn WHERE name='$name' AND channel='$channel'");
 		echo "§aYou left the §".$channelColors[$channel].$channelFullNames[$channel]." §achannel!\n";
 		$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'");
-		if(mysql_fetch_array($query)==false){}
+		if(mysql_fetch_array($query)==false){
+			$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='2'");
+			$row = mysql_fetch_array($query);
+			$newChannel = $row['channel'];
+			mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name' AND channel='$newChannel'");
+			echo "§aYou joined the §".$channelColors[$newChannel].$channelFullNames[$newChannel]." §achannel!\n";
+		}
 		break;
 	case "WHO":
 		$allplayers = array();
@@ -85,20 +87,30 @@ switch($arg1){
 		$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$currentChannel'") or die(mysql_error());
 		while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
 		$finalInThisChannel = array();
-		foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){ array_push($finalInThisChannel, $pl); } }
+		foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){
+				if(in_array($pl, $staffranks['admin'])){ $pl = "§4".$pl; }
+				if(in_array($pl, $staffranks['moderator'])){ $pl = "§a".$pl; }
+				array_push($finalInThisChannel, $pl);
+			}}
 		echo "§b".implode('§f, §b', $finalInThisChannel)."\n";
 		foreach($channelsIn as $ch){
 			$inThisChannel=array();
 			$finalInThisChannel=array();
 			$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$ch'");
 			while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
-			echo "§".$channelColors[$ch]."------- ".$channelFullNames[$ch]." -------\n";
-			foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){ array_push($finalInThisChannel, $pl); } }
-			echo "§b".implode('§f, §b', $finalInThisChannel)."\n";
+			if(count($inThisChannel!=1)){
+				echo "§".$channelColors[$ch]."------- ".$channelFullNames[$ch]." -------\n";
+				foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){
+					if(in_array($pl, $staffranks['admin'])){ $pl = "§4".$pl; }
+					if(in_array($pl, $staffranks['moderator'])){ $pl = "§a".$pl; }
+					array_push($finalInThisChannel, $pl); 
+					}}
+				echo "§b".implode('§f, §b', $finalInThisChannel)."\n";
+			}
 		}
 		break;
 	case "LIST":
-		echo "-------- Channels --------\n§eAraeosia - A - The main channel\n§aStaff - S - The staff channel\n§bTrade - T - The trade channel\n§9Help - H - The help channel\n§cLocal - L - The Local Channel\n§6Group - G - The group channel\n§5ForeignLanguage - FL - The foreign language channel\n§7Modded - M - The modded server's channel";
+		echo "-------- Channels --------\n§eAraeosia - A - The main channel\n§aStaff - S - The staff channel\n§bTrade - T - The trade channel\n§9Help - H - The help channel\n§cLocal - L - The Local channel\n§6Group - G - The group channel\n§5ForeignLanguage - FL - The foreign language channel\n§7Modded - M - The modded server's channel§3RolePlay - RP - The Roleplay channel";
 		break;
 	case "MUTE":
 		echo "Muting doesn't work yet.\n";
