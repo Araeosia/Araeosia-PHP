@@ -15,7 +15,7 @@ include('includes/channels.php');
 $query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'") or die(mysql_error());
 $channel = mysql_fetch_array($query);
 $channel = $channel['channel'];
-$finalmsgout = "§".$channelColors[$channel]."[".$channel."]"." §f* ".getFullName($name)." ¶f".$msg;
+$finalmsgout = "§".$channelColors[$channel]."[".$channel."]"." §f* ".getFullName($name)." §f".$msg;
 $log = $timestamp.$finalmsgout."\n";
 $query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$channel'");
 $toRecieve = array();
