@@ -58,6 +58,11 @@ function getFullName($player){
 	$playername = $prefix.$player;
 	return $playername;
 }
+function sendMessageToChannel($channel, $message, $excluded=array()){
+	// This function will send a message to all members of a channel while excluding any user names in the $excluded array. The message and channel are expected to be a string.
+	if(!is_string($channel)){ die('$channel is not a string!'); }
+	if(!is_string($message)){ die('$message is not a string!'); }
+}
 class Bcrypt {
 	private $rounds;
 	public function __construct($rounds = 12) {
