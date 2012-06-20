@@ -4,9 +4,9 @@
 include('includes/mysql.php');
 $name = $_POST['player'];
 $query = mysql_query("SELECT * FROM optouts WHERE name='$name'");
-$row = mysql_fetch_array($row);
+$row = mysql_fetch_array($query);
 if($row['name']!=$name){
 	mysql_query("INSERT INTO optouts (id, name) VALUES('NULL', '$name')");
-	echo "§bYou have opted out of recieving timed messages.";
+	echo "§bYou have opted out of recieving timed messages until the next time you log out.";
 } else { echo "§cYou've already opted out of recieving timed messages!"; }
 ?>

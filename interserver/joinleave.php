@@ -9,7 +9,7 @@ include('includes/functions.php');
 include('includes/passwords.php');
 include('includes/mysql.php');
 $type = $args[0];
-
+if($type=="left"){ mysql_query("DELETE FROM optouts WHERE name='$name'"); }
 unset($servers[$serversending]);
 $finalmsgout = getFullName($name)." §e".$type." §6Araeosia-".$serversending."§e.";
 $log = $timestamp.$finalmsgout."\n";
