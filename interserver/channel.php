@@ -1,4 +1,8 @@
 <?php
+// Developer notes:
+// This file is executed whenever anyone on any server uses the /ch command with any or no arguments.
+// Things that need doing in this file: Set up /ch kick, set up /ch SRC.
+
 // Dynamic variables
 $name = $_POST['player'];
 $server = $_GET['s'];
@@ -59,6 +63,7 @@ switch($arg1){
 	case "QUIT":
 	case "EXIT":
 	case "LEAVE":
+		if(!isset($channel)){ $channel=$currentChannel; }
 		if(!in_array($channel, $channels)){ die("§cInvalid channel! Usage: §a/ch leave [channel]\n"); }
 		if($channel!=$currentChannel && !in_array($channel, $channelsIn)){ die("§cYou are not in the §".$channelColors[$channel].$channelFullNames[$channel]." §cchannel!\n"); }
 		if(count($channelsIn)==0){ die("§cYou cannot leave the only channel you're in! Join another first."); }
@@ -106,6 +111,10 @@ switch($arg1){
 		break;
 	case "MUTE":
 		echo "Muting doesn't work yet.\n";
+		break;
+	case "KICK":
+		echo "Kicking doesn't work yet.\n";
+		break;
 	default:
 		echo "§cUnknown command! §a/ch help§c for help.\n";
 }
