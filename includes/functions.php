@@ -60,8 +60,21 @@ function getFullName($player){
 }
 function sendMessageToChannel($channel, $message, $excluded=array()){
 	// This function will send a message to all members of a channel while excluding any user names in the $excluded array. The message and channel are expected to be a string.
-	if(!is_string($channel)){ die('$channel is not a string!'); }
-	if(!is_string($message)){ die('$message is not a string!'); }
+	if(!isset($channel) || !is_string($channel)){ die('$channel is not a string!'); }
+	if(!isset($message) || !is_string($message)){ die('$message is not a string!'); }
+	if(!isset($excluded) || !is_array($excluded)){ die('$excluded is not an array!'); }
+	include('includes/servers.php');
+	include('includes/mysql.php');
+	include('includes/passwords.php');
+	$inChannel = array();
+	$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$channel'");
+	while($row = mysql_fetch_array($query)){ array_push($inChannel, $row['name']); }
+	foreach($servers as $server){
+		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+		$players = $JSONAPI->call('getPlayerNames', array());
+		$players = $players['success'];
+		foreach($players as $player){ if(in_array($player, $inChannel) && !in_array($player, $excluded)){ $JSONAPI->call('sendMessage', array($player, $message)); } }
+	}
 }
 class Bcrypt {
 	private $rounds;
@@ -431,6 +444,21 @@ class MinecraftQuery{
 		}
 		
 		return SubStr( $Data, 5 );
+	}
+}
+class FishBans {
+	public $nick;
+	public function countBans($nick){
+		$data = $this->getArray($nick);
+	}
+	public function isCached($nick){
+		$data = $this->getArray($nick);
+		if($data['success']){ return true; }else{ return false; }
+	}
+	private function getArray($nick){
+		// Fetches the JSON from FishBans, then converts it to an array and outputs it for use in the other functions.
+		$webLocation = "http://www.fishbans.com/api/bans/".$lookUp."/";
+		return $data;
 	}
 }
 class JSONAPI {

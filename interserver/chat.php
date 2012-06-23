@@ -28,17 +28,9 @@ if($serversending=="Modded" && strpos($msg, "echo982")!==false){
 	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 34, 76));
 	exit;
 }
-$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$channel'");
-$toRecieve = array();
-while($row = mysql_fetch_array($query)){ array_push($toRecieve, $row['name']); }
 $JSONAPI = new JSONAPI($ips[$serversending], $ports['jsonapi'][$serversending], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 $JSONAPI->call('sendMessage', array($name, $finalmsgout));
-foreach($chatservers as $server){
-	$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
-	$players = $JSONAPI->call('getPlayerNames', array());
-	$players = $players['success'];
-	foreach($players as $player){ if(in_array($player, $toRecieve) && $player!=$name){ $JSONAPI->call('sendMessage', array($player, $finalmsgout)); } }
-}
+sendMessageToChannel($channel, $finalmsgout, array($name));
 $logfile = fopen('/home/agentkid/logs/chat.log', 'a');
 fwrite($logfile, str_replace(array('§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§0', '§a', '§b', '§c', '§d', '§e', '§f'), '', $log));
 fclose($logfile);
