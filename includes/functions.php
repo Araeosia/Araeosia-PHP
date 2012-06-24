@@ -58,7 +58,7 @@ function getFullName($player){
 	$playername = $prefix.$player;
 	return $playername;
 }
-function sendMessageToChannel($channel, $message, $excluded=array()){
+function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
 	// This function will send a message to all members of a channel while excluding any user names in the $excluded array. The message and channel are expected to be a string.
 	if(!isset($channel) || !is_string($channel)){ die('$channel is not a string!'); }
 	if(!isset($message) || !is_string($message)){ die('$message is not a string!'); }
@@ -69,11 +69,14 @@ function sendMessageToChannel($channel, $message, $excluded=array()){
 	$inChannel = array();
 	$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$channel'");
 	while($row = mysql_fetch_array($query)){ array_push($inChannel, $row['name']); }
+	$ignoredby = array();
+	$query2 = mysql_query("SELECT * FROM Blocks WHERE blockee='$sender'");
+	while($row2 = mysql_fetch_array($query2)){ array_push($ignoredby, $row2['name']); }
 	foreach($servers as $server){
 		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 		$players = $JSONAPI->call('getPlayerNames', array());
 		$players = $players['success'];
-		foreach($players as $player){ if(in_array($player, $inChannel) && !in_array($player, $excluded)){ $JSONAPI->call('sendMessage', array($player, $message)); } }
+		foreach($players as $player){ if(in_array($player, $inChannel) && !in_array($player, $excluded) && !in_array($player, $ignoredby)){ $JSONAPI->call('sendMessage', array($player, $message)); } }
 	}
 }
 class Bcrypt {

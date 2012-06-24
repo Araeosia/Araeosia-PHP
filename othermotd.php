@@ -20,6 +20,9 @@ if(mysql_fetch_array(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name'"))
 	mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', 'A', '1')");
 	echo "§aYou joined the §eAraeosia §achannel!\n";
 }
+if(mysql_fetch_array(mysql_query("SELECT * FROM TrueGroups WHERE name='$name'"))==false){
+	mysql_query("INSERT INTO TrueGroups VALUES ('NULL', '$name', 'Default')") or die(mysql_error());
+}
 
 $online = $_POST['onlinePlayers'];
 $playersfinal = array();

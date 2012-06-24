@@ -30,7 +30,7 @@ if($serversending=="Modded" && strpos($msg, "echo982")!==false){
 }
 $JSONAPI = new JSONAPI($ips[$serversending], $ports['jsonapi'][$serversending], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 $JSONAPI->call('sendMessage', array($name, $finalmsgout));
-sendMessageToChannel($channel, $finalmsgout, array($name));
+sendMessageToChannel($channel, $finalmsgout, $name, array($name));
 $logfile = fopen('/home/agentkid/logs/chat.log', 'a');
 fwrite($logfile, str_replace(array('§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§0', '§a', '§b', '§c', '§d', '§e', '§f'), '', $log));
 fclose($logfile);
