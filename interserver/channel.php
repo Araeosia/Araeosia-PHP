@@ -33,6 +33,7 @@ while($row=mysql_fetch_array($query)){ array_push($channelsIn, $row['channel']);
 if(in_array($arg1, $channels)){
 // So they want to focus on that channel specifically.
 	if($currentChannel==$arg1){ die('§cYou are already in the §'.$channelColors[$arg1].$channelFullNames[$arg1].' §cchannel!'); }
+	if($channel="S" && !in_array(strtolower($name), $staff)){ die('You do not have permission.'); }
 	if(!in_array($arg1, $channelsIn)){
 		// Join the room
 		mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$arg1', '2')") or die(mysql_error());
@@ -51,6 +52,7 @@ switch($arg1){
 	case "JOIN":
 		if(!in_array($channel, $channels)){ die("§cInvalid channel or usage! Channel list: §a/ch list§c.\n"); }
 		if($currentChannel==$channel){ die("§cYou are already focused on the §".$channelColors[$channel].$channelFullNames[$channel]."§c channel!\n"); }
+		if($channel="S" && !in_array(strtolower($name), $staff)){ die('You do not have permission.'); }
 		if(!in_array($arg1, $channelsIn) && $currentChannel!=$channel){
 			// Join the room
 			mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$channel', '2')") or die(mysql_error());
