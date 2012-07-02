@@ -4,6 +4,7 @@ $name = $_POST['player'];
 $world = $_POST['playerWorld'];
 include('includes/mysql.php');
 include('includes/staff.php');
+include('includes/functions.php');
 // World handling
 switch($world){
 	case "Main_nether":
@@ -23,13 +24,13 @@ if(mysql_fetch_array(mysql_query("SELECT * FROM ChannelsIn WHERE name='$name'"))
 if(mysql_fetch_array(mysql_query("SELECT * FROM TrueGroups WHERE name='$name'"))==false){
 	mysql_query("INSERT INTO TrueGroups VALUES ('NULL', '$name', 'Default')") or die(mysql_error());
 }
+// Go ahead and cache the user in FishBans, in case we want to look them up later.
+$fishBans = new FishBans();
+$fishBans->isCached($name);
 
 $online = $_POST['onlinePlayers'];
 $playersfinal = array();
-foreach($online as $player){
-	if(in_array($player,$staffranks['admin'])){$player="§4".$player;}elseif(in_array($player,$staffranks['moderator'])){$player = "§a".$player;}else{$player = "§b".$player; }
-	array_push($playersfinal, $player);
-}
+foreach($online as $player){ array_push($playersfinal, getFullName($player)); }
 $onlinect = count($online);
 $online = implode($playersfinal, '§e, ');
 

@@ -79,6 +79,35 @@ function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
 		foreach($players as $player){ if(in_array($player, $inChannel) && !in_array($player, $excluded) && !in_array($player, $ignoredby)){ $JSONAPI->call('sendMessage', array($player, $message)); } }
 	}
 }
+function isInGroup($player, $group){
+	include('includes/mysql.php');
+	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
+	$query = mysql_fetch_array($query);
+	$playerGroups = array();
+	array_push($playerGroups, $query['group']);
+	if($query['group']=="Veteran"){
+		array_push($playerGroups, "Default");
+	}
+	if($query['group']=="Moderator"){
+		array_push($playerGroups, "Veteran");
+		array_push($playerGroups, "Default");
+	}
+	if($query['group']=="Admin"){
+		array_push($playerGroups, "Moderator");
+		array_push($playerGroups, "Veteran");
+		array_push($playerGroups, "Default");
+	}
+	if($query['group']=="Head-Admin"){
+		array_push($playerGroups, "Admin");
+		array_push($playerGroups, "Moderator");
+		array_push($playerGroups, "Veteran");
+		array_push($playerGroups, "Default");
+	}
+	if(in_array($group, $playerGroups)){ return true; }else{ return false; }
+}
+function isStaff($player){
+	return isInGroup($player, "Moderator");
+}
 class Bcrypt {
 	private $rounds;
 	public function __construct($rounds = 12) {
@@ -451,16 +480,30 @@ class MinecraftQuery{
 }
 class FishBans {
 	public $nick;
+	private $data;
 	public function countBans($nick){
 		$data = $this->getArray($nick);
+		$numberOfBans = count($data['bans']);
+		return $numberOfBans;
 	}
 	public function isCached($nick){
 		$data = $this->getArray($nick);
 		if($data['success']){ return true; }else{ return false; }
 	}
+	public function getBans($serviceToCheck='all'){
+		$output = array();
+		foreach($data['service'] as $service){
+			if($service==$serviceToCheck || $service=='all'){
+				$output[count($output)] = 0;
+			}
+		}
+	}
 	private function getArray($nick){
 		// Fetches the JSON from FishBans, then converts it to an array and outputs it for use in the other functions.
-		$webLocation = "http://www.fishbans.com/api/bans/".$lookUp."/";
+		$webLocation = "http://www.fishbans.com/api/bans/".$nick."/";
+		$fileHandle = fopen($webLocation, 'r');
+		$webOutput = fread($fileHandle, 1000000);
+		$data = json_decode($webOutput, true);
 		return $data;
 	}
 }

@@ -17,15 +17,7 @@ $channel = mysql_fetch_array($query);
 $channel = $channel['channel'];
 $finalmsgout = "§".$channelColors[$channel]."[".$channel."]"." §f* ".getFullName($name)." §f".$msg;
 $log = $timestamp.$finalmsgout."\n";
-$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$channel'");
-$toRecieve = array();
-while($row = mysql_fetch_array($query)){ array_push($toRecieve, $row['name']); }
-foreach($servers as $server){
-	$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
-	$players = $JSONAPI->call('getPlayerNames', array());
-	$players = $players['success'];
-	foreach($players as $player){ if(in_array($player, $toRecieve)){ $JSONAPI->call('sendMessage', array($player, $finalmsgout)); } }
-}
+sendMessageToChannel($channel, $finalmsgout, $name);
 $logfile = fopen('/home/agentkid/logs/chat.log', 'a');
 fwrite($logfile, str_replace(array('§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§0', '§a', '§b', '§c', '§d', '§e', '§f'), '', $log));
 fclose($logfile);
