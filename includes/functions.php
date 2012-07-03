@@ -108,6 +108,10 @@ function isInGroup($player, $group){
 function isStaff($player){
 	return isInGroup($player, "Moderator");
 }
+function hasReadBook($player, $bookid){
+	if(!is_int($bookid){ die('Invalid book ID!'); }
+	
+}
 class Bcrypt {
 	private $rounds;
 	public function __construct($rounds = 12) {

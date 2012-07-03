@@ -8,7 +8,8 @@ $world = $_POST['playerWorld'];
 $server = $_GET['s'];
 $args = $_POST['args'];
 //Argument 0 is kick, Argument 1 is name, Arguments 2-∞ are the kick message
-if(!in_array(strtolower($name), $staff)){ die('§cYou don\'t have permission to use that command!'); }
+if(!isStaff($name)){ die('§cYou don\'t have permission to use that command!'); }
+if(isStaff($args[1]) && $name!="AgentKid"){ die('§cYou cannot kick another staff member!'); }
 if(!isset($args[2])){
 	$msg = "Kicked from server by ".$name."!";
 	$kickee = $args[1];
