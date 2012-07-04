@@ -109,7 +109,7 @@ switch($arg1){
 		}
 		break;
 	case "LIST":
-		echo "-------- Channels --------\n§eAraeosia - A - The main channel\n§aStaff - S - The staff channel\n§bTrade - T - The trade channel\n§9Help - H - The help channel\n§cLocal - L - The Local channel\n§6Group - G - The group channel\n§5ForeignLanguage - FL - The foreign language channel\n§7Modded - M - The modded server's channel§3RolePlay - RP - The Roleplay channel";
+		echo "-------- Channels --------\n§eAraeosia - A - The main channel\n§aStaff - S - The staff channel\n§bTrade - T - The trade channel\n§9Help - H - The help channel\n§cLocal - L - The Local channel\n§6Group - G - The group channel\n§5ForeignLanguage - FL - The foreign language channel\n§7Modded - M - The modded server's channel\n§3RolePlay - RP - The Roleplay channel";
 		break;
 	case "MUTE":
 		echo "Muting doesn't work yet.\n";

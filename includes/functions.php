@@ -108,9 +108,32 @@ function isInGroup($player, $group){
 function isStaff($player){
 	return isInGroup($player, "Moderator");
 }
+function readBook($player, $bookid){
+	if(hasReadBook($player, $bookid)){
+		return false;
+	}else{
+		
+	}
+}
 function hasReadBook($player, $bookid){
 	if(!is_int($bookid)){ die('Invalid book ID!'); }
-	
+	include('includes/mysql.php');
+	$query = mysql_query("SELECT * FROM BooksComplete WHERE name='$player' AND id='$bookid'");
+	if(!mysql_fetch_array($query)){ return false; }else{ return true; }
+}
+function getWorldName($world){
+	switch($world){
+		case "Main_nether":
+			$worldname = "Nether";
+			break;
+		case "Main_the_end":
+			$worldname = "The End";
+			break;
+		default:
+			$worldname = $world;
+			break;
+	}
+	return $worldname;
 }
 class Bcrypt {
 	private $rounds;

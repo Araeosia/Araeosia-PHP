@@ -40,5 +40,6 @@ $msg = $msg."§eOnline (".$onlinect."/512): §b".$online."§e.\n";
 $msg = $msg."§cNews: §e/news\n";
 $msg = $msg."§4Araeosia has adopted a No-Mercy policy. §e/nomercy§4 for info.\n";
 $msg = $msg."§4Rules: §e/rules - Updated 2-4-2012\n";
+if(date("j F Y")=="4 July 2012"){ $msg = $msg."§fHappy §3Fourth of §4July!"; }
 echo $msg;
 ?>
