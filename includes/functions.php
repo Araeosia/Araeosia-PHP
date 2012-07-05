@@ -135,6 +135,10 @@ function getWorldName($world){
 	}
 	return $worldname;
 }
+function isChannel($channel){
+	$channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M', 'RP');
+	if(in_array($channels, strtoupper($channel))){ return true; }else{ return false; }
+}
 class Bcrypt {
 	private $rounds;
 	public function __construct($rounds = 12) {
