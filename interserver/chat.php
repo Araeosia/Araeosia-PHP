@@ -29,6 +29,9 @@ if($serversending=="Modded" && strpos($msg, "echo982")!==false){
 	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 34, 76));
 	exit;
 }
+$query = mysql_query("SELECT * FROM Mutes WHERE name='$name' AND channel='$channel'") or die(mysql_error());
+$query2 = mysql_query("SELECT * FROM GMutes WHERE name='$name'") or die(mysql_error());
+if(mysql_fetch_array($query)!=false || mysql_fetch_array($query2)!=false){ die('§cYou are currently muted!'); }
 $JSONAPI = new JSONAPI($ips[$serversending], $ports['jsonapi'][$serversending], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 $JSONAPI->call('sendMessage', array($name, $finalmsgout));
 sendMessageToChannel($channel, $finalmsgout, $name, array($name));
