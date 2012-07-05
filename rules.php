@@ -10,7 +10,7 @@ if($args[1]!='global'){
 		case "Main_the_end":
 		case "Wilds":
 		case "Space":
-			echo "§b1. §f- §aAbsolutely no griefing.\n§b2. §f- §aAbsolutely no duping.\n§b3. §f- §aNo theft. This includes all forms of theft.\n§b4. §f- §aDo not trespass anywhere. This includes player houses.\n§b5. §f- §aDo not break in-game community rules.\n§b5. §f- §aDo not create pixel art outside of a walled community.\n§b6. §f- §aNo one block wide towers or tunnels.\n§b7. §f- §aCut down trees entirely, not half-way.\n§b9. §f- §aMake your buildings look reasonable.\n§b10. §f- §aIf you are going to build near someones property, ask.\n§b11. §f- §aNo using potions to harm people.";
+			echo "§b1. §f- §aAbsolutely no griefing.\n§b2. §f- §aAbsolutely no duping.\n§b3. §f- §aNo theft. This includes all forms of theft.\n§b4. §f- §aDo not trespass anywhere. This includes player houses.\n§b5. §f- §aDo not break in-game community rules.\n§b6. §f- §aDo not create pixel art outside of a walled community.\n§b7. §f- §aNo one block wide towers or tunnels.\n§b8. §f- §aCut down trees entirely, not half-way.\n§b9. §f- §aMake your buildings look reasonable.\n§b10. §f- §aIf you are going to build near someones property, ask.\n§b11. §f- §aNo using potions to harm people.";
 			break;
 		case "Malevola":
 			echo "§aDrSilverbullet §bis god. Obey her.\n";
