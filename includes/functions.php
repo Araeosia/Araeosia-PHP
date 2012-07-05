@@ -139,6 +139,35 @@ function isChannel($channel){
 	$channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M', 'RP');
 	if(in_array($channels, strtoupper($channel))){ return true; }else{ return false; }
 }
+function isOnlinePlayer($player){
+	if(in_array($player, getAllPlayers())){ return true; }else{ return false; }
+}
+function getAllPlayers(){
+	include('includes/servers.php');
+	foreach($servers as $server){
+		$Query = new MinecraftQuery();
+		try{
+			$Query->Connect( $ips[$server], $ports['mc'][$server], 1 );
+			$players = $Query->GetPlayers();
+		}catch(MinecraftQueryException $e){
+			// Only reason this query would fail is if the server is down. Report it
+			$players = array();
+		}
+		$finalPlayers = array_merge($finalPlayers, $players);
+	}
+	return $finalPlayers;
+}
+function player($player){
+	$onlinePlayers = getAllPlayers();
+	$done = false;
+	foreach($onlinePlayers as $playerToCheck){
+		if(strpos(strtolower($playerToCheck), strtolower($player))!=false){
+			return $playerToCheck;
+			$done = true;
+		}
+	}
+	if(!$done){ return false; }
+}
 class Bcrypt {
 	private $rounds;
 	public function __construct($rounds = 12) {
