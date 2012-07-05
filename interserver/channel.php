@@ -30,7 +30,7 @@ $query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='2'")
 while($row=mysql_fetch_array($query)){ array_push($channelsIn, $row['channel']); }
 
 // Most of the actual code
-if(in_array($arg1, $channels)){
+if(isChannel($arg1)){
 // So they want to focus on that channel specifically.
 	if($currentChannel==$arg1){ die('§cYou are already in the §'.$channelColors[$arg1].$channelFullNames[$arg1].' §cchannel!'); }
 	if($channel="S" && !isStaff($name)){ die('You do not have permission.'); }
@@ -66,7 +66,7 @@ switch($arg1){
 	case "EXIT":
 	case "LEAVE":
 		if(!isset($channel)){ $channel=$currentChannel; }
-		if(!in_array($channel, $channels)){ die("§cInvalid channel! Usage: §a/ch leave [channel]\n"); }
+		if(!isChannel($channel)){ die("§cInvalid channel! Usage: §a/ch leave [channel]\n"); }
 		if($channel!=$currentChannel && !in_array($channel, $channelsIn)){ die("§cYou are not in the §".$channelColors[$channel].$channelFullNames[$channel]." §cchannel!\n"); }
 		if(count($channelsIn)==0){ die("§cYou cannot leave the only channel you're in! Join another first."); }
 		mysql_query("DELETE FROM ChannelsIn WHERE name='$name' AND channel='$channel'");
@@ -112,7 +112,9 @@ switch($arg1){
 		echo "-------- Channels --------\n§eAraeosia - A - The main channel\n§aStaff - S - The staff channel\n§bTrade - T - The trade channel\n§9Help - H - The help channel\n§cLocal - L - The Local channel\n§6Group - G - The group channel\n§5ForeignLanguage - FL - The foreign language channel\n§7Modded - M - The modded server's channel\n§3RolePlay - RP - The Roleplay channel";
 		break;
 	case "MUTE":
-		echo "Muting doesn't work yet.\n";
+		if($args[2])
+		break;
+	case "GMUTE":
 		break;
 	case "KICK":
 		echo "Kicking doesn't work yet.\n";
