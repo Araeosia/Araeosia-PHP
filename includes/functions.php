@@ -129,6 +129,12 @@ function getWorldName($world){
 		case "Main_the_end":
 			$worldname = "The End";
 			break;
+		case "Tekkit_nether":
+			$worldname = "Tekkit Nether";
+			break;
+		case "Tekkit_the_end":
+			$worldname = "Tekkit The End";
+			break;
 		default:
 			$worldname = $world;
 			break;
@@ -167,6 +173,7 @@ function player($player){
 	$onlinePlayers = getAllPlayers();
 	$done = false;
 	foreach($onlinePlayers as $playerToCheck){
+	// Matches to the beginning of the name only, just like Bukkit.
 		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
 			return $playerToCheck;
 			$done = true;
@@ -641,6 +648,12 @@ class FishBans {
 	}
 }
 class ChannelHandle {
+	/*
+	 * Class written by AgentKid
+	 *
+	 * This class is the channel interface class, providing an interface for all of the chat channel systems.
+	 * 
+	 */
 	public $nick;
 	public $currentChannel;
 	public $channelsIn;
@@ -845,6 +858,11 @@ class JSONAPI {
 	}
 }
 class MCFunctions {
+	public $player;
+	public $playerData;
+	public function __construct($player){
+		$this->player = $player;
+	}
 	private function compass($degrees){
 		$rounded = round($degrees/45);
 		switch($rounded){
@@ -881,15 +899,15 @@ class MCFunctions {
 		}
 		return $direction;
 	}
-	private function getangle($X1, $Z1, $X2, $Z2){
+	private function getAngle($X1, $Z1, $X2, $Z2){
 		
 	}
-	public function getdist($X1, $Z1, $X2, $Z2, $precision=2){
+	public function getDist($X1, $Z1, $X2, $Z2, $precision=2){
 		$distprecise = sqrt(pow(($X2-$X1), 2)+pow(($Z2-$Z1), 2));
 		$dist = round($distprecise, $precision);
 		return $dist;
 	}
-	public function respawncoords($P, $X, $Z, $W='Araeosia'){
+	public function respawnCoords($P, $X, $Z, $W='Araeosia'){
 		$RespawnCoords = array(
 			'Araeos City' => array( 'X' => -212.5, 'Y' => 73, 'Z' => -183.5, 'name' => 'Araeos City', 'world' => 'Araeosia' ),
 			'Everstone City' => array( 'X' => 486.5, 'Y' => 68, 'Z' => -125.5, 'name' => 'Everstone City', 'world' => 'Araeosia' ),
@@ -923,7 +941,7 @@ class MCFunctions {
 		}
 		return $RespawnArray;
 	}
-	public function getloc($P, $X, $Z, $W='Araeosia'){
+	public function getLoc($P, $X, $Z, $W='Araeosia'){
 		switch($W){
 			case "Araeosia_tutorial2":
 				die("§cYou are currently in §bThe Tutorial§c.\n");
@@ -941,13 +959,14 @@ class MCFunctions {
 				break;
 		}
 	}
-	public function tpplayer($player, $X, $Y, $Z, $W){
+	public function tpPlayer($X, $Y, $Z, $W){
 		
 	}
-	public function msgplayer($player, $msg){
+	public function msgPlayer($msg){
 		
 	}
-	public function getquest($player){
+	public function getQuest(){
+		include('includes/mysql.php');
 		$quest = mysql_query("SELECT * FROM permission WHERE permission LIKE quest.current.%.%.%");
 		$quest = $quest['permission'];
 		$questdata = array(
