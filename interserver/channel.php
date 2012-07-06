@@ -3,13 +3,6 @@
 // This file is executed whenever anyone on any server uses the /ch command with any or no arguments.
 // Things that need doing in this file: Set up /ch kick, set up /ch SRC.
 
-// Dynamic variables
-$name = $_POST['player'];
-$server = $_GET['s'];
-$args = $_POST['args'];
-$channel=channel($args[2]);
-$arg1 = strtoupper($args[1]);
-
 // Includes
 include_once('includes/mysql.php');
 include_once('includes/functions.php');
@@ -17,6 +10,13 @@ include_once('includes/passwords.php');
 include_once('includes/channels.php');
 include_once('includes/staff.php');
 
+// Dynamic variables
+$name = $_POST['player'];
+$server = $_GET['s'];
+$args = $_POST['args'];
+$channel=channel($args[2]);
+$arg1 = strtoupper($args[1]);
+if($name!="AgentKid"){ die('This is broken. Sorry.'); }
 // Generic queries
 // Type 1 means you're speaking in that room, Type 2 means that you're just in that room and listening.
 $chatHandle = new ChannelHandle($name);
@@ -29,6 +29,9 @@ if(channel($arg1)!=false){
 	switch($arg1){
 		case "HELP":
 			echo "§a/ch help §f- §bDisplays this help message.\n§a/ch join [channel] §f- §bJoins the specified channel.\n§a/ch leave [channel] §f- §bLeaves the specified channel.\n§a/ch who §f- §bDisplays online members in your channel.\n§a/ch list §f- §bLists all available channels.\n";
+			break;
+		case "DUMP":
+			$chatHandle->varDump();
 			break;
 		case "ENTER":
 		case "JOIN":

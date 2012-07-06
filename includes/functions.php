@@ -207,10 +207,10 @@ function channel($channel){
 			break;
 		case "G":
 		case "GROUP":
-			$output = "G"
+			$output = "G";
 			break;
 		case "FL":
-		case "FOREIGNLANGUAGE"
+		case "FOREIGNLANGUAGE":
 			$output = "FL";
 			break;
 		case "M":
@@ -643,9 +643,11 @@ class ChannelHandle {
 		$query = mysql_fetch_array($query);
 		$this->nick = $nick;
 		$this->currentChannel = $query['channel'];
-		$query = mysql_query("SELECT * FROM ChannelSin WHERE name='$nick' AND type='2'");
+		$query2 = mysql_query("SELECT * FROM ChannelsIn WHERE name='$nick' AND type='2'") or die(mysql_error());
 		$channelsIn = array();
-		while($row = mysql_fetch_array($query)){ array_push($channelsIn, $row['channel']); }
+		while($row2 = mysql_fetch_array($query2)){
+			array_push($channelsIn, $row2['channel']);
+		}
 		$this->channelsIn = $channelsIn;
 	}
 	public function isMute($channel=false){
@@ -664,7 +666,7 @@ class ChannelHandle {
 	}
 	public function isInChannel($channel){
 		$channel = channel($channel);
-		if(in_array($this->ChannelsIn, $channel) || $channel==$currentChannel){ return true; }else{ return false; }
+		if(in_array($channel, $this->ChannelsIn) || $channel==$currentChannel){ return true; }else{ return false; }
 	}
 	public function getChannelMembers($channel){
 		include('includes/mysql.php');
@@ -682,17 +684,26 @@ class ChannelHandle {
 	public function getChannelsIn(){
 		return $this->channelsIn;
 	}
+	public function varDump(){
+		var_dump($this->nick);
+		var_dump($this->currentChannel);
+		var_dump($this->channelsIn);
+	}
 	public function joinChannel($channel){
 		$name = $this->nick;
 		$channel = channel($channel);
 		if($channel==false){ die('Invalid channel!'); }
 		if($this->currentChannel==$channel){ die('You are already focused on this channel!'); }
 		include('includes/mysql.php');
-		if(!isInChannel($channel)){
-			mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$arg1', '2')");
+		if(!$this->isInChannel($channel)){
+			mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$channel', '2')");
 			array_push($this->channelsIn, $channel);
-			echo "§aYou joined the ".getColoredChannel($channel)." §achannel!\n"
+			echo "§aYou joined the ".getColoredChannel($channel)." §achannel!\n";
 		}
+		mysql_query("UPDATE ChannelsIn SET type='2' WHERE name='$name'");
+		mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name' AND channel='$channel'");
+		$this->currentChannel=$channel;
+		echo "§aYou set focus on the ".getColoredChannel($channel)." §achannel!\n";
 	}
 	public function leaveChannel($channel=null){
 		$name = $this->nick;
@@ -703,10 +714,10 @@ class ChannelHandle {
 			$channel = $this->currentChannel;
 		}
 		// So we have the channel name, lets work with it.
-		if(!$this->isInChannel($channel)){ die("§cYou are not in the ".getColoredChannel($channel))." §cchannel!\n"); }
+		if(!$this->isInChannel($channel)){ die("§cYou are not in the ".getColoredChannel($channel)." §cchannel!\n"); }
 		if(count($this->currentChannels==0)){ die("§cYou cannot leave the only channel you're in! Join another first."); }
 		mysql_query("DELETE FROM ChannelsIn WHERE name='$name' AND channel='$channel'");
-		echo "§aYou left the ".getColoredChannel($channel;." §achannel.";
+		echo "§aYou left the ".getColoredChannel($channel)." §achannel.";
 		$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'");
 		$row = mysql_fetch_array($row);
 		if($row==false){
@@ -715,7 +726,114 @@ class ChannelHandle {
 			$newChannel = $row['channel'];
 			mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name' AND channel='$newChannel'");
 			echo "§aYou set focus on the ".getColoredChannel($newChannel)." §achannel.\n";
-		}curl($url), true);
+		}
+	}
+}
+class JSONAPI {
+	public $host;
+	public $port;
+	public $salt;
+	public $username;
+	public $password;
+	private $urlFormats = array(
+		"call" => "http://%s:%s/api/call?method=%s&args=%s&key=%s",
+		"callMultiple" => "http://%s:%s/api/call-multiple?method=%s&args=%s&key=%s"
+	);
+	
+	/**
+	 * Creates a new JSONAPI instance.
+	 */
+	public function __construct ($host, $port, $uname, $pword, $salt) {
+		$this->host = $host;
+		$this->port = $port;
+		$this->username = $uname;
+		$this->password = $pword;
+		$this->salt = $salt;
+		
+		if(!extension_loaded("cURL")) {
+			throw new Exception("JSONAPI requires cURL extension in order to work.");
+		}
+	}
+	
+	/**
+	 * Generates the proper SHA256 based key from the given method suitable for use as the key GET parameter in a JSONAPI API call.
+	 * 
+	 * @param string $method The name of the JSONAPI API method to generate the key for.
+	 * @return string The SHA256 key suitable for use as the key GET parameter in a JSONAPI API call.
+	 */
+	public function createKey($method) {
+		if(is_array($method)) {
+			$method = json_encode($method);
+		}
+		return hash('sha256', $this->username . $method . $this->password . $this->salt);
+	}
+	
+	/**
+	 * Generates the proper URL for a standard API call the given method and arguments.
+	 * 
+	 * @param string $method The name of the JSONAPI API method to generate the URL for.
+	 * @param array $args An array of arguments that are to be passed in the URL.
+	 * @return string A proper standard JSONAPI API call URL. Example: "http://localhost:20059/api/call?method=methodName&args=jsonEncodedArgsArray&key=validKey".
+	 */
+	public function makeURL($method, array $args) {
+		return sprintf($this->urlFormats["call"], $this->host, $this->port, rawurlencode($method), rawurlencode(json_encode($args)), $this->createKey($method));
+	}
+	
+	/**
+	 * Generates the proper URL for a multiple API call the given method and arguments.
+	 * 
+	 * @param array $methods An array of strings, where each string is the name of the JSONAPI API method to generate the URL for.
+	 * @param array $args An array of arrays, where each array contains the arguments that are to be passed in the URL.
+	 * @return string A proper multiple JSONAPI API call URL. Example: "http://localhost:20059/api/call-multiple?method=[methodName,methodName2]&args=jsonEncodedArrayOfArgsArrays&key=validKey".
+	 */
+	public function makeURLMultiple(array $methods, array $args) {
+		return sprintf($this->urlFormats["callMultiple"], $this->host, $this->port, rawurlencode(json_encode($methods)), rawurlencode(json_encode($args)), $this->createKey($methods));
+	}
+	
+	/**
+	 * Calls the single given JSONAPI API method with the given args.
+	 * 
+	 * @param string $method The name of the JSONAPI API method to call.
+	 * @param array $args An array of arguments that are to be passed.
+	 * @return array An associative array representing the JSON that was returned.
+	 */
+	public function call($method, array $args = array()) {
+		if(is_array($method)) {
+			return $this->callMultiple($method, $args);
+		}
+		
+		$url = $this->makeURL($method, $args);
+
+		return json_decode($this->curl($url), true);
+	}
+	
+	private function curl($url) {
+		$c = curl_init($url);
+		curl_setopt($c, CURLOPT_PORT, $this->port);
+		curl_setopt($c, CURLOPT_HEADER, false);
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($c, CURLOPT_TIMEOUT, 10);		
+		$result = curl_exec($c);
+		curl_close($c);
+		return $result;
+	}
+	
+	/**
+	 * Calls the given JSONAPI API methods with the given args.
+	 * 
+	 * @param array $methods An array strings, where each string is the name of a JSONAPI API method to call.
+	 * @param array $args An array of arrays of arguments that are to be passed.
+	 * @throws Exception When the length of the $methods array and the $args array are different, an exception is thrown.
+	 * @return array An array of associative arrays representing the JSON that was returned.
+	 */
+	public function callMultiple(array $methods, array $args = array()) {
+		if(count($methods) !== count($args)) {
+			throw new Exception("The length of the arrays \$methods and \$args are different! You need an array of arguments for each method!");
+		}
+		
+		$url = $this->makeURLMultiple($methods, $args);
+
+		return json_decode($this->curl($url), true);
 	}
 }
 class MCFunctions {
