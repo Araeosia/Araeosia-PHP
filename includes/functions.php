@@ -137,25 +137,31 @@ function getWorldName($world){
 }
 function isChannel($channel){
 	$channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M', 'RP');
-	if(in_array($channels, strtoupper($channel))){ return true; }else{ return false; }
+	if(in_array(strtoupper($channel), $channels)){ return true; }else{ return false; }
 }
 function isOnlinePlayer($player){
 	if(in_array($player, getAllPlayers())){ return true; }else{ return false; }
 }
 function getAllPlayers(){
 	include('includes/servers.php');
+	$finalPlayers = array();
 	foreach($servers as $server){
-		$Query = new MinecraftQuery();
-		try{
-			$Query->Connect( $ips[$server], $ports['mc'][$server], 1 );
-			$players = $Query->GetPlayers();
-		}catch(MinecraftQueryException $e){
-			// Only reason this query would fail is if the server is down. Report it
-			$players = array();
-		}
+		$players = getOnlinePlayers($server);
 		$finalPlayers = array_merge($finalPlayers, $players);
 	}
 	return $finalPlayers;
+}
+function getOnlinePlayers($server){
+	include('includes/servers.php');
+	$Query = new MinecraftQuery();
+	$players = array();
+	try{
+		$Query->Connect( $ips[$server], $ports['mc'][$server], 1 );
+		$players = $Query->GetPlayers();
+	}catch(MinecraftQueryException $e){
+		$players = array();
+	}
+	return $players;
 }
 function player($player){
 	$onlinePlayers = getAllPlayers();
@@ -167,6 +173,66 @@ function player($player){
 		}
 	}
 	if(!$done){ return false; }
+}
+function getServersByPlayer($player){
+	include('includes/servers.php');
+	$serversPlayerIsIn = array();
+	foreach($servers as $server){
+		$players = getOnlinePlayers($server);
+		if(in_array($player, $players)){ array_push($serversPlayerIsIn, $server); }
+	}
+	return $serversPlayerIsIn;
+}
+function channel($channel){
+	switch(strtoupper($channel)){
+		case "S":
+		case "STAFF":
+			$output = "S";
+			break;
+		case "A":
+		case "ARAEOSIA":
+			$output = "A";
+			break;
+		case "T":
+		case "TRADE":
+			$output = "T";
+			break;
+		case "H":
+		case "HELP":
+			$output = "H";
+			break;
+		case "L":
+		case "LOCAL":
+			$output = "L";
+			break;
+		case "G":
+		case "GROUP":
+			$output = "G"
+			break;
+		case "FL":
+		case "FOREIGNLANGUAGE"
+			$output = "FL";
+			break;
+		case "M":
+		case "MODDED":
+			$output = "M";
+			break;
+		case "RP":
+		case "ROLEPLAY":
+			$output = "RP";
+			break;
+		default:
+			$output = false;
+			break;
+	}
+	return $output;
+}
+function getColoredChannel($channel){
+	$channel = channel($channel);
+	if($channel==false){ die('Invalid channel!'); }
+	$channelFullNames = array('A' => 'Araeosia', 'S' => 'Staff', 'T' => 'Trade', 'H' => 'Help', 'L' => 'Local', 'G' => 'Group', 'FL' => 'Foreign Language', 'M' => 'Modded', 'RP' => 'Roleplay');
+	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3');
+	return "§".$channelColors[$channel].$channelFullNames[$channel];
 }
 class Bcrypt {
 	private $rounds;
@@ -567,6 +633,67 @@ class FishBans {
 		return $data;
 	}
 }
+class ChannelHandle {
+	public $nick;
+	public $currentChannel;
+	public $channelsIn;
+	public function __construct($nick){
+		include('includes/mysql.php');
+		$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$nick' AND type='1'");
+		$query = mysql_fetch_array($query);
+		$this->nick = $nick;
+		$this->currentChannel = $query['channel'];
+		$query = mysql_query("SELECT * FROM ChannelSin WHERE name='$nick' AND type='2'");
+		$channelsIn = array();
+		while($row = mysql_fetch_array($query)){ array_push($channelsIn, $row['channel']); }
+		$this->channelsIn = $channelsIn;
+	}
+	public function isMute($channel=false){
+		include('includes/mysql.php');
+		if($channel!=false){
+			$channel = channel($channel);
+			if(!$channel==false){ die('Invalid channel!'); }
+			$query = mysql_query("SELECT * FROM Mutes WHERE name='$nick' AND channel='$channel'");
+			$row = mysql_fetch_array($query);
+			if($row!=false || $this->isMute()){ return true; }else{ return false; }
+		}else{
+			$query = mysql_query("SELECT * FROM GMutes WHERE name='$nick'");
+			$row = mysql_fetch_array($query);
+			if($row!=false){ return true; }else{ return false; }
+		}
+	}
+	public function isInChannel($channel){
+		$channel = channel($channel);
+		if(in_array($this->ChannelsIn, $channel) || $channel==$currentChannel){ return true; }else{ return false; }
+	}
+	public function getChannelMembers($channel){
+		include('includes/mysql.php');
+		$channel = channel($channel);
+		if($channel==false){ die('Invalid Channel!'); }
+		$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$channel'");
+		$onlinePlayers = getAllPlayers();
+		$inThisRoom = array();
+		while($row = mysql_fetch_array($query)){
+			// If the player specified in this row is online, push their full name into the $inThisRoom array.
+			if(in_array($onlinePlayers, $row['name'])){ array_push($inThisRoom, getFullName($row['name'])); }
+		}
+		return $inThisRoom;
+	}
+	public function getChannelsIn(){
+		return $this->channelsIn;
+	}
+	public function joinChannel($channel){
+		$channel = channel($channel);
+		if($channel==false){ die('Invalid channel!'); }
+		if($this->currentChannel==$channel){ die('You are already focused on this channel!'); }
+		include('includes/mysql.php');
+		if(!isInChannel($channel)){
+			mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', '$arg1', '2')");
+			array_push($this->channelsIn, $channel);
+			echo "§aYou joined the ".getColoredChannel($channel)." §achannel!\n"
+		}
+	}
+}
 class JSONAPI {
 /**
  * A PHP class for access Minecraft servers that have Bukkit with the {@link http://github.com/alecgorge/JSONAPI JSONAPI} plugin installed.
@@ -682,7 +809,10 @@ class JSONAPI {
 		
 		$url = $this->makeURLMultiple($methods, $args);
 
-		return json_decode($this->curl($url), true);
+		return json_decode($this->
+		mysql_query("UPDATE ChannelsIn SET type='2' WHERE name='$name'");
+		mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$name' AND channel='$arg1'");
+		echo "§aYou set focus on the ".getColoredChannel($channel)." §achannel!\n";curl($url), true);
 	}
 }
 class MCFunctions {
