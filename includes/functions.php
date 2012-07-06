@@ -147,7 +147,7 @@ function getAllPlayers(){
 	$finalPlayers = array();
 	foreach($servers as $server){
 		$players = getOnlinePlayers($server);
-		$finalPlayers = array_merge($finalPlayers, $players);
+		foreach($players as $player){ array_push($finalPlayers, $player); }
 	}
 	return $finalPlayers;
 }
@@ -167,9 +167,10 @@ function player($player){
 	$onlinePlayers = getAllPlayers();
 	$done = false;
 	foreach($onlinePlayers as $playerToCheck){
-		if(strpos(strtolower($playerToCheck), strtolower($player))!=false){
+		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
 			return $playerToCheck;
 			$done = true;
+			break;
 		}
 	}
 	if(!$done){ return false; }
