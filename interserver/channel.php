@@ -43,31 +43,11 @@ if(channel($arg1)!=false){
 			$chatHandle->leaveChannel($channel);
 			break;
 		case "WHO":
-			$allplayers = array();
-			foreach($servers as $server){
-				$jsonapi = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
-				$output = $jsonapi->call('getPlayerNames', array());
-				$players = $output['success'];
-				$allplayers = array_merge($allplayers, $players);
-			}
-			$inChannel=array();
-			echo "§".$channelColors[$currentChannel]."------- ".$channelFullNames[$currentChannel]." -------\n";
-			$inThisChannel=array();
-			$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$currentChannel'") or die(mysql_error());
-			while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
-			$finalInThisChannel = array();
-			foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){array_push($finalInThisChannel, getFullName($pl));}}
-			echo "§b".implode('§f, ', $finalInThisChannel)."\n";
-			foreach($channelsIn as $ch){
-				$inThisChannel=array();
-				$finalInThisChannel=array();
-				$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$ch'");
-				while($row = mysql_fetch_array($query)){ array_push($inThisChannel, $row['name']); }
-				if(count($inThisChannel!=1)){
-					echo "§".$channelColors[$ch]."------- ".$channelFullNames[$ch]." -------\n";
-					foreach($inThisChannel as $pl){ if(in_array($pl, $allplayers)){array_push($finalInThisChannel, getFullName($pl));}}
-					echo "§b".implode('§f, §b', $finalInThisChannel)."\n";
-				}
+			echo getChannelColor($chatHandle->currentChannel)."------- ".getColoredChannel($chatHandle->currentChannel)." -------\n";
+			echo implode('§f, ', $chatHandle->getChannelMembers($chatHandle->currentChannel))."\n";
+			foreach($chatHandle->channelsIn as $channel){
+				echo getChannelColor($channel)."------- ".getColoredChannel($channel)." -------\n";
+				echo implode('§f, ', $chatHandle->getChannelMembers($channel))."\n";
 			}
 			break;
 		case "LIST":

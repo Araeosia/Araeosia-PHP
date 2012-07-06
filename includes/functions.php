@@ -234,6 +234,12 @@ function getColoredChannel($channel){
 	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3');
 	return "§".$channelColors[$channel].$channelFullNames[$channel];
 }
+function getChannelColor($channel){
+	$channel = channel($channel);
+	if($channel==false){ die('Invalid channel!'); }
+	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3');
+	return "§".$channelColors[$channel];
+}
 class Bcrypt {
 	private $rounds;
 	public function __construct($rounds = 12) {
@@ -685,6 +691,7 @@ class ChannelHandle {
 		return $this->channelsIn;
 	}
 	public function varDump(){
+		if(!isStaff($this->nick)){ die('This is a debug function and you are not staff.'); }
 		var_dump($this->nick);
 		var_dump($this->currentChannel);
 		var_dump($this->channelsIn);
