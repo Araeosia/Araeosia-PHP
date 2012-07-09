@@ -74,8 +74,7 @@ function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
 	while($row2 = mysql_fetch_array($query2)){ array_push($ignoredby, $row2['name']); }
 	foreach($servers as $server){
 		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
-		$players = $JSONAPI->call('getPlayerNames', array());
-		$players = $players['success'];
+		$players = getOnlinePlayers($server);
 		foreach($players as $player){ if(in_array($player, $inChannel) && !in_array($player, $excluded) && !in_array($player, $ignoredby)){ $JSONAPI->call('sendMessage', array($player, $message)); } }
 	}
 }
@@ -686,7 +685,7 @@ class ChannelHandle {
 	}
 	public function isInChannel($channel){
 		$channel = channel($channel);
-		if(in_array($channel, $this->ChannelsIn) || $channel==$currentChannel){ return true; }else{ return false; }
+		if(in_array($channel, $this->ChannelsIn) || $channel==$this->currentChannel){ return true; }else{ return false; }
 	}
 	public function getChannelMembers($channel){
 		include('includes/mysql.php');
