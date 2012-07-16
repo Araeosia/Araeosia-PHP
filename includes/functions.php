@@ -21,6 +21,7 @@ function pythagoras($a,$b,$c,$precision=4){
 	
 	return false;
 }
+// User related functions
 function getPrimaryGroup($player){
 	include('includes/mysql.php');
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
@@ -58,26 +59,6 @@ function getFullName($player){
 	$playername = $prefix.$player;
 	return $playername;
 }
-function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
-	// This function will send a message to all members of a channel while excluding any user names in the $excluded array. The message and channel are expected to be a string.
-	if(!isset($channel) || !is_string($channel)){ die('$channel is not a string!'); }
-	if(!isset($message) || !is_string($message)){ die('$message is not a string!'); }
-	if(!isset($excluded) || !is_array($excluded)){ die('$excluded is not an array!'); }
-	include('includes/servers.php');
-	include('includes/mysql.php');
-	include('includes/passwords.php');
-	$inChannel = array();
-	$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$channel'");
-	while($row = mysql_fetch_array($query)){ array_push($inChannel, $row['name']); }
-	$ignoredby = array();
-	$query2 = mysql_query("SELECT * FROM Blocks WHERE blockee='$sender'");
-	while($row2 = mysql_fetch_array($query2)){ array_push($ignoredby, $row2['name']); }
-	foreach($servers as $server){
-		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
-		$players = getOnlinePlayers($server);
-		foreach($players as $player){ if(in_array($player, $inChannel) && !in_array($player, $excluded) && !in_array($player, $ignoredby)){ $JSONAPI->call('sendMessage', array($player, $message)); } }
-	}
-}
 function isInGroup($player, $group){
 	include('includes/mysql.php');
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
@@ -107,43 +88,6 @@ function isInGroup($player, $group){
 function isStaff($player){
 	return isInGroup($player, "Moderator");
 }
-function readBook($player, $bookid){
-	if(hasReadBook($player, $bookid)){
-		return false;
-	}else{
-		
-	}
-}
-function hasReadBook($player, $bookid){
-	if(!is_int($bookid)){ die('Invalid book ID!'); }
-	include('includes/mysql.php');
-	$query = mysql_query("SELECT * FROM BooksComplete WHERE name='$player' AND id='$bookid'");
-	if(!mysql_fetch_array($query)){ return false; }else{ return true; }
-}
-function getWorldName($world){
-	switch($world){
-		case "Main_nether":
-			$worldname = "Nether";
-			break;
-		case "Main_the_end":
-			$worldname = "The End";
-			break;
-		case "Tekkit_nether":
-			$worldname = "Tekkit Nether";
-			break;
-		case "Tekkit_the_end":
-			$worldname = "Tekkit The End";
-			break;
-		default:
-			$worldname = $world;
-			break;
-	}
-	return $worldname;
-}
-function isChannel($channel){
-	$channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M', 'RP');
-	if(in_array(strtoupper($channel), $channels)){ return true; }else{ return false; }
-}
 function isOnlinePlayer($player){
 	if(in_array($player, getAllPlayers())){ return true; }else{ return false; }
 }
@@ -153,6 +97,56 @@ function getAllPlayers(){
 	foreach($servers as $server){
 		$players = getOnlinePlayers($server);
 		foreach($players as $player){ array_push($finalPlayers, $player); }
+	}
+	return $finalPlayers;
+}
+function isRealPlayer($player){
+	include('includes/myslq.php');
+	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'");
+	if(mysql_fetch_array($query)!=false){ return true; }else{ return false; }
+}
+function player($player){
+	$onlinePlayers = getAllPlayers();
+	$done = false;
+	foreach($onlinePlayers as $playerToCheck){
+	// Matches to the beginning of the name only, just like Bukkit.
+		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
+			return $playerToCheck;
+			$done = true;
+			break;
+		}
+	}
+	if(!$done){ return false; }
+}
+function offlinePlayer(){
+	$players = getAllOfflinePlayers();
+	$done = false;
+	foreach($players as $playerToCheck){
+	// Matches to the beginning of the name only, just like Bukkit.
+		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
+			return $playerToCheck;
+			$done = true;
+			break;
+		}
+	}
+	if(!$done){ return false; }
+}
+// Server related functions
+function getServersByPlayer($player){
+	include('includes/servers.php');
+	$serversPlayerIsIn = array();
+	foreach($servers as $server){
+		$players = getOnlinePlayers($server);
+		if(in_array($player, $players)){ array_push($serversPlayerIsIn, $server); }
+	}
+	return $serversPlayerIsIn;
+}
+function getAllOfflinePlayers(){
+	include('includes/mysql.php');
+	$query = mysql_query("SELECT * FROM TrueGroups");
+	$finalPlayers = array();
+	while($row = mysql_fetch_array($query)){
+		array_push($finalPlayers, $row['name']);
 	}
 	return $finalPlayers;
 }
@@ -168,27 +162,72 @@ function getOnlinePlayers($server){
 	}
 	return $players;
 }
-function player($player){
-	$onlinePlayers = getAllPlayers();
-	$done = false;
-	foreach($onlinePlayers as $playerToCheck){
-	// Matches to the beginning of the name only, just like Bukkit.
-		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
-			return $playerToCheck;
-			$done = true;
-			break;
-		}
-	}
-	if(!$done){ return false; }
+// Teleport related functions
+function isRegisteredAtLocation($locid){
+	// Placeholder function.
+	return true;
 }
-function getServersByPlayer($player){
-	include('includes/servers.php');
-	$serversPlayerIsIn = array();
-	foreach($servers as $server){
-		$players = getOnlinePlayers($server);
-		if(in_array($player, $players)){ array_push($serversPlayerIsIn, $server); }
+// Book related functions
+function readBook($player, $bookid){
+	if(hasReadBook($player, $bookid)){
+		return false;
+	}else{
+		
 	}
-	return $serversPlayerIsIn;
+}
+function hasReadBook($player, $bookid){
+	if(!is_int($bookid)){ die('Invalid book ID!'); }
+	include('includes/mysql.php');
+	$query = mysql_query("SELECT * FROM BooksComplete WHERE name='$player' AND id='$bookid'");
+	if(!mysql_fetch_array($query)){ return false; }else{ return true; }
+}
+// Mail related functions
+function readMessage($msgid, $player=false){
+	include("includes/mysql.php");
+	$query = mysql_query("SELECT * FROM Mail WHERE msgid='$msgid'");
+	$row = mysql_fetch_array($query);
+	$finaloutput = "§b------- §aMail Message ".$msgid." from ".getFullName(offlinePlayer($row['name']))." §b-------\n§eMessage sent on ".date("l jS \of F Y h:i:s A", $row['time'])."\n".htmlspecialchars_decode($row['message']);
+	if($player==false){ echo $finaloutput; }else{
+		if(player($player)==false){ die('Invalid player!'); }
+		include('includes/passwords.php');
+		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+		$JSONAPI->call('sendMessage', array(player($player), $finaloutput));
+	}
+}
+function writeMessage($player, $recipient, $message){
+	if(offlinePlayer($player)===false){ die('Not a valid player'); }
+	include('includes/mysql.php');
+	$query = mysql_query("SELECT * FROM Mail");
+	$count = 0;
+	while($row = mysql_fetch_array($query)){$count = $count+1;}
+	$msg = htmlspecialchars($message);
+	if(is_null($message)){ die('No message provided!'); }
+	$msgid = $count+1;
+	$time = time();
+	$name = player($player);
+	$recipient = offlinePlayer($recipient);
+	mysql_query("INSERT INTO Mail (id, msgid, time, name, recipient, message, status) VALUES ('NULL', '$msgid', '$time', '$name', '$recipient', '$msg', '1')");
+}
+// Chat related functions
+function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
+	// This function will send a message to all members of a channel while excluding any user names in the $excluded array. The message and channel are expected to be a string.
+	if(!isset($channel) || !is_string($channel)){ die('$channel is not a string!'); }
+	if(!isset($message) || !is_string($message)){ die('$message is not a string!'); }
+	if(!isset($excluded) || !is_array($excluded)){ die('$excluded is not an array!'); }
+	include('includes/servers.php');
+	include('includes/mysql.php');
+	include('includes/passwords.php');
+	$inChannel = array();
+	$query = mysql_query("SELECT * FROM ChannelsIn WHERE channel='$channel'");
+	while($row = mysql_fetch_array($query)){ array_push($inChannel, $row['name']); }
+	$ignoredby = array();
+	$query2 = mysql_query("SELECT * FROM Blocks WHERE blockee='$sender'");
+	while($row2 = mysql_fetch_array($query2)){ array_push($ignoredby, $row2['name']); }
+	foreach($servers as $server){
+		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+		$players = getOnlinePlayers($server);
+		foreach($players as $player){ if(in_array($player, $inChannel) && !in_array($player, $excluded) && !in_array($player, $ignoredby)){ $JSONAPI->call('sendMessage', array($player, $message)); } }
+	}
 }
 function channel($channel){
 	switch(strtoupper($channel)){
@@ -246,6 +285,30 @@ function getChannelColor($channel){
 	if($channel==false){ die('Invalid channel!'); }
 	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3');
 	return "§".$channelColors[$channel];
+}
+function getWorldName($world){
+	switch($world){
+		case "Main_nether":
+			$worldname = "Nether";
+			break;
+		case "Main_the_end":
+			$worldname = "The End";
+			break;
+		case "Tekkit_nether":
+			$worldname = "Tekkit Nether";
+			break;
+		case "Tekkit_the_end":
+			$worldname = "Tekkit The End";
+			break;
+		default:
+			$worldname = $world;
+			break;
+	}
+	return $worldname;
+}
+function isChannel($channel){
+	$channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M', 'RP');
+	if(in_array(strtoupper($channel), $channels)){ return true; }else{ return false; }
 }
 class Bcrypt {
 	private $rounds;

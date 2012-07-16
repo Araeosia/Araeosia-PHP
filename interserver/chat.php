@@ -17,8 +17,11 @@ $query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$name' AND type='1'")
 $channel = mysql_fetch_array($query);
 $channel = $channel['channel'];
 $finalmsgout = "§".$channelColors[$channel]."[".$channel."]"." §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
-if(isStaff($name) && rand(0,3)==2){ $finalmsgout = $finalmsgout.", eh?"; }
-$log = $timestamp.$finalmsgout;
+if(isStaff($name) && substr($msg, -1)=="?" && $msg != "?"){
+	$finalmsgout = substr($finalmsgout, 0, strlen($finalmsgout)-1);
+	$finalmsgout = $finalmsgout.", eh?";
+}
+$log = $timestamp.$finalmsgout."\n";
 if($serversending=="Modded" && strpos($msg, "echo982")!==false){
 	$JSONAPI = new JSONAPI($ips["Modded"], $ports['jsonapi']["Modded"], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 32, 2));

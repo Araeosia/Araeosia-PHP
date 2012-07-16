@@ -11,49 +11,57 @@ if($args[5]=='L'){ $click = "Left"; }else{ $click = "Right"; }
 // Connect to database
 include('includes/mysql.php');
 // Check which block is being used
-if($blockX=="-339" && $blockY=="71" && $blockZ=="55" && $blockWorld=="Araeosia"){
-	$location="Moku Harbor";
-	$locid=0;
-	$destlocation="Strongport";
-	$destlocid=1;
-	$money=250;
-	$type = "sail";
-}elseif($blockX=="676" && $blockY=="71" && $blockZ=="649" && $blockWorld=="Araeosia"){
-	$location="Strongport";
-	$locid="1";
-	$destlocation="Moku Harbor";
-	$destlocid="0";
-	$money=250;
-	$type = "sail";
-}elseif($blockX=="605" && $blockY=="86" && $blockZ=="865" && $blockWorld=="Araeosia"){
-	$location="Strongport";
-	$locid=2;
-	$destlocation="Darmouth";
-	$destlocid=3;
-	$money=630;
-	$type = "fly";
-}elseif($blockX=="-299" && $blockY=="71" && $blockZ=="240" && $blockWorld=="Araeosia"){
-	$location="Darmouth";
-	$locid=3;
-	$destlocation="Araeos City";
-	$destlocid=4;
-	$money=350;
-	$type = "fly";
-}elseif($blockX=="-233" && $blockY=="105" && $blockZ=="-197" && $blockWorld=="Araeosia"){
-	$location="Araeos City";
-	$locid=4;
-	$destlocation="Everstone City";
-	$destlocid=5;
-	$money=470;
-	$type = "fly";
-}elseif($blockX=="557" && $blockY=="76" && $blockZ=="-59" && $blockWorld=="Araeosia"){
-	$location="Everstone City";
-	$locid=5;
-	$destlocation="Strongport";
-	$destlocid=2;
-	$money=720;
-	$type = "fly";
-} else { exit; }
+switch(true){
+	case $blockX=="-339" and $blockY=="71" and $blockZ=="55" and $blockWorld=="Araeosia":
+		$location="Moku Harbor";
+		$locid=0;
+		$destlocation="Strongport";
+		$destlocid=1;
+		$money=250;
+		$type = "sail";
+		break;
+	case $blockX=="676" and $blockY=="71" and $blockZ=="649" and $blockWorld=="Araeosia":
+		$location="Strongport";
+		$locid="1";
+		$destlocation="Moku Harbor";
+		$destlocid="0";
+		$money=250;
+		$type = "sail";
+		break;
+	case $blockX=="605" and $blockY=="86" and $blockZ=="865" and $blockWorld=="Araeosia":
+		$location="Strongport";
+		$locid=2;
+		$destlocation="Darmouth";
+		$destlocid=3;
+		$money=630;
+		$type = "fly";
+	case $blockX=="-299" and $blockY=="71" and $blockZ=="240" and $blockWorld=="Araeosia":
+		$location="Darmouth";
+		$locid=3;
+		$destlocation="Araeos City";
+		$destlocid=4;
+		$money=350;
+		$type = "fly";
+	case $blockX=="-233" and $blockY=="105" and $blockZ=="-197" and $blockWorld=="Araeosia":
+		$location="Araeos City";
+		$locid=4;
+		$destlocation="Everstone City";
+		$destlocid=5;
+		$money=470;
+		$type = "fly";
+		break;
+	case $blockX=="557" and $blockY=="76" and $blockZ=="-59" and $blockWorld=="Araeosia":
+		$location="Everstone City";
+		$locid=5;
+		$destlocation="Strongport";
+		$destlocid=2;
+		$money=720;
+		$type = "fly";
+		break;
+	default:
+		exit;
+		break;
+}
 $checkrow = mysql_fetch_array(mysql_query("SELECT * FROM permissions WHERE name='$name' AND permission='quest.completed.ships.1.0'"));
 if($checkrow['name']!=$name){ die('§cYou must complete the mission §2Ship Travel §c before riding.'); }
 // Destination locations

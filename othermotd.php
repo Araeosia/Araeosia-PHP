@@ -41,5 +41,6 @@ $msg = $msg."§cNews: §e/news\n";
 $msg = $msg."§4Araeosia has adopted a No-Mercy policy. §e/nomercy§4 for info.\n";
 $msg = $msg."§4Rules: §e/rules - Updated 2-4-2012\n";
 if(date("j F Y")=="4 July 2012"){ $msg = $msg."§fHappy §3Fourth of §4July!"; }
+$msg = $msg."§aIn case you didn't hear, §4AgentKid §ais on vacation right now. If you need help, talk to a moderator. §cInfo about his vacation: \n§fhttp://forums.araeosia.com/threads/111/";
 echo $msg;
 ?>
