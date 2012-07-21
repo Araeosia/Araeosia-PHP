@@ -208,6 +208,31 @@ function writeMessage($player, $recipient, $message){
 	$recipient = offlinePlayer($recipient);
 	mysql_query("INSERT INTO Mail (id, msgid, time, name, recipient, message, status) VALUES ('NULL', '$msgid', '$time', '$name', '$recipient', '$msg', '1')");
 }
+function listMessages($player, $page=0){
+	include('includes/mysql.php');
+	$player = offlinePlayer($player);
+	if($player==false){ die('Invalid player!'); }
+	$query = mysql_query("SELECT * FROM Mail WHERE recipient='$player'");
+	$messages = array();
+	while($row = mysql_fetch_array($query)){
+		$messages[count($messages)] = array(
+			'msgid' => $row['msgid'],
+			'time' => $row['time'],
+			'name' => $row['name'],
+			'recipient' => $row['recipient'],
+			'message' => $row['message'],
+			'status' => $row['status']
+		);
+	}
+	if(count($messages)==0){ die(''); }
+	$numberOfPages = ceil(count($messages)/8);
+	if($page!=0){
+		// They want a listing other than the first page
+		if(!$page<=$numberOfPages){ die('§cThat page doesn\'t exist!'); }
+	}else{
+		
+	}
+}
 // Chat related functions
 function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
 	// This function will send a message to all members of a channel while excluding any user names in the $excluded array. The message and channel are expected to be a string.
@@ -309,6 +334,17 @@ function getWorldName($world){
 function isChannel($channel){
 	$channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M', 'RP');
 	if(in_array(strtoupper($channel), $channels)){ return true; }else{ return false; }
+}
+function tellPlayer($player, $message){
+	include('includes/passwords.php');
+	include('includes/servers.php');
+	$player = player($player);
+	if($player==false){ die('Invalid player!'); }
+	$servers = getServersByPlayer($player);
+	foreach($servers as $server){
+		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+		$JSONAPI->call('sendMessage', array($player, $message));
+	}
 }
 class Bcrypt {
 	private $rounds;
