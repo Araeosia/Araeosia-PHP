@@ -23,7 +23,13 @@ function pythagoras($a,$b,$c,$precision=4){
 }
 // User related functions
 function getPrimaryGroup($player){
+	/* Gets the primary group of a player
+	 *
+	 * Recieves: $player
+	 * Throws: Primary group of a player
+	 */
 	include('includes/mysql.php');
+	if(offlinePlayer($player)==false){ die('Invalid player!'); }
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
 	$groups = array();
 	while($row = mysql_fetch_array($query)){ array_push($groups, $row['group']); }
@@ -36,6 +42,11 @@ function getPrimaryGroup($player){
 	return $primaryGroup;
 }
 function getFullName($player){
+	/* Gets the full name of a player, including color codes.
+	 *
+	 * Recieves: $player
+	 * Throws: Full name of a player
+	 */
 	switch(getPrimaryGroup($player)){
 		case "Veteran":
 			$prefix = "§2";
@@ -56,10 +67,26 @@ function getFullName($player){
 			$prefix = "§b";
 			break;
 	}
+	switch($player){
+		case "CanadianCellist":
+			$player = "The Canadian";
+			break;
+		case "AgentKid":
+			$player = "The Agent";
+			break;
+		default:
+			$player = $player;
+			break;
+	}
 	$playername = $prefix.$player;
 	return $playername;
 }
 function isInGroup($player, $group){
+	/* Checks whether a player is in the specified group
+	 *
+	 * Recieves: $player, $group
+	 * Throws: True if the player is in the specified group, otherwise false.
+	 */
 	include('includes/mysql.php');
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
 	$query = mysql_fetch_array($query);
@@ -86,12 +113,27 @@ function isInGroup($player, $group){
 	if(in_array($group, $playerGroups)){ return true; }else{ return false; }
 }
 function isStaff($player){
+	/* Checks to see whether a player is staff or not
+	 *
+	 * Recieves: $player
+	 * Throws: True if the player is staff, otherwise false
+	 */
 	return isInGroup($player, "Moderator");
 }
 function isOnlinePlayer($player){
+	/* Checks to see if the specified player is online or not
+	 *
+	 * Recieves: $player
+	 * Throws: True of the specified player is online on any server, otherwise false.
+	 */
 	if(in_array($player, getAllPlayers())){ return true; }else{ return false; }
 }
 function getAllPlayers(){
+	/* Gets all online players
+	 *
+	 * Recieves: null
+	 * Throws: Array of all online players, or empty array if none.
+	 */
 	include('includes/servers.php');
 	$finalPlayers = array();
 	foreach($servers as $server){
@@ -101,11 +143,21 @@ function getAllPlayers(){
 	return $finalPlayers;
 }
 function isRealPlayer($player){
+	/* Checks to see if the specified player is a real player and has visited an Araeosia server before.
+	 *
+	 * Recieves: $player
+	 * Throws: True if the specified player is a real player, otherwise false.
+	 */
 	include('includes/myslq.php');
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'");
 	if(mysql_fetch_array($query)!=false){ return true; }else{ return false; }
 }
 function player($player){
+	/* Returns a full player's name based off a beginning fragment
+	 *
+	 * Recieves: $player
+	 * Throws: Full player's name, or false if the player isn't online.
+	 */
 	$onlinePlayers = getAllPlayers();
 	$done = false;
 	foreach($onlinePlayers as $playerToCheck){
@@ -119,6 +171,11 @@ function player($player){
 	if(!$done){ return false; }
 }
 function offlinePlayer(){
+	/* Returns a full player's name based off a beginning fragment, including offline players.
+	 *
+	 * Recieves: $player
+	 * Throws: Full player's name, or false if the player doesn't exist.
+	 */
 	$players = getAllOfflinePlayers();
 	$done = false;
 	foreach($players as $playerToCheck){
@@ -133,7 +190,14 @@ function offlinePlayer(){
 }
 // Server related functions
 function getServersByPlayer($player){
+	/* Gets the servers that a player is connected to.
+	 *
+	 * Recieves: $player
+	 * Throws: Array of servers that the player is connected to, or an empty array if none.
+	 */
 	include('includes/servers.php');
+	$player = player($player);
+	if($player==false){ die('Invalid player!'); }
 	$serversPlayerIsIn = array();
 	foreach($servers as $server){
 		$players = getOnlinePlayers($server);
@@ -142,6 +206,11 @@ function getServersByPlayer($player){
 	return $serversPlayerIsIn;
 }
 function getAllOfflinePlayers(){
+	/* Gets a list of all players that have ever connected to the server.
+	 *
+	 * Recieves: null
+	 * Throws: Array of players that have visited any Araeosia servers, or empty array if none.
+	 */
 	include('includes/mysql.php');
 	$query = mysql_query("SELECT * FROM TrueGroups");
 	$finalPlayers = array();
@@ -151,6 +220,11 @@ function getAllOfflinePlayers(){
 	return $finalPlayers;
 }
 function getOnlinePlayers($server){
+	/* Gets all online players on a server.
+	 *
+	 * Recieves: $server
+	 * Throws: Array of players that are connected to a server.
+	 */
 	include('includes/servers.php');
 	$Query = new MinecraftQuery();
 	$players = array();
@@ -183,18 +257,23 @@ function hasReadBook($player, $bookid){
 }
 // Mail related functions
 function readMessage($msgid, $player=false){
+	/* Reads a mail message from the database to the specified player.
+	 *
+	 * Recieves: $msgid, [$player]
+	 * Throws: null
+	 */
 	include("includes/mysql.php");
 	$query = mysql_query("SELECT * FROM Mail WHERE msgid='$msgid'");
 	$row = mysql_fetch_array($query);
 	$finaloutput = "§b------- §aMail Message ".$msgid." from ".getFullName(offlinePlayer($row['name']))." §b-------\n§eMessage sent on ".date("l jS \of F Y h:i:s A", $row['time'])."\n".htmlspecialchars_decode($row['message']);
-	if($player==false){ echo $finaloutput; }else{
-		if(player($player)==false){ die('Invalid player!'); }
-		include('includes/passwords.php');
-		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
-		$JSONAPI->call('sendMessage', array(player($player), $finaloutput));
-	}
+	if($player==false){ echo $finaloutput; }else{ tellPlayer($player, $finaloutput); }
 }
 function writeMessage($player, $recipient, $message){
+	/* Writes a mail message to the database
+	 *
+	 * Recieves: $player, $recipient, $message
+	 * Throws: null
+	 */
 	if(offlinePlayer($player)===false){ die('Not a valid player'); }
 	include('includes/mysql.php');
 	$query = mysql_query("SELECT * FROM Mail");
@@ -209,6 +288,11 @@ function writeMessage($player, $recipient, $message){
 	mysql_query("INSERT INTO Mail (id, msgid, time, name, recipient, message, status) VALUES ('NULL', '$msgid', '$time', '$name', '$recipient', '$msg', '1')");
 }
 function listMessages($player, $page=0){
+	/* Echos a list of mail messages
+	 *
+	 * Recieves: $player, [$page]
+	 * Throws: null
+	 */
 	include('includes/mysql.php');
 	$player = offlinePlayer($player);
 	if($player==false){ die('Invalid player!'); }
@@ -235,7 +319,11 @@ function listMessages($player, $page=0){
 }
 // Chat related functions
 function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
-	// This function will send a message to all members of a channel while excluding any user names in the $excluded array. The message and channel are expected to be a string.
+	/* Sends a message to all members of a channel while excluding any user names in the $excluded array.
+	 *
+	 * Recieves: $channel, $message, $sender, [$excluded]
+	 * Throws: null
+	 */
 	if(!isset($channel) || !is_string($channel)){ die('$channel is not a string!'); }
 	if(!isset($message) || !is_string($message)){ die('$message is not a string!'); }
 	if(!isset($excluded) || !is_array($excluded)){ die('$excluded is not an array!'); }
@@ -255,6 +343,11 @@ function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
 	}
 }
 function channel($channel){
+	/* Returns a database-compatible channel identifier based off a name, abbreviation, etc.
+	 *
+	 * Recieves: $channel
+	 * Throws: Database-compatible channel identifier, or false if not a channel.
+	 */
 	switch(strtoupper($channel)){
 		case "S":
 		case "STAFF":
@@ -299,6 +392,11 @@ function channel($channel){
 	return $output;
 }
 function getColoredChannel($channel){
+	/* Returns a colored channel name
+	 *
+	 * Recieves: $channel
+	 * Throws: String containing the color code and full name of the specified channel.
+	 */
 	$channel = channel($channel);
 	if($channel==false){ die('Invalid channel!'); }
 	$channelFullNames = array('A' => 'Araeosia', 'S' => 'Staff', 'T' => 'Trade', 'H' => 'Help', 'L' => 'Local', 'G' => 'Group', 'FL' => 'Foreign Language', 'M' => 'Modded', 'RP' => 'Roleplay');
@@ -306,12 +404,22 @@ function getColoredChannel($channel){
 	return "§".$channelColors[$channel].$channelFullNames[$channel];
 }
 function getChannelColor($channel){
+	/* Gets the color code of a specified channel, with the §.
+	 *
+	 * Recieves: $channel
+	 * Throws: Channel color code
+	 */
 	$channel = channel($channel);
 	if($channel==false){ die('Invalid channel!'); }
 	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3');
 	return "§".$channelColors[$channel];
 }
 function getWorldName($world){
+	/* Gets the properly formatted world name of a specified world.
+	 *
+	 * Recieves: $world
+	 * Throws: Properly formatted and replaced world name.
+	 */
 	switch($world){
 		case "Main_nether":
 			$worldname = "Nether";
@@ -332,10 +440,19 @@ function getWorldName($world){
 	return $worldname;
 }
 function isChannel($channel){
-	$channels = array('A', 'S', 'T', 'H', 'L', 'G', 'FL', 'M', 'RP');
-	if(in_array(strtoupper($channel), $channels)){ return true; }else{ return false; }
+	/* Checks to see if a specified string is a real channel
+	 *
+	 * Recieves: $channel
+	 * Throws: True if real channel, otherwise false.
+	 */
+	if(channel($channel)==false){ return false; }else{ return true; }
 }
 function tellPlayer($player, $message){
+	/* Sends a message to the specified player on all servers.
+	 *
+	 * Recieves: $player, $message
+	 * Throws: null
+	 */
 	include('includes/passwords.php');
 	include('includes/servers.php');
 	$player = player($player);
