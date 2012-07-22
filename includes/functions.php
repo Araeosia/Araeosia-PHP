@@ -28,7 +28,7 @@ function getPrimaryGroup($player){
 	 * Throws: Primary group of a player
 	 */
 	include('includes/mysql.php');
-	if(offlinePlayer($player)==false){ die('Invalid player!'); }
+#	if(offlinePlayer($player)==false){ die('Invalid player!'); }
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
 	$groups = array();
 	while($row = mysql_fetch_array($query)){ array_push($groups, $row['group']); }
@@ -179,6 +179,7 @@ function offlinePlayer(){
 	$done = false;
 	foreach($players as $playerToCheck){
 	// Matches to the beginning of the name only, just like Bukkit.
+		echo "Checking ".$playerToCheck."\n";
 		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
 			return $playerToCheck;
 			$done = true;
@@ -186,6 +187,20 @@ function offlinePlayer(){
 		}
 	}
 	if(!$done){ return false; }
+}
+function rankPlayers($players){
+	/* Returns an array with the given players sorted from highest to lowest rank.
+	 *
+	 * Recieves: $players
+	 * Throws: Sorted array of player names
+	 */
+	$rankedList = array();
+	foreach($players as $player){if(getPrimaryGroup($player)=="Head-Admin"){ array_push($rankedList, $player); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Admin"){ array_push($rankedList, $player); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Moderator"){ array_push($rankedList, $player); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Veteran"){ array_push($rankedList, $player); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Default"){ array_push($rankedList, $player); } }
+	return $rankedList;
 }
 // Server related functions
 function getServersByPlayer($player){
