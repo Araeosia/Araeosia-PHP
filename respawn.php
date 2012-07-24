@@ -7,6 +7,7 @@ $args = $_POST['args'];
 // Fetch death location
 include('includes/mysql.php');
 include('includes/functions.php');
+serverCheck($server, array('RPG'));
 $playerX = $args[1];
 $playerY = $args[2];
 $playerZ = $args[3];

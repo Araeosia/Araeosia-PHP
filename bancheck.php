@@ -7,6 +7,7 @@ $lookUp = $args[1];
 include('includes/staff.php');
 include('includes/mysql.php');
 include('includes/functions.php');
+serverCheck($server, true);
 if(!in_array(strtolower($name), $staff)){ die('§cYou do not have permission to perform this command!'); }
 // Fishbans! http://fishbans.com/
 $webLocation = "http://www.fishbans.com/api/bans/".$lookUp."/";

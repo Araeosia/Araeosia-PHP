@@ -10,6 +10,8 @@ $W = $_POST['playerWorld'];
 
 // Connect to MySQL database
 include('includes/mysql.php');
+include('includes/functions.php');
+serverCheck($server, array('RPG'));
 
 // Fetch current amount of money
 $iconomyrow = mysql_fetch_array( mysql_query("SELECT * FROM iConomy WHERE username='$name' AND status=0") );

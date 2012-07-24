@@ -16,7 +16,7 @@ $server = $_GET['s'];
 $args = $_POST['args'];
 $channel=channel($args[2]);
 $arg1 = strtoupper($args[1]);
-if($name!="AgentKid"){ die('This is broken. Sorry.'); }
+#if($name!="AgentKid"){ die('This is broken. Sorry.'); }
 // Generic queries
 // Type 1 means you're speaking in that room, Type 2 means that you're just in that room and listening.
 $chatHandle = new ChannelHandle($name);

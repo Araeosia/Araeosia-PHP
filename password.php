@@ -4,6 +4,8 @@ $args = $_POST['args'];
 $name = $_POST['player'];
 // Connect to the MySQL server
 include('includes/mysql.php');
+include('includes/functions.php');
+serverCheck($server, true);
 
 // Set status
 if($args[1] == "changing" && $args[2] == "confirmed"){

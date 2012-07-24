@@ -7,6 +7,7 @@ $booknumber = $args[2];
 // Includes
 include("includes/mysql.php");
 include("includes/books.php");
+serverCheck($server, array('RPG'));
 
 // Finalize book time
 $hours = floor($seconds / (60 * 60));

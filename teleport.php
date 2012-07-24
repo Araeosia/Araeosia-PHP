@@ -10,6 +10,8 @@ $blockWorld = $args[4];
 if($args[5]=='L'){ $click = "Left"; }else{ $click = "Right"; }
 // Connect to database
 include('includes/mysql.php');
+include('includes/functions.php');
+serverCheck($server, array('RPG'));
 // Check which block is being used
 switch(true){
 	case $blockX=="-339" and $blockY=="71" and $blockZ=="55" and $blockWorld=="Araeosia":

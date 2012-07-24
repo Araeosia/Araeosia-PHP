@@ -1,6 +1,8 @@
 <?php
 include("includes/groups.php");
 include("includes/mysql.php");
+include('includes/functions.php');
+serverCheck($server, true);
 
 // Calculate total number of players seen
 

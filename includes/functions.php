@@ -31,8 +31,11 @@ function getPrimaryGroup($player){
 #	if(offlinePlayer($player)==false){ die('Invalid player!'); }
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
 	$groups = array();
-	while($row = mysql_fetch_array($query)){ array_push($groups, $row['group']); }
-	$primaryGroup = "default";
+	while($row = mysql_fetch_array($query)){
+		array_push($groups, $row['group']);
+#		var_dump($row);
+	}
+	$primaryGroup = "Default";
 	if(in_array('Veteran', $groups)){ $primaryGroup = "Veteran"; }
 	if(in_array('Supporter', $groups)){ $primaryGroup = "Supporter"; }
 	if(in_array('Moderator', $groups)){ $primaryGroup = "Moderator"; }
@@ -72,6 +75,9 @@ function getFullName($player){
 			break;
 		case "AgentKid":
 			$player = "The Agent";
+			break;
+		case "turkeymilk":
+			$player = "The Turkey";
 			break;
 		default:
 			$player = $player;
@@ -202,6 +208,18 @@ function rankPlayers($players){
 	foreach($players as $player){if(getPrimaryGroup($player)=="Default"){ array_push($rankedList, $player); } }
 	return $rankedList;
 }
+function getOnlineStaff(){
+	/* Returns an array with all online staff members names.
+	 *
+	 * Recieves: Null
+	 * Throws: Array of online staff members or false if none.
+	 */
+	$onlineStaff = array();
+	foreach(getAllPlayers() as $player){
+		if(isStaff($player)){ array_push($onlineStaff, $player); }
+	}
+	if(count($onlineStaff)>0){ return $onlineStaff; }else{ return false; }
+}
 // Server related functions
 function getServersByPlayer($player){
 	/* Gets the servers that a player is connected to.
@@ -249,6 +267,14 @@ function getOnlinePlayers($server){
 		$players = array();
 	}
 	return $players;
+}
+function serverCheck($server, $allowedServers){
+	/* Checks to see if the command is allowed to be used on that server.
+	 *
+	 * Recieves: $server, array of allowed servers
+	 * Throws: True if allowed, or exits the script.
+	 */
+	if(is_array($allowedServers) && in_array($server, $allowedServers) || $allowedServers === true){ return true; }else{ exit; }
 }
 // Teleport related functions
 function isRegisteredAtLocation($locid){
@@ -375,6 +401,10 @@ function channel($channel){
 		case "TRADE":
 			$output = "T";
 			break;
+		case "V":
+		case "VANILLA":
+			$output = "V";
+			break;
 		case "H":
 		case "HELP":
 			$output = "H";
@@ -413,8 +443,8 @@ function getColoredChannel($channel){
 	 */
 	$channel = channel($channel);
 	if($channel==false){ die('Invalid channel!'); }
-	$channelFullNames = array('A' => 'Araeosia', 'S' => 'Staff', 'T' => 'Trade', 'H' => 'Help', 'L' => 'Local', 'G' => 'Group', 'FL' => 'Foreign Language', 'M' => 'Modded', 'RP' => 'Roleplay');
-	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3');
+	$channelFullNames = array('A' => 'Araeosia', 'S' => 'Staff', 'T' => 'Trade', 'H' => 'Help', 'L' => 'Local', 'G' => 'Group', 'FL' => 'Foreign Language', 'M' => 'Modded', 'RP' => 'Roleplay', 'V' => 'Vanilla');
+	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3', 'V' => 'f');
 	return "§".$channelColors[$channel].$channelFullNames[$channel];
 }
 function getChannelColor($channel){
@@ -425,7 +455,7 @@ function getChannelColor($channel){
 	 */
 	$channel = channel($channel);
 	if($channel==false){ die('Invalid channel!'); }
-	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3');
+	$channelColors = array('A' => 'e', 'S' => 'a', 'T' => 'b', 'H' => '9', 'L' => 'c', 'G' => '6', 'FL' => '5', 'M' => '7', 'RP' => '3', 'V' => 'f');
 	return "§".$channelColors[$channel];
 }
 function getWorldName($world){
@@ -446,6 +476,15 @@ function getWorldName($world){
 			break;
 		case "Tekkit_the_end":
 			$worldname = "Tekkit The End";
+			break;
+		case "world":
+			$worldname = "Vanilla";
+			break;
+		case "world_nether":
+			$worldname = "Vanilla Nether";
+			break;
+		case "world_the_end":
+			$worldname = "Vanilla The End";
 			break;
 		default:
 			$worldname = $world;
@@ -1217,6 +1256,9 @@ class MCFunctions {
 		}else{
 			return null;
 		}
+	}
+	public function getActiveRespawnLocs($world){
+		include('includes/mysql.php');
 	}
 }
 class NBT {

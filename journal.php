@@ -6,6 +6,8 @@ $args = $_POST['args'];
 
 // Make a MySQL Connection
 include('includes/mysql.php');
+include('includes/functions.php');
+serverCheck($server, array('RPG'));
 // Check if the user has previously opened the journal
 $journaltable = mysql_query("SELECT * FROM JournalOpened WHERE name='$name'")
 or die(mysql_error());

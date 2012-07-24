@@ -2,6 +2,7 @@
 include('includes/functions.php');
 include('includes/servers.php');
 include('includes/passwords.php');
+serverCheck($server, true);
 $name = $_POST['player'];
 if(!isStaff($name)){
 	// Lol

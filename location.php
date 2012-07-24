@@ -9,6 +9,7 @@ $name = $_POST['player'];
 
 include("includes/functions.php");
 include('includes/mysql.php');
+serverCheck($server, array('RPG'));
 
 // Check for worlds
 switch($world){

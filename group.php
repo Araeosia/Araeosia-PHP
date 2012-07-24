@@ -2,6 +2,7 @@
 include('includes/mysql.php');
 include('includes/staff.php');
 include('includes/functions.php');
+serverCheck($server, true);
 $name = $_POST['player'];
 if(!isStaff($name)){ die('No.'); }
 $args = $_POST['args'];

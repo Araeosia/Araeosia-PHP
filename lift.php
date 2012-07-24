@@ -7,6 +7,8 @@ $X = $args[1];
 $Y = $args[2];
 $Z = $args[3];
 include('includes/mysql.php');
+include('includes/functions.php');
+serverCheck($server, array('RPG'));
 if($X!=256){ exit; }
 if($Y==62){ $spot = "the surface"; } else { $spot = "the caves"; }
 if($Z==-891 || $Z ==-893){

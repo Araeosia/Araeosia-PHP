@@ -6,6 +6,9 @@ $args = $_POST['args'];
 $confirmed = $args[1];
 // Get group from database, since Websend might be used
 include('includes/mysql.php');
+include('includes/functions.php');
+serverCheck($server, array('RPG'));
+
 $grouptable = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name' AND parent='Tutorial'") or die(mysql_error());  
 $grouprow = mysql_fetch_array( $grouptable );
 $group = $grouprow['parent'];

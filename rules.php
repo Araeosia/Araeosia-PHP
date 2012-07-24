@@ -2,6 +2,7 @@
 $name = $_POST['player'];
 $world = $_POST['playerWorld'];
 $args = $_POST['args'];
+serverCheck($server, array('Freebuild'));
 if($args[1]!='global'){
 	echo "§cRules specific to §b".$world." §care listed below. All global rules apply in this world, and can be viewed with §e/globalrules§c.\n";
 	switch($world){

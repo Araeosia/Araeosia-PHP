@@ -9,6 +9,8 @@ $playerX = $_POST['playerX'];
 $playerY = $_POST['playerY'];
 $playerZ = $_POST['playerZ'];
 $world = $_POST['playerWorld'];
+serverCheck($server, array('RPG'));
+
 
 // Connect to MySQL server
 include('includes/mysql.php');

@@ -3,6 +3,8 @@ $name = $_POST['player'];
 $world = $_POST['playerWorld'];
 // Includes
 include('includes/mysql.php');
+include('includes/functions.php');
+serverCheck($server, array('RPG'));
 $query = mysql_query("SELECT * FROM permissions_inheritance WHERE child='$name'");
 $groups = array();
 while($row = mysql_fetch_array($query)){ array_push($groups, $row[parent]); }
