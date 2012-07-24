@@ -954,7 +954,7 @@ class ChannelHandle {
 	}
 	public function isInChannel($channel){
 		$channel = channel($channel);
-		if(in_array($channel, $this->ChannelsIn) || $channel==$this->currentChannel){ return true; }else{ return false; }
+		if(in_array($channel, $this->channelsIn) || $channel==$this->currentChannel){ return true; }else{ return false; }
 	}
 	public function getChannelMembers($channel){
 		include('includes/mysql.php');
