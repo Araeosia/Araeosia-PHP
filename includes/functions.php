@@ -965,7 +965,7 @@ class ChannelHandle {
 		$inThisRoom = array();
 		while($row = mysql_fetch_array($query)){
 			// If the player specified in this row is online, push their full name into the $inThisRoom array.
-			if(in_array($onlinePlayers, $row['name'])){ array_push($inThisRoom, getFullName($row['name'])); }
+			if(in_array($row['name'], $onlinePlayers)){ array_push($inThisRoom, getFullName($row['name'])); }
 		}
 		return $inThisRoom;
 	}

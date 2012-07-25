@@ -43,11 +43,12 @@ if(channel($arg1)!=false){
 			$chatHandle->leaveChannel($channel);
 			break;
 		case "WHO":
-			echo getChannelColor($chatHandle->currentChannel)."------- ".getColoredChannel($chatHandle->currentChannel)." -------\n";
-			echo implode('§f, ', $chatHandle->getChannelMembers($chatHandle->currentChannel))."\n";
+			echo "------------------- Channel Members -------------------\n\n";
+			echo getChannelColor($chatHandle->currentChannel)."----------- ".getColoredChannel($chatHandle->currentChannel)." -----------\n";
+			echo "§aMembers: ".implode('§f, ', $chatHandle->getChannelMembers($chatHandle->currentChannel))."\n";
 			foreach($chatHandle->channelsIn as $channel){
-				echo getChannelColor($channel)."------- ".getColoredChannel($channel)." -------\n";
-				echo implode('§f, ', $chatHandle->getChannelMembers($channel))."\n";
+				echo getChannelColor($channel)."----------- ".getColoredChannel($channel)." -----------\n";
+				echo "§aMembers: ".implode('§f, ', $chatHandle->getChannelMembers($channel))."\n";
 			}
 			break;
 		case "LIST":
