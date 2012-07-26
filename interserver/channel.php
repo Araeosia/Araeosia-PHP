@@ -61,17 +61,17 @@ if(channel($arg1)!=false){
 			$mutee = player($args[3]);
 			if(isStaff($mutee)){ die('§cYou cannot mute '.getFullName($mutee).'§c as they are staff!'); }
 			if($mutee==false){ die('§cCould not find a player by that name!'); }
-			$query = mysql_query("SELECT * FROM Mutes WHERE name='$mutee' AND channel='$ch'") or die(mysql_error());
+			$query = mysql_fetch_array(mysql_query("SELECT * FROM Mutes WHERE name='$mutee' AND channel='$ch'") or die(mysql_error()));
 			if($query!=false){
 				// Player is already muted, unmute them.
 				mysql_query("DELETE FROM Mutes WHERE name='$mutee' AND channel='$ch'");
 				tellPlayer($mutee, "§cYou were unmuted by ".getFullName($name)." §c in the ".getColoredChannel($ch)." §cchannel!\n");
-				echo "§aUnmuted ".$mutee." in channel §".$channelColors[$ch].$channelFullNames[$ch]."§a!";
+				echo "§aUnmuted ".getFullName($mutee)." §ain channel §".$channelColors[$ch].$channelFullNames[$ch]."§a!";
 			}else{
 				// Player isn't muted, mute them.
 				mysql_query("INSERT INTO Mutes (id, name, channel) VALUES ('NULL', '$mutee', '$ch')");
 				tellPlayer($mutee, "§cYou were muted by ".getFullName($name)." §c in the ".getColoredChannel($ch)." §cchannel!\n");
-				echo "§aMuted ".$mutee." in channel §".$channelColors[$ch].$channelFullNames[$ch]."§a!";
+				echo "§aMuted ".getFullName($mutee)." §ain channel §".$channelColors[$ch].$channelFullNames[$ch]."§a!";
 			}
 			break;
 		case "GMUTE":
@@ -79,15 +79,15 @@ if(channel($arg1)!=false){
 			$mutee = player($args[2]);
 			if(isStaff($mutee)){ die('§cYou cannot mute '.getFullName($mutee).'§c as they are staff!'); }
 			if($mutee==false){ die('§cCould not find a player by that name!'); }
-			$query = mysql_query("SELECT * FROM GMutes WHERE name='$mutee'");
+			$query = mysql_fetch_array(mysql_query("SELECT * FROM GMutes WHERE name='$mutee'"));
 			if($query!=false){
 				// Player is already muted, unmute them.
 				mysql_query("DELETE FROM GMutes WHERE name='$mutee'");
-				echo "§aUnmuted ".$mutee." globally!";
+				echo "§aUnmuted ".getFullName($mutee)." §aglobally!";
 			}else{
 				// Player isn't muted, mute them.
 				mysql_query("INSERT INTO GMutes (id, name) VALUES ('NULL', '$mutee')");
-				echo "§aMuted ".$mutee." globally!";
+				echo "§aMuted ".getFullName($mutee)." §aglobally!";
 			}
 			break;
 		case "KICK":
