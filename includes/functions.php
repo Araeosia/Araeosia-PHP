@@ -169,11 +169,10 @@ function player($player){
 	// Matches to the beginning of the name only, just like Bukkit.
 		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
 			return $playerToCheck;
-			$done = true;
 			break;
 		}
 	}
-	if(!$done){ return false; }
+	return false
 }
 function offlinePlayer(){
 	/* Returns a full player's name based off a beginning fragment, including offline players.
