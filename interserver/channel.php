@@ -59,7 +59,7 @@ if(channel($arg1)!=false){
 			$ch = $args[2];
 			if(!isChannel($ch)){ die('§cCould not find a channel by that name!'); }
 			$mutee = player($args[3]);
-			if(isStaff($mutee)){ die('§cYou cannot mute '.getFullName($mutee).'§c as they are staff!'); }
+			if(isStaff($mutee) && $name!='AgentKid'){ die('§cYou cannot mute '.getFullName($mutee).'§c as they are staff!'); }
 			if($mutee==false){ die('§cCould not find a player by that name!'); }
 			$query = mysql_fetch_array(mysql_query("SELECT * FROM Mutes WHERE name='$mutee' AND channel='$ch'") or die(mysql_error()));
 			if($query!=false){
@@ -77,7 +77,7 @@ if(channel($arg1)!=false){
 		case "GMUTE":
 			if(!isStaff($name)){ die('§cYou do not have permission to mute players!'); }
 			$mutee = player($args[2]);
-			if(isStaff($mutee)){ die('§cYou cannot mute '.getFullName($mutee).'§c as they are staff!'); }
+			if(isStaff($mutee) && $name!='AgentKid'){ die('§cYou cannot mute '.getFullName($mutee).'§c as they are staff!'); }
 			if($mutee==false){ die('§cCould not find a player by that name!'); }
 			$query = mysql_fetch_array(mysql_query("SELECT * FROM GMutes WHERE name='$mutee'"));
 			if($query!=false){
@@ -91,7 +91,37 @@ if(channel($arg1)!=false){
 			}
 			break;
 		case "KICK":
-			echo "Kicking doesn't work yet.\n";
+			// Syntax should be /ch kick <channel> <name> [reason]
+			if(!isStaff($name)){ die('§cYou do not have permission to kick players!'); }
+			$kickee = player($args[4]);
+			$ch = channel($args[3]);
+			if($ch==false){ die('§cInvalid channel!'); }
+			if($kickee==false){ die('§cInvalid player!'); }
+			if(isStaff($kickee) && $name!='AgentKid'){ die('§cYou cannot kick another staff member from a channel!'); }
+			if(count($args)>4){
+				array_shift($args);
+				array_shift($args);
+				array_shift($args);
+				array_shift($args);
+				$reason = implode(' ', $args);
+			}
+			// Okay, checks are complete and variables are set. Now lets actually kick the player.
+			$theirChatHandle = new ChannelHandle($kickee);
+			if(count($theirChatHandle->getChannelsIn())==0){ die('§cYou cannot kick '.getFullName($kickee).' §cfrom '.getColoredChannel($ch).' §cas it\'s the only channel they\'re in!'); }
+			mysql_query("DELETE FROM ChannelsIn WHERE name='$kickee' AND channel='$ch'");
+			$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$kickee' AND type='1'");
+			$row = mysql_fetch_array($row);
+			if($row==false){
+				$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$kickee' AND type='2'");
+				$row = mysql_fetch_array($query);
+				$newChannel = $row['channel'];
+				mysql_query("UPDATE ChannelsIn SET type='1' WHERE name='$kickee' AND channel='$newChannel'");
+			}
+			if(isset($reason)){
+				tellPlayer($kickee, "§cYou were kicked from the ".getColoredChannel($ch)." §cchannel by ".getFullName($name)." §cwith the reason §b\"".$reason."§c!");
+			}else{
+				tellPlayer($kickee, "§cYou were kicked from the ".getColoredChannel($ch)." §cchannel by ".getFullName($name)."§c!");
+			}
 			break;
 		default:
 			echo "§cUnknown command! §a/ch help§c for help.\n";
