@@ -43,12 +43,18 @@ if(channel($arg1)!=false){
 			$chatHandle->leaveChannel($channel);
 			break;
 		case "WHO":
-			echo "------------------- Channel Members -------------------\n\n";
-			echo getChannelColor($chatHandle->currentChannel)."----------- ".getColoredChannel($chatHandle->currentChannel)." -----------\n";
-			echo "§aMembers: ".implode('§f, ', rankPlayers($chatHandle->getChannelMembers($chatHandle->currentChannel)))."\n";
-			foreach($chatHandle->channelsIn as $channel){
+			if(channel($args[2])!=false){
+				$channel = channel($args[2]);
 				echo getChannelColor($channel)."----------- ".getColoredChannel($channel)." -----------\n";
 				echo "§aMembers: ".implode('§f, ', rankPlayers($chatHandle->getChannelMembers($channel)))."\n";
+			}else{
+				echo "------------------- Channel Members -------------------\n\n";
+				echo getChannelColor($chatHandle->currentChannel)."----------- ".getColoredChannel($chatHandle->currentChannel)." -----------\n";
+				echo "§aMembers: ".implode('§f, ', rankPlayers($chatHandle->getChannelMembers($chatHandle->currentChannel)))."\n";
+				foreach($chatHandle->channelsIn as $channel){
+					echo getChannelColor($channel)."----------- ".getColoredChannel($channel)." -----------\n";
+					echo "§aMembers: ".implode('§f, ', rankPlayers($chatHandle->getChannelMembers($channel)))."\n";
+				}
 			}
 			break;
 		case "LIST":
@@ -99,10 +105,7 @@ if(channel($arg1)!=false){
 			if($kickee==false){ die('§cInvalid player!'); }
 			if(isStaff($kickee) && $name!='AgentKid'){ die('§cYou cannot kick another staff member from a channel!'); }
 			if(count($args)>4){
-				array_shift($args);
-				array_shift($args);
-				array_shift($args);
-				array_shift($args);
+				$args = array_shift_multiple($args, 4)
 				$reason = implode(' ', $args);
 			}
 			// Okay, checks are complete and variables are set. Now lets actually kick the player.
