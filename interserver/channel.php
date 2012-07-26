@@ -59,7 +59,7 @@ if(channel($arg1)!=false){
 			$ch = $args[2];
 			if(!isChannel($ch)){ die('§cCould not find a channel by that name!'); }
 			$mutee = player($args[3]);
-			if(isStaff($mutee)){ die('§cYou cannot mute '.getFullName($mutee).' as they are staff!'); }
+			if(isStaff($mutee)){ die('§cYou cannot mute '.getFullName($mutee).'§c as they are staff!'); }
 			if($mutee==false){ die('§cCould not find a player by that name!'); }
 			$query = mysql_query("SELECT * FROM Mutes WHERE name='$mutee' AND channel='$ch'") or die(mysql_error());
 			if($query!=false){
@@ -77,7 +77,7 @@ if(channel($arg1)!=false){
 		case "GMUTE":
 			if(!isStaff($name)){ die('§cYou do not have permission to mute players!'); }
 			$mutee = player($args[2]);
-			if(isStaff($mutee)){ die('§cYou cannot mute '.getFullName($mutee).' as they are staff!'); }
+			if(isStaff($mutee)){ die('§cYou cannot mute '.getFullName($mutee).'§c as they are staff!'); }
 			if($mutee==false){ die('§cCould not find a player by that name!'); }
 			$query = mysql_query("SELECT * FROM GMutes WHERE name='$mutee'");
 			if($query!=false){
