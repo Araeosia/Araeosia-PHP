@@ -608,6 +608,20 @@ class Bcrypt {
     return $output;
   }
 }
+function paginateOutput($output, $pagelength=7){
+	$data = explode("\n", $output);
+	if(count($data)<=$pagelength){ return $output; }
+}
+function getArray($mysqlResult){
+	if(mysql_num_rows($mysqlResult)==0){ return array(); }
+	$output = array();
+	while($row = mysql_fetch_array($mysqlResult)){
+		foreach(array_keys($row) as $key){
+			$output[count($output)][$key] = $row[$key];
+		}
+	}
+	return $output;
+}
 class minecraft {
 
     public $account;

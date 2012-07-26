@@ -42,6 +42,7 @@ $msg = $msg."§cNews: §e/news\n";
 $msg = $msg."§4Araeosia has adopted a No-Mercy policy. §e/nomercy§4 for info.\n";
 $msg = $msg."§4Rules: §e/rules - Updated 2-4-2012\n";
 if(date("j F Y")=="4 July 2012"){ $msg = $msg."§fHappy §3Fourth of §4July!"; }
+if(date("j F Y")=="25 July 2012"){ $msg = $msg."§aA new Survival world has been created!\n"; }
 #$msg = $msg."§4AgentKid §ahas returned from vacation!";
 echo $msg;
 ?>

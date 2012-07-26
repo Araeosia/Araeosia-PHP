@@ -1,38 +1,105 @@
 <?php
-$name = $_POST['player'];
-$serverSending = $_GET['s'];
-$args = $_POST['args'];
-$arg1 = strtoupper($args[1]);
-if($name!='AgentKid'){ die('This function isn\'t ready yet!'); }
-$time = time();
-
 include('includes/functions.php');
-include('includes/mysql.php');
-
-switch($arg1){
-	case "SEND":
-	case "WRITE":
-	case "CREATE":
-		if(offlinePlayer($recipient)==false){ die('§cA player by that name has never logged into an Araeosia server before!'); }
-#		if(player($name)!=false){ sendMessage($recipient, $msg)}
-		$msg = $args;
-		array_shift($msg);
-		array_shift($msg);
-		$msg = htmlspecialchars(implode(' ', $msg));
-		$msgid = rand(100000000, 999999999);
-		mysql_query("INSERT INTO Mail (id, msgid, time, name, recipient, message, status) VALUES ('NULL', '$msgid', '$time', '$name', '$recipient', '$msg', '1')");
-		if(player($recipient)!=false){ readMessage($msgid, $recipient); }
-		break;
-	case "READ":
-	case "OPEN":
-		echo "Recieved an old message!";
-		break;
-	default:
-		echo "HELP MESSAGE GOES HERE!";
-		break;
+class MailHandle{
+	public $nick;
+	protected $mailData;
+	protected $sentData;
+	public function __construct($nick){
+		$sentData = array();
+		$query = mysql_query("SELECT * FROM Mail WHERE name='$nick'");
+		while($row = mysql_fetch_array($query)){
+			$sentData[count($sentData)] = array(
+				'name' => $row['name'],
+				'recipient' => $row['recipient'],
+				'msgid' => $row['msgid'],
+				'time' => $row['time'],
+				'message' => $row['message'],
+				'status' => $row['status']
+			);
+		}
+		$mailData = array();
+		$query = mysql_query("SELECT * FROM Mail WHERE recipient='$nick'");
+		while($row = mysql_fetch_array($query)){
+			$mailData[count($mailData)] = array(
+				'name' => $row['name'],
+				'recipient' => $row['recipient'],
+				'msgid' => $row['msgid'],
+				'time' => $row['time'],
+				'message' => $row['message'],
+				'status' => $row['status']
+			);
+		}
+		$this->mailData = $mailData;
+		$this->sentData = $sentData;
+		$this->nick = $nick;
+	}
+	public function handleCommand($args){
+		if($args[0]!='mail'){ die('Uh....wut?'); }
+		switch(strtolower($args[1])){
+			case "write":
+			case "send":
+			case "compose":
+				array_shift($args);
+				array_shift($args);
+				$recipient = offlinePlayer(array_shift($args));
+				if($recipient==false){ die('Invalid player!'); }
+				$message = implode(' ', $args);
+				$this->sendMail($recipient, $message);
+				break;
+			case "read":
+			case "open":
+				if(!is_int($args[2])){ die('Invalid message ID!'); }
+				if($this->isValidMessageID($args[2])){ die('Invalid message ID!'); }
+				$this->readMail($msgid);
+				break;
+			case "list":
+			case "show":
+				$this->listMail($args[2]);
+				break;
+		}
+	}
+	public function readMail($msgid){
+		// Read a specific mail message from the database.
+	}
+	public function sendMail($recipient, $message){
+		// Write a new mail message.
+	}
+	public function listMail($type){
+		// List all of the mail messages waiting for the person.
+		switch(strtolower($type)){
+			case "":
+			case "all":
+				echo "-------- Listing all mail messages --------\n";
+				foreach($this->mailData as $data){
+					
+				}
+				break;
+			case "new":
+			case "unread":
+				foreach($this->mailData as $data){
+					if($data['status']=='1'){ echo ""; }
+				}
+				break;
+			case "read":
+			case "old":
+				break;
+			case "sent":
+				break;
+			default:
+				die('Invalid type!');
+		}
+	}
+	private function getMail($msgid){
+		// Get a specific mail
+	}
+	private function isValidMessageID($msgid){
+		foreach($this->mailData as $data){
+			if($data['msgid']==$msgid){ return true; }
+		}
+		return false;
+	}
 }
 
-
-
-
+$mailHandle = new MailHanel($_POST['player']);
+$mailHanele->handleCommand($_POST['args']);
 ?>
