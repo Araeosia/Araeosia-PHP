@@ -45,10 +45,10 @@ if(channel($arg1)!=false){
 		case "WHO":
 			echo "------------------- Channel Members -------------------\n\n";
 			echo getChannelColor($chatHandle->currentChannel)."----------- ".getColoredChannel($chatHandle->currentChannel)." -----------\n";
-			echo "§aMembers: ".implode('§f, ', $chatHandle->getChannelMembers($chatHandle->currentChannel))."\n";
+			echo "§aMembers: ".implode('§f, ', rankPlayers($chatHandle->getChannelMembers($chatHandle->currentChannel)))."\n";
 			foreach($chatHandle->channelsIn as $channel){
 				echo getChannelColor($channel)."----------- ".getColoredChannel($channel)." -----------\n";
-				echo "§aMembers: ".implode('§f, ', $chatHandle->getChannelMembers($channel))."\n";
+				echo "§aMembers: ".implode('§f, ', rankPlayers($chatHandle->getChannelMembers($channel)))."\n";
 			}
 			break;
 		case "LIST":
@@ -60,14 +60,16 @@ if(channel($arg1)!=false){
 			if(!isChannel($ch)){ die('§cCould not find a channel by that name!'); }
 			$mutee = player($args[2]);
 			if($mutee==false){ die('§cCould not find a player by that name!'); }
-			$query = mysql_query("SELECT * FROM Mutes WHERE name='$mutee' AND channel='$ch'");
+			$query = mysql_query("SELECT * FROM Mutes WHERE name='$mutee' AND channel='$ch'") or die(mysql_error());
 			if($query!=false){
 				// Player is already muted, unmute them.
 				mysql_query("DELETE FROM Mutes WHERE name='$mutee' AND channel='$ch'");
+				tellPlayer($mutee, "§cYou were unmuted by ".getFullName($name)." §c in the ".getColoredChannel($ch)." §cchannel!\n");
 				echo "§aUnmuted ".$mutee." in channel §".$channelColors[$ch].$channelFullNames[$ch]."§a!";
 			}else{
 				// Player isn't muted, mute them.
 				mysql_query("INSERT INTO Mutes (id, name, channel) VALUES ('NULL', '$mutee', '$ch')");
+				tellPlayer($mutee, "§cYou were muted by ".getFullName($name)." §c in the ".getColoredChannel($ch)." §cchannel!\n");
 				echo "§aMuted ".$mutee." in channel §".$channelColors[$ch].$channelFullNames[$ch]."§a!";
 			}
 			break;
