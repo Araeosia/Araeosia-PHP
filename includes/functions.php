@@ -172,7 +172,7 @@ function player($player){
 			break;
 		}
 	}
-	return false
+	return false;
 }
 function offlinePlayer(){
 	/* Returns a full player's name based off a beginning fragment, including offline players.
