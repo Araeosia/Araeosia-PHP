@@ -50,7 +50,7 @@ if(channel($arg1)!=false){
 				if(count($channelContents)>0){
 					echo "§aMembers: ".implode('§f, ', rankPlayers($channelContents))."\n";
 				}else{
-					echo "§c   No members!    ";
+					echo "§cNo members!";
 				}
 			}else{
 				echo "------------------- Channel Members -------------------\n\n";

@@ -30,10 +30,8 @@ if(mysql_fetch_array(mysql_query("SELECT * FROM TrueGroups WHERE name='$name'"))
 #$fishBans->isCached($name);
 
 $online = rankPlayers(getAllPlayers());
-$playersfinal = array();
-foreach($online as $player){ array_push($playersfinal, getFullName($player)); }
 $onlinect = count($online);
-$online = implode($playersfinal, '§e, ');
+$online = implode($online, '§e, ');
 
 $msg = "§bWelcome to the Araeosia Freebuild Server, ".$name."!\n";
 $msg = $msg."§3You are currently in ".getWorldName($worldname)."§3.\n";

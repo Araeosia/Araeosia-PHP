@@ -200,11 +200,11 @@ function rankPlayers($players){
 	 * Throws: Sorted array of player names
 	 */
 	$rankedList = array();
-	foreach($players as $player){if(getPrimaryGroup($player)=="Head-Admin"){ array_push($rankedList, $player); } }
-	foreach($players as $player){if(getPrimaryGroup($player)=="Admin"){ array_push($rankedList, $player); } }
-	foreach($players as $player){if(getPrimaryGroup($player)=="Moderator"){ array_push($rankedList, $player); } }
-	foreach($players as $player){if(getPrimaryGroup($player)=="Veteran"){ array_push($rankedList, $player); } }
-	foreach($players as $player){if(getPrimaryGroup($player)=="Default"){ array_push($rankedList, $player); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Head-Admin"){ array_push($rankedList, getFullName($player)); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Admin"){ array_push($rankedList, getFullName($player)); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Moderator"){ array_push($rankedList, getFullName($player)); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Veteran"){ array_push($rankedList, getFullName($player)); } }
+	foreach($players as $player){if(getPrimaryGroup($player)=="Default"){ array_push($rankedList, getFullName($player)); } }
 	return $rankedList;
 }
 function getOnlineStaff(){
@@ -608,6 +608,7 @@ class Bcrypt {
     return $output;
   }
 }
+// System related functions
 function paginateOutput($output, $pagelength=7){
 	$data = explode("\n", $output);
 	if(count($data)<=$pagelength){ return $output; }
@@ -621,6 +622,17 @@ function getArray($mysqlResult){
 		}
 	}
 	return $output;
+}
+function array_shift_multiple($array, $times=1){
+	$count = 0;
+	while($count<$times){
+		$count = $count+1;
+		array_shift($array);
+	}
+	return $array;
+}
+function centerOutput($string){
+	$totalLength = strlen($string);
 }
 class minecraft {
 
@@ -978,7 +990,7 @@ class ChannelHandle {
 		$inThisRoom = array();
 		while($row = mysql_fetch_array($query)){
 			// If the player specified in this row is online, push their full name into the $inThisRoom array.
-			if(in_array($row['name'], $onlinePlayers)){ array_push($inThisRoom, getFullName($row['name'])); }
+			if(in_array($row['name'], $onlinePlayers)){ array_push($inThisRoom, $row['name']); }
 		}
 		return $inThisRoom;
 	}
