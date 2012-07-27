@@ -357,7 +357,7 @@ function listMessages($player, $page=0){
 	}
 }
 // Chat related functions
-function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
+function sendMessageToChannel($channel, $sender, $message, $world, $excluded=array()){
 	/* Sends a message to all members of a channel while excluding any user names in the $excluded array.
 	 *
 	 * Recieves: $channel, $message, $sender, [$excluded]
@@ -375,10 +375,19 @@ function sendMessageToChannel($channel, $message, $sender, $excluded=array()){
 	$ignoredby = array();
 	$query2 = mysql_query("SELECT * FROM Blocks WHERE blockee='$sender'");
 	while($row2 = mysql_fetch_array($query2)){ array_push($ignoredby, $row2['name']); }
+	$query3 = mysql_query("SELECT * FROM ChannelStyles");
+	while($row3 = mysql_fetch_array($query3)){ $channelStyles[$row3['name']] = integer($row3['style']); }
 	foreach($servers as $server){
 		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 		$players = getOnlinePlayers($server);
-		foreach($players as $player){ if(in_array($player, $inChannel) && !in_array($player, $excluded) && !in_array($player, $ignoredby)){ $JSONAPI->call('sendMessage', array($player, $message)); } }
+		if(count($players)!=0){
+			foreach($players as $player){
+				if(in_array($player, $inChannel) && !in_array($player, $excluded) && !in_array($player, $ignoredby)){
+					$realMessage = formatOutput($channelStyles[$player], $channel, $sender, $message, $world);
+					$JSONAPI->call('sendMessage', array($player, $realMessage));
+				}
+			}
+		}
 	}
 }
 function channel($channel){
@@ -607,6 +616,42 @@ class Bcrypt {
 
     return $output;
   }
+}
+function formatOutput($style=1, $channel, $sender, $message, $world){
+	$channel = channel($channel);
+	if($channel==false){ die('Invalid channel!'); }
+	switch($style){
+		case "1":
+			$finalOutput = getChannelColor($channel)."[".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
+			break;
+		case "2":
+			$finalOutput = getChannelColor($channel)."[".$channel."]".getFullName($name)."§f: ".$msg;
+			break;
+                case "3":
+                        $finalOutput = "§8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
+                        break;
+		case "4":
+			$finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
+			break;
+		case "5":
+			$finalOutput = "§d".date("H:i:s").getChannelColor($channel)."[".$channel."]".getFullName($name)."§f: ".$msg;
+			break;
+                case "6":
+                        $finalOutput = "§d".date("H:i:s")." §8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
+                        break;
+	}
+	return $finalOutput;
+}
+function clearScreen(){
+	echo "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+}
+function sysMessage($message){
+	include('includes/servers.php');
+	include('includes/passwords.php');
+	foreach($servers as $server){
+		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+		$JSONAPI->call('broadcast', array($message));
+	}
 }
 // System related functions
 function paginateOutput($output, $pagelength=7){
@@ -950,17 +995,29 @@ class ChannelHandle {
 	public $nick;
 	public $currentChannel;
 	public $channelsIn;
+	public $style;
 	public function __construct($nick){
 		include('includes/mysql.php');
-		$query = mysql_query("SELECT * FROM ChannelsIn WHERE name='$nick' AND type='1'");
-		$query = mysql_fetch_array($query);
+		$query = mysql_fetch_array(mysql_query("SELECT * FROM ChannelsIn WHERE name='$nick' AND type='1'"));
 		$this->nick = $nick;
+		if($query==false){
+			mysql_query("INSERT INTO ChannelsIn (id, name, channel, type) VALUES ('NULL', '$name', 'A', '1')");
+			$query['channel'] = 'A';
+		}
 		$this->currentChannel = $query['channel'];
 		$query2 = mysql_query("SELECT * FROM ChannelsIn WHERE name='$nick' AND type='2'") or die(mysql_error());
 		$channelsIn = array();
 		while($row2 = mysql_fetch_array($query2)){
 			array_push($channelsIn, $row2['channel']);
 		}
+		$query3 = mysql_fetch_array(mysql_query("SELECT * FROM ChannelStyles WHERE name='$nick'"));
+		if($query3==false){
+			mysql_query("INSERT INTO ChannelStyles (id, name, style) VALUES ('NULL', '$nick', '1')") or die(mysql_error());
+			$style = 1;
+		}else{
+			$style = $query3['style'];
+		}
+		$this->style = $style;
 		$this->channelsIn = $channelsIn;
 	}
 	public function isMute($channel=false){
