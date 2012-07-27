@@ -14,7 +14,7 @@ include_once('includes/staff.php');
 $name = $_POST['player'];
 $server = $_GET['s'];
 $args = $_POST['args'];
-$channel=channel($args[2]);
+if(isset($args[2])){ $channel=channel($args[2]); }
 $arg1 = strtoupper($args[1]);
 #if($name!="AgentKid"){ die('This is broken. Sorry.'); }
 // Generic queries
@@ -37,6 +37,20 @@ if(channel($arg1)!=false){
 		case "JOIN":
 			$chatHandle->joinChannel($channel);
 			break;
+		case "FORMAT":
+		case "STYLE":
+                        $chatHandle->setStyle($args[2]);
+			break;
+                case "LISTSTYLE":
+                        clearScreen();
+                        echo "-------------------- Chat Styles --------------------\n\n";
+                        echo "Style 1:    |  §e[A] §f[§9Main§f] §bPlayer§f: Hello.\n\n";
+                        echo "Style 2:    |  §e[A] §bPlayer§f: Hello.\n\n";
+                        echo "Style 3:    |  §8(§bPlayer §8to §eAraeosia§8)§f: Hello.\n\n";
+                        echo "Style 4:    |  §d14:52:08 §e[A] §f[§9Main§f] §bPlayer§f: Hello.\n\n";
+                        echo "Style 5:    |  §d14:52:08 §e[A] §bPlayer§f: Hello.\n\n";
+                        echo "Style 6:    |  §d14:52:08 §8(§bPlayer §8to §eAraeosia§8)§f: Hello.";
+                        break;
 		case "QUIT":
 		case "EXIT":
 		case "LEAVE":

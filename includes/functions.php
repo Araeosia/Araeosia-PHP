@@ -376,7 +376,7 @@ function sendMessageToChannel($channel, $sender, $message, $world, $excluded=arr
 	$query2 = mysql_query("SELECT * FROM Blocks WHERE blockee='$sender'");
 	while($row2 = mysql_fetch_array($query2)){ array_push($ignoredby, $row2['name']); }
 	$query3 = mysql_query("SELECT * FROM ChannelStyles");
-	while($row3 = mysql_fetch_array($query3)){ $channelStyles[$row3['name']] = integer($row3['style']); }
+	while($row3 = mysql_fetch_array($query3)){ $channelStyles[$row3['name']] = $row3['style']; }
 	foreach($servers as $server){
 		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 		$players = getOnlinePlayers($server);
@@ -617,7 +617,7 @@ class Bcrypt {
     return $output;
   }
 }
-function formatOutput($style=1, $channel, $sender, $message, $world){
+function formatOutput($style=1, $channel, $name, $msg, $world){
 	$channel = channel($channel);
 	if($channel==false){ die('Invalid channel!'); }
 	switch($style){
@@ -625,7 +625,7 @@ function formatOutput($style=1, $channel, $sender, $message, $world){
 			$finalOutput = getChannelColor($channel)."[".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
 			break;
 		case "2":
-			$finalOutput = getChannelColor($channel)."[".$channel."]".getFullName($name)."§f: ".$msg;
+			$finalOutput = getChannelColor($channel)."[".$channel."] ".getFullName($name)."§f: ".$msg;
 			break;
                 case "3":
                         $finalOutput = "§8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
@@ -634,7 +634,7 @@ function formatOutput($style=1, $channel, $sender, $message, $world){
 			$finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
 			break;
 		case "5":
-			$finalOutput = "§d".date("H:i:s").getChannelColor($channel)."[".$channel."]".getFullName($name)."§f: ".$msg;
+			$finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] ".getFullName($name)."§f: ".$msg;
 			break;
                 case "6":
                         $finalOutput = "§d".date("H:i:s")." §8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
@@ -1060,6 +1060,13 @@ class ChannelHandle {
 		var_dump($this->currentChannel);
 		var_dump($this->channelsIn);
 	}
+        public function setStyle($style){
+            include('includes/mysql.php');
+            if($style==$this->style){ die('§cYou are already using style 1!'); }
+            if(!in_array($style, range(1, 6))){ die('§cInvalid style!'); }
+            mysql_query("UPDATE ChannelStyles SET style='$style' WHERE name='$this->nick'");
+            echo "§aYou set your style to $style!";
+        }
 	public function joinChannel($channel){
 		$name = $this->nick;
 		$channel = channel($channel);
