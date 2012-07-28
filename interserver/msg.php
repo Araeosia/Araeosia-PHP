@@ -17,6 +17,8 @@ $recipient = array_shift($args);
 $msg = implode(' ', $args);
 if(player($recipient)==false){ $recipient = $previousSender['recipient']; }
 if(player($recipient)==false){ die("§cCould not find a player by that name!"); }
+$channelHandle = new ChannelHandle($name);
+if($channelHandle->isMute() && !isStaff(player($recipient))){ die('§cYou are muted and can only message staff!'); }
 $finalMessageToRecipient = "§8(".getFullName($name)." §7to you§8)§f: ".$msg;
 $finalMessageToSender = "§8(§7you to ".getFullName(player($recipient))."§8)§f: ".$msg;
 $log = $timestamp."(".$name." to ".player($recipient)."): ".$msg."\n";

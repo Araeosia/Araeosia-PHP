@@ -41,6 +41,9 @@ if(channel($arg1)!=false){
 		case "STYLE":
                         $chatHandle->setStyle($args[2]);
 			break;
+                case "LISTSTYLES":
+                case "STYLELIST":
+                case "STYLELISTS":
                 case "LISTSTYLE":
                         clearScreen();
                         echo "-------------------- Chat Styles --------------------\n\n";
@@ -49,7 +52,8 @@ if(channel($arg1)!=false){
                         echo "Style 3:    |  §8(§bPlayer §8to §eAraeosia§8)§f: Hello.\n\n";
                         echo "Style 4:    |  §d14:52:08 §e[A] §f[§9Main§f] §bPlayer§f: Hello.\n\n";
                         echo "Style 5:    |  §d14:52:08 §e[A] §bPlayer§f: Hello.\n\n";
-                        echo "Style 6:    |  §d14:52:08 §8(§bPlayer §8to §eAraeosia§8)§f: Hello.";
+                        echo "Style 6:    |  §d14:52:08 §8(§bPlayer §8to §eAraeosia§8)§f: Hello.\n";
+                        echo "§bChoose your style with §a/ch style #§b.";
                         break;
 		case "QUIT":
 		case "EXIT":

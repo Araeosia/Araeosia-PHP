@@ -21,7 +21,7 @@ $finalmsgout = "§".$channelColors[$channel]."[".$channel."]"." §f[§9".getWorl
 #	$finalmsgout = $finalmsgout.", eh?";
 #}
 $log = $timestamp.$finalmsgout."\n";
-$echoBack = formatOutput($channelHandle->style, $channel, $name, $msg, $world);
+$echoBack = formatOutput($channel, $name, $msg, $world, $channelHandle->style);
 if($serversending=="Modded" && strpos($msg, "echo982")!==false){
 	$JSONAPI = new JSONAPI($ips["Modded"], $ports['jsonapi']["Modded"], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 	$JSONAPI->call('setBlockType', array('Industry', 2016, 62, 32, 2));

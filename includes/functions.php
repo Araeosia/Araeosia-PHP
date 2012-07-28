@@ -71,19 +71,25 @@ function getFullName($player){
 	}
 	switch($player){
 		case "CanadianCellist":
-			$player = "The Canadian";
+			$playerFinal = "The Canadian";
 			break;
 		case "AgentKid":
-			$player = "The Agent";
+			$playerFinal = "The Agent";
 			break;
+                case "mrthemaster10":
+                        $playerFinal = "The Master";
+                        break;
 		case "turkeymilk":
-			$player = "The Turkey";
+			$playerFinal = "The Turkey";
 			break;
+                case "anoki123":
+                        $playerFinal = "The Insane";
+                        break;
 		default:
-			$player = $player;
+			$playerFinal = $player;
 			break;
 	}
-	$playername = $prefix.$player;
+	$playername = $prefix.$playerFinal;
 	return $playername;
 }
 function isInGroup($player, $group){
@@ -276,9 +282,12 @@ function serverCheck($server, $allowedServers){
 	if(is_array($allowedServers) && in_array($server, $allowedServers) || $allowedServers === true){ return true; }else{ exit; }
 }
 // Teleport related functions
-function isRegisteredAtLocation($locid){
+function isRegisteredAtLocation($locid, $name){
 	// Placeholder function.
-	return true;
+    if(!is_int($locid)){ die('Bad location ID!'); }
+    $name = htmlspecialchars($name);
+    $query = mysql_query("SELECT * FROM ShipsCheckin WHERE name='$name' AND loc='$locid'");
+    if(mysql_fetch_array($query)==false){ return false; }else{ return true; }
 }
 // Book related functions
 function readBook($player, $bookid){
@@ -357,7 +366,7 @@ function listMessages($player, $page=0){
 	}
 }
 // Chat related functions
-function sendMessageToChannel($channel, $sender, $message, $world, $excluded=array()){
+function sendMessageToChannel($channel, $sender, $message, $world, $excluded=array(), $me=false){
 	/* Sends a message to all members of a channel while excluding any user names in the $excluded array.
 	 *
 	 * Recieves: $channel, $message, $sender, [$excluded]
@@ -383,8 +392,8 @@ function sendMessageToChannel($channel, $sender, $message, $world, $excluded=arr
 		if(count($players)!=0){
 			foreach($players as $player){
 				if(in_array($player, $inChannel) && !in_array($player, $excluded) && !in_array($player, $ignoredby)){
-					$realMessage = formatOutput($channelStyles[$player], $channel, $sender, $message, $world);
-					$JSONAPI->call('sendMessage', array($player, $realMessage));
+                                      $realMessage = formatOutput($channel, $sender, $message, $world, $channelStyles[$player], $me);
+                                      $JSONAPI->call('sendMessage', array($player, $realMessage));
 				}
 			}
 		}
@@ -617,29 +626,52 @@ class Bcrypt {
     return $output;
   }
 }
-function formatOutput($style=1, $channel, $name, $msg, $world){
+function formatOutput($channel, $name, $msg, $world, $style=1, $me=false){
 	$channel = channel($channel);
 	if($channel==false){ die('Invalid channel!'); }
-	switch($style){
-		case "1":
-			$finalOutput = getChannelColor($channel)."[".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
-			break;
-		case "2":
-			$finalOutput = getChannelColor($channel)."[".$channel."] ".getFullName($name)."§f: ".$msg;
-			break;
-                case "3":
-                        $finalOutput = "§8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
-                        break;
-		case "4":
-			$finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
-			break;
-		case "5":
-			$finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] ".getFullName($name)."§f: ".$msg;
-			break;
-                case "6":
-                        $finalOutput = "§d".date("H:i:s")." §8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
-                        break;
-	}
+        if(!$me){
+            switch($style){
+                    case "1":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
+                            break;
+                    case "2":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] ".getFullName($name)."§f: ".$msg;
+                            break;
+                    case "3":
+                            $finalOutput = "§8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
+                            break;
+                    case "4":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
+                            break;
+                    case "5":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] ".getFullName($name)."§f: ".$msg;
+                            break;
+                    case "6":
+                            $finalOutput = "§d".date("H:i:s")." §8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
+                            break;
+            }
+	}else{
+            switch($style){
+                    case "1":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "2":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "3":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "4":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "5":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "6":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* ".getFullName($name)."§f ".$msg;
+                            break;
+            }
+        }
 	return $finalOutput;
 }
 function clearScreen(){
@@ -1022,6 +1054,7 @@ class ChannelHandle {
 	}
 	public function isMute($channel=false){
 		include('includes/mysql.php');
+                $nick = $this->nick;
 		if($channel!=false){
 			$channel = channel($channel);
 			if(!$channel==false){ die('Invalid channel!'); }
@@ -1059,10 +1092,11 @@ class ChannelHandle {
 		var_dump($this->nick);
 		var_dump($this->currentChannel);
 		var_dump($this->channelsIn);
+                var_dump($this->isMute());
 	}
         public function setStyle($style){
             include('includes/mysql.php');
-            if($style==$this->style){ die('§cYou are already using style 1!'); }
+            if($style==$this->style){ die('§cYou are already using style '.$this->style.'!'); }
             if(!in_array($style, range(1, 6))){ die('§cInvalid style!'); }
             mysql_query("UPDATE ChannelStyles SET style='$style' WHERE name='$this->nick'");
             echo "§aYou set your style to $style!";
