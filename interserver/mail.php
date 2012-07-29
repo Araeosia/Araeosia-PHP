@@ -8,7 +8,7 @@ class MailHandle{
 		$sentData = array();
 		$query = mysql_query("SELECT * FROM Mail WHERE name='$nick'");
 		while($row = mysql_fetch_array($query)){
-			$sentData[count($sentData)] = array(
+			$sentData[$row['msgid']] = array(
 				'name' => $row['name'],
 				'recipient' => $row['recipient'],
 				'msgid' => $row['msgid'],
@@ -20,11 +20,11 @@ class MailHandle{
 		$mailData = array();
 		$query = mysql_query("SELECT * FROM Mail WHERE recipient='$nick'");
 		while($row = mysql_fetch_array($query)){
-			$mailData[count($mailData)] = array(
+			$mailData[$row['msgid']] = array(
 				'name' => $row['name'],
 				'recipient' => $row['recipient'],
-				'msgid' => $row['msgid'],
 				'time' => $row['time'],
+				'msgid' => $row['msgid'],
 				'message' => $row['message'],
 				'status' => $row['status']
 			);
@@ -60,6 +60,13 @@ class MailHandle{
 	}
 	public function readMail($msgid){
 		// Read a specific mail message from the database.
+                if(!is_int($msgid)){ die('Invalid message ID!'); }
+                $mailData = $this->mailData[$msgid];
+                if(!isset($this->mailData[$msgid]) && !isset($this->sentData[$msgid])){ die('Invalid message ID!'); }
+                echo "---------------- Message ID ".$msgid." ----------------\n";
+                echo "From ".getFullName($mailData['name'])."§f at ".date("F j, Y, g:i a", $mailData['time']).".\n";
+                echo "Message reads: ".$mailData['message'];
+                if($mailData['status']==1){ mysql_query("UPDATE Mail SET status='2' WHERE name='$mailData[name]' AND msgid='$mailData[msgid]'"); }
 	}
 	public function sendMail($recipient, $message){
 		// Write a new mail message.
