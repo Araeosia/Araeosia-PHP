@@ -1,16 +1,16 @@
 <?php
+include('includes/functions.php');
 // This file handles the money blocks and quest blocks on the Araeosia RPG server.
 // Fetch variables
 $args = $_POST['args'];
-$X = $args[1];
-$Y = $args[2];
-$Z = $args[3];
+$X = intval($args[1]);
+$Y = intval($args[2]);
+$Z = intval($args[3]);
 $name = $_POST['player'];
 $W = $_POST['playerWorld'];
 
 // Connect to MySQL database
 include('includes/mysql.php');
-include('includes/functions.php');
 serverCheck($server, array('RPG'));
 
 // Fetch current amount of money
