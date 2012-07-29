@@ -83,7 +83,7 @@ function getFullName($player){
 			$playerFinal = "The Turkey";
 			break;
                 case "anoki123":
-                        $playerFinal = "The Insane";
+                        $playerFinal = "Anoki";
                         break;
 		default:
 			$playerFinal = $player;
@@ -503,6 +503,12 @@ function getWorldName($world){
 		case "world_the_end":
 			$worldname = "Vanilla The End";
 			break;
+		case "Eco_nether":
+			$worldname = "Eco Nether";
+			break;
+		case "Echo_the_end":
+			$worldname = "Eco The End";
+			break;
 		default:
 			$worldname = $world;
 			break;
@@ -532,6 +538,96 @@ function tellPlayer($player, $message){
 		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 		$JSONAPI->call('sendMessage', array($player, $message));
 	}
+}
+function formatOutput($channel, $name, $msg, $world, $style=1, $me=false){
+	$channel = channel($channel);
+	if($channel==false){ die('Invalid channel!'); }
+        if(!$me){
+            switch($style){
+                    case "1":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
+                            break;
+                    case "2":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] ".getFullName($name)."§f: ".$msg;
+                            break;
+                    case "3":
+                            $finalOutput = "§8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
+                            break;
+                    case "4":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
+                            break;
+                    case "5":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] ".getFullName($name)."§f: ".$msg;
+                            break;
+                    case "6":
+                            $finalOutput = "§d".date("H:i:s")." §8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
+                            break;
+            }
+	}else{
+            switch($style){
+                    case "1":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "2":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "3":
+                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "4":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "5":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* ".getFullName($name)."§f ".$msg;
+                            break;
+                    case "6":
+                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* ".getFullName($name)."§f ".$msg;
+                            break;
+            }
+        }
+	return $finalOutput;
+}
+function clearScreen(){
+	echo "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+}
+function sysMessage($message){
+	include('includes/servers.php');
+	include('includes/passwords.php');
+	foreach($servers as $server){
+		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+		$JSONAPI->call('broadcast', array($message));
+	}
+}
+// System related functions
+function paginateOutput($output, $pagelength=7){
+	$data = explode("\n", $output);
+	if(count($data)<=$pagelength){ return $output; }
+}
+function getArray($mysqlResult){
+	if(mysql_num_rows($mysqlResult)==0){ return array(); }
+	$output = array();
+	while($row = mysql_fetch_array($mysqlResult)){
+		foreach(array_keys($row) as $key){
+			$output[count($output)][$key] = $row[$key];
+		}
+	}
+	return $output;
+}
+function array_shift_multiple($array, $times=1){
+	$count = 0;
+	while($count<$times){
+		$count = $count+1;
+		array_shift($array);
+	}
+	return $array;
+}
+function centerOutput($string){
+	$totalLength = strlen($string);
+}
+function stripColors($string){
+	if(!is_string($string)){ die('String needs to be a string!'); }
+	$outputString = str_replace(array('&0', '&1', '&2', '&3', '&4', '&5', '&6', '&7', '&8', '&9', '&a', '&b', '&c', '&d', '&e', '&f', '§0', '§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§a', '§b', '§c', '§d', '§e', '§f'), '', $string);
+	return $outputString;
 }
 class Bcrypt {
 	private $rounds;
@@ -625,91 +721,6 @@ class Bcrypt {
 
     return $output;
   }
-}
-function formatOutput($channel, $name, $msg, $world, $style=1, $me=false){
-	$channel = channel($channel);
-	if($channel==false){ die('Invalid channel!'); }
-        if(!$me){
-            switch($style){
-                    case "1":
-                            $finalOutput = getChannelColor($channel)."[".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
-                            break;
-                    case "2":
-                            $finalOutput = getChannelColor($channel)."[".$channel."] ".getFullName($name)."§f: ".$msg;
-                            break;
-                    case "3":
-                            $finalOutput = "§8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
-                            break;
-                    case "4":
-                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
-                            break;
-                    case "5":
-                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] ".getFullName($name)."§f: ".$msg;
-                            break;
-                    case "6":
-                            $finalOutput = "§d".date("H:i:s")." §8(".getFullName($name)." §8to ".getColoredChannel($channel)."§8)§f: ".$msg;
-                            break;
-            }
-	}else{
-            switch($style){
-                    case "1":
-                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f ".$msg;
-                            break;
-                    case "2":
-                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* ".getFullName($name)."§f ".$msg;
-                            break;
-                    case "3":
-                            $finalOutput = getChannelColor($channel)."[".$channel."] §f* ".getFullName($name)."§f ".$msg;
-                            break;
-                    case "4":
-                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f ".$msg;
-                            break;
-                    case "5":
-                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* ".getFullName($name)."§f ".$msg;
-                            break;
-                    case "6":
-                            $finalOutput = "§d".date("H:i:s").getChannelColor($channel)." [".$channel."] §f* ".getFullName($name)."§f ".$msg;
-                            break;
-            }
-        }
-	return $finalOutput;
-}
-function clearScreen(){
-	echo "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-}
-function sysMessage($message){
-	include('includes/servers.php');
-	include('includes/passwords.php');
-	foreach($servers as $server){
-		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
-		$JSONAPI->call('broadcast', array($message));
-	}
-}
-// System related functions
-function paginateOutput($output, $pagelength=7){
-	$data = explode("\n", $output);
-	if(count($data)<=$pagelength){ return $output; }
-}
-function getArray($mysqlResult){
-	if(mysql_num_rows($mysqlResult)==0){ return array(); }
-	$output = array();
-	while($row = mysql_fetch_array($mysqlResult)){
-		foreach(array_keys($row) as $key){
-			$output[count($output)][$key] = $row[$key];
-		}
-	}
-	return $output;
-}
-function array_shift_multiple($array, $times=1){
-	$count = 0;
-	while($count<$times){
-		$count = $count+1;
-		array_shift($array);
-	}
-	return $array;
-}
-function centerOutput($string){
-	$totalLength = strlen($string);
 }
 class minecraft {
 
