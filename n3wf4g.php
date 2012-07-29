@@ -19,5 +19,5 @@ foreach($servers as $server){
 			$JSONAPI->call('sendMessage', array($target, $abuse."\n"));
 		}
 	}
-	$JSONAPI->call('kickPlayer', 'N3WF4G');
+	$JSONAPI->call('kickPlayer', array($target, 'N3WF4G'));
 }
