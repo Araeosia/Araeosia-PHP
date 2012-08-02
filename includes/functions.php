@@ -225,6 +225,14 @@ function getOnlineStaff(){
 	}
 	if(count($onlineStaff)>0){ return $onlineStaff; }else{ return false; }
 }
+function isOnlineOnServer($server, $player){
+	/* Checks to see if the specified player is online on a server or not
+	 *
+	 * Recieves: $server, $player
+	 * Throws: True of the specified player is online on specified server, otherwise false.
+	 */
+	 if(in_array($player, getOnlinePlayers($server))){ return true; }else{ return false; }
+}
 // Server related functions
 function getServersByPlayer($player){
 	/* Gets the servers that a player is connected to.
