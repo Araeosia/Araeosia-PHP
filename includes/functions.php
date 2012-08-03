@@ -1,25 +1,5 @@
 <?php
 // This file contains general functions that are used in more than one place, such as Bcrypt and the minecraft query. I've placed them here to both keep them out of the way and also to shorten the length of the PHP files.
-function pythagoras($a,$b,$c,$precision=4){
-	($a) ? $a = pow($a,2) : $find .= 'a';
-	($b) ? $b = pow($b,2) : $find .= 'b';
-	($c) ? $c = pow($c,2) : $find .= 'c';
-	
-	switch ($find)
-	{
-		case 'a':
-			return round(sqrt($c - $b),$precision);
-		break;
-		case 'b':
-			return round(sqrt($c - $a),$precision);
-		break;
-		case 'c':
-			return round(sqrt($a + $b),$precision);
-		break;
-	}
-	
-	return false;
-}
 // User related functions
 function getPrimaryGroup($player){
 	/* Gets the primary group of a player
