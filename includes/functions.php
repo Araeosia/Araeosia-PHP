@@ -69,28 +69,37 @@ function getFullName($player){
 			$prefix = "§b";
 			break;
 	}
-	switch($player){
-		case "CanadianCellist":
-			$playerFinal = "The Canadian";
-			break;
-		case "AgentKid":
-			$playerFinal = "The Agent";
-			break;
-                case "mrthemaster10":
-                        $playerFinal = "The Master";
-                        break;
-		case "turkeymilk":
-			$playerFinal = "The Turkey";
-			break;
-                case "anoki123":
-                        $playerFinal = "Anoki";
-                        break;
-		default:
-			$playerFinal = $player;
-			break;
-	}
+	$playerFinal = getAlias($player);
 	$playername = $prefix.$playerFinal;
 	return $playername;
+}
+function getAlias($player){
+	/* Gets the alias of a player
+	 *
+	 * Recieves: $player
+	 * Throws: Alias of a player
+	 */
+    switch($player){
+	case "CanadianCellist":
+            $playerFinal = "The Canadian";
+            break;
+	case "AgentKid":
+            $playerFinal = "The Agent";
+            break;
+        case "mrthemaster10":
+            $playerFinal = "The Master";
+            break;
+	case "turkeymilk":
+            $playerFinal = "The Turkey";
+            break;
+        case "anoki123":
+            $playerFinal = "Anoki";
+            break;
+	default:
+            $playerFinal = $player;
+            break;
+    }
+    return $playerFinal;
 }
 function isInGroup($player, $group){
 	/* Checks whether a player is in the specified group
@@ -170,10 +179,9 @@ function player($player){
 	 * Throws: Full player's name, or false if the player isn't online.
 	 */
 	$onlinePlayers = getAllPlayers();
-	$done = false;
 	foreach($onlinePlayers as $playerToCheck){
 	// Matches to the beginning of the name only, just like Bukkit.
-		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
+		if(strpos(strtolower($playerToCheck), strtolower($player))===0 || strpos(strtolower($playerToCheck), strtolower(getAlias($player)))===0){
 			return $playerToCheck;
 			break;
 		}
@@ -191,7 +199,7 @@ function offlinePlayer(){
 	foreach($players as $playerToCheck){
 	// Matches to the beginning of the name only, just like Bukkit.
 		echo "Checking ".$playerToCheck."\n";
-		if(strpos(strtolower($playerToCheck), strtolower($player))===0){
+		if(strpos(strtolower($playerToCheck), strtolower($player))===0 || strpos(strtolower($playerToCheck), strtolower(getAlias($player)))===0){
 			return $playerToCheck;
 			$done = true;
 			break;
