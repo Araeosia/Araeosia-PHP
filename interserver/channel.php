@@ -60,6 +60,16 @@ if(channel($arg1)!=false){
 		case "LEAVE":
 			$chatHandle->leaveChannel($channel);
 			break;
+                case "PUT":
+                    // Because people don't listen when you say "JOIN ROLEPLAY CHANNEL GOD DAMNIT!".
+                        if(!isStaff($name)){ die('No.'); }
+                        $target = player($args[2]);
+                        $channel = channel($args[3]);
+                        if(!$target){ die('Invalid player!'); }
+                        if(!$channel){ die('Invalid channel!'); }
+                        $channelHandle2 = new ChannelHandle($target);
+                        $channelHandle2->joinChannel($channel);
+                        break;
 		case "WHO":
 			if(channel($args[2])!=false){
 				$channel = channel($args[2]);
