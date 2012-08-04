@@ -1,6 +1,14 @@
 <?php
 // This file contains the IP addresses and ports for each of Araeosia's servers, viewed from inside Araeosia's local network. They are not accessible from outside the network, so don't even bother ;) The $ports array also has subarrays for Websend and mcqueries. This file is used for things such as messaging players from PHP and querying each server for players.
-$servers = array('RPG', 'Freebuild', 'Modded', 'Sandbox', '2', 'Vanilla', 'Eco');
+$servers = array('Freebuild', 'Modded', 'Sandbox', 'Vanilla', 'Eco', '2', 'RPG');
+#$servers = array('ServerA', 'ServerB', 'ServerC', 'ServerD', 'ServerE', 'ServerF', 'ServerG', 'ServerH', 'ServerI');
+$serverNames = array('ServerA' => 'Main', 'ServerB' => 'Survival', 'ServerC' => 'Creative', 'ServerD' => 'RPG', 'ServerE' => 'Modded', 'ServerF' => '2', 'ServerG' => 'Vanilla', 'ServerH' => 'Eco', 'ServerI' => 'Event');
+
+#$servers = array('ServerA', 'ServerB', 'ServerC', 'ServerD', 'ServerE', 'ServerF', 'ServerG', 'ServerH', 'ServerI');
+#$serverNames = array('ServerA' => 'Main', 'ServerB' => 'Survival', 'ServerC' => 'Creative', 'ServerD' => 'RPG', 'ServerE' => 'Modded', 'ServerF' => '2', 'ServerG' => 'Vanilla', 'ServerH' => 'Eco', 'ServerI' => 'Event');
+
+#$ips = array( 'ServerA' => '192.168.5.104', 'ServerB' => '192.168.5.104', 'ServerC' => '192.168.5.104', 'ServerD' => '192.168.5.106', 'ServerE' => '192.168.5.106', 'ServerF' => '192.168.5.106', 'ServerG' => '192.168.5.102', 'ServerH' => '192.168.5.102', 'ServerI' => NULL);
+
 $chatservers = array('Freebuild', 'Modded', 'Sandbox', 'Vanilla', 'Eco');
 $ips = array( 'RPG' => '192.168.5.106', 'Freebuild' => '192.168.5.104', 'Modded' => '192.168.5.106', 'Sandbox' => '192.168.5.106', '2' => '192.168.5.106', 'Tekkit' => '192.168.5.102', 'Vanilla' => '192.168.5.102', 'Eco' => '192.168.5.102');
 $ports = array(

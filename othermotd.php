@@ -47,6 +47,7 @@ if($newUser){
 	$msg = $msg."§4Rules: §e/rules - Updated 2-4-2012\n";
 	if(date("j F Y")=="4 July 2012"){ $msg = $msg."§fHappy §3Fourth of §4July!"; }
 #	$msg = $msg."§4AgentKid §ahas returned from vacation!";
+	$msg = $msg."§41.3 is VERY buggy right now!\n";
 	echo $msg;
 }
 ?>
