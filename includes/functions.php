@@ -1064,7 +1064,7 @@ class ChannelHandle {
                 $nick = $this->nick;
 		if($channel!=false){
 			$channel = channel($channel);
-			if(!$channel==false){ die('Invalid channel!'); }
+			if($channel==false){ die('Invalid channel!'); }
 			$query = mysql_query("SELECT * FROM Mutes WHERE name='$nick' AND channel='$channel'");
 			$row = mysql_fetch_array($query);
 			if($row!=false || $this->isMute()){ return true; }else{ return false; }
