@@ -2,9 +2,12 @@
 // This file handles the MotD for the other Araeosia servers, since they don't need the complex code for the RPG server.
 $name = $_POST['player'];
 $world = $_POST['playerWorld'];
+$server = $_GET['s'];
 include('includes/mysql.php');
 include('includes/staff.php');
 include('includes/functions.php');
+include('includes/servers.php');
+include('includes/passwords.php');
 serverCheck($server, array('Freebuild', 'Modded', 'Vanilla', 'Sandbox'));
 // World handling
 switch($world){
@@ -38,7 +41,6 @@ if($newUser){
 	$onlinect = count($online);
 	$online = implode($online, '§e, ');
 
-	clearScreen();
 	$msg = "§bWelcome to the Araeosia Freebuild Server, ".$name."!\n";
 	$msg = $msg."§3You are currently in ".getWorldName($worldname)."§3.\n";
 	$msg = $msg."§eOnline (".$onlinect."/512): §b".$online."§e.\n";
@@ -47,7 +49,17 @@ if($newUser){
 	$msg = $msg."§4Rules: §e/rules - Updated 2-4-2012\n";
 	if(date("j F Y")=="4 July 2012"){ $msg = $msg."§fHappy §3Fourth of §4July!"; }
 #	$msg = $msg."§4AgentKid §ahas returned from vacation!";
-	$msg = $msg."§41.3 is VERY buggy right now!\n";
-	echo $msg;
+        $msg = $msg."§cSo the recent downtime was AgentKid's fault. It took 3 seconds to fix. No one told him about it for 4 days.\n";
+        $msg = $msg."§fI paid $300 for the forum software we use, and NO ONE uses it. So you guys can suffer the downtime because of that.\n";
+        $query = mysql_fetch_array(mysql_query("SELECT * FROM KickMe WHERE name='$name'"));
+        if(!$query){ $msg = $msg."§bYou will be kicked in 15 seconds if you don't use /dunkick"; }
+        sleep(1);
+        tellPlayer($name, $msg);
+        sleep(15);
+        $query2 = mysql_fetch_array(mysql_query("SELECT * FROM KickMe WHERE name='$name'"));
+        if(!$query2){
+            $JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
+            $JSONAPI->call('kickPlayer', array($name, '§cNot reading the login messages.'));
+        }
 }
 ?>
