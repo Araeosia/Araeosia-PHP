@@ -6,12 +6,14 @@ $output = null;
 include('includes/functions.php');
 include('includes/servers.php');
 include('includes/staff.php');
-foreach($servers as $server){
+clearScreen();
+echo "------------------ Online Players ------------------\n\n";
+foreach($serversChat as $server){
 	$players = getOnlinePlayers($server);
 	$playersfinal = array();
 	// Now we have a populated (or empty) array of players, lets handle it.
 	foreach($players as $player){ array_push($playersfinal, getFullName($player)); }
-	$output = $output."§c------- §bAraeosia ".$server." §c-------\n";
+	$output = $output."§c------- §bAraeosia ".$serverNames[$server]." §c-------\n";
 	if(count($playersfinal)!=0){
 		$output = $output."§aOnline§f: ".implode('§f, ', $playersfinal)."\n";
 	}else{

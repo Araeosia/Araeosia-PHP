@@ -148,7 +148,7 @@ function isRealPlayer($player){
 	 * Recieves: $player
 	 * Throws: True if the specified player is a real player, otherwise false.
 	 */
-	include('includes/myslq.php');
+	include('includes/mysql.php');
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'");
 	if(mysql_fetch_array($query)!=false){ return true; }else{ return false; }
 }
@@ -382,7 +382,7 @@ function sendMessageToChannel($channel, $sender, $message, $world, $excluded=arr
 	while($row2 = mysql_fetch_array($query2)){ array_push($ignoredby, $row2['name']); }
 	$query3 = mysql_query("SELECT * FROM ChannelStyles");
 	while($row3 = mysql_fetch_array($query3)){ $channelStyles[$row3['name']] = $row3['style']; }
-	foreach($servers as $server){
+	foreach($serversChat as $server){
 		$JSONAPI = new JSONAPI($ips[$server], $ports['jsonapi'][$server], $passwords['jsonapi']['user'], $passwords['jsonapi']['password'], $passwords['jsonapi']['salt']);
 		$players = getOnlinePlayers($server);
 		if(count($players)!=0){
@@ -1100,6 +1100,7 @@ class ChannelHandle {
 		var_dump($this->currentChannel);
 		var_dump($this->channelsIn);
                 var_dump($this->isMute());
+                var_dump(getAllPlayers());
 	}
         public function setStyle($style){
             include('includes/mysql.php');
