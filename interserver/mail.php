@@ -87,19 +87,29 @@ class MailHandle{
 			case "all":
 				echo "-------- Listing all mail messages --------\n";
 				foreach($this->mailData as $data){
-					
+                                    echo "§aMessage §e".$data['msgid']." §aat §c".date('d-m-y h:m:s')."§a from ".getFullName($data['nick'])."\n";
 				}
 				break;
 			case "new":
 			case "unread":
 				foreach($this->mailData as $data){
-					if($data['status']=='1'){ echo ""; }
+                                    if($data['status']=='1'){
+                                        echo "§aMessage §e".$data['msgid']." §aat §c".date('d-m-y h:m:s')."§a from ".getFullName($data['nick'])."\n";
+                                    }
 				}
 				break;
 			case "read":
 			case "old":
+                                foreach($this->mailData as $data){
+                                    if($data['status']=='2'){
+                                        echo "§aMessage §e".$data['msgid']." §aat §c".date('d-m-y h:m:s')."§a from ".getFullName($data['nick'])."\n";
+                                    }
+                                }
 				break;
 			case "sent":
+                                foreach($this->sentData as $data){
+                                    echo "§aMessage §e".$data['msgid']." §aat §c".date('d-m-y h:m:s')."§a to ".getFullName($data['nick'])."\n";
+                                }
 				break;
 			default:
 				die('Invalid type!');

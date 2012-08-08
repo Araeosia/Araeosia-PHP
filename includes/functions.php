@@ -1,6 +1,7 @@
 <?php
 // This file contains general functions that are used in more than one place, such as Bcrypt and the minecraft query. I've placed them here to both keep them out of the way and also to shorten the length of the PHP files.
 // User related functions
+include('includes/mysql.php');
 function getPrimaryGroup($player){
 	/* Gets the primary group of a player
 	 *
@@ -8,7 +9,6 @@ function getPrimaryGroup($player){
 	 * Throws: Primary group of a player
 	 */
 	include('includes/mysql.php');
-#	if(offlinePlayer($player)==false){ die('Invalid player!'); }
 	$query = mysql_query("SELECT * FROM TrueGroups WHERE name='$player'") or die(mysql_error());
 	$groups = array();
 	while($row = mysql_fetch_array($query)){
@@ -265,6 +265,7 @@ function getOnlinePlayers($server){
 		$Query->Connect( $ips[$server], $ports['mc'][$server], 1 );
 		$players = $Query->GetPlayers();
 	}catch(MinecraftQueryException $e){
+                $e = $e;
 		$players = array();
 	}
 	return $players;
@@ -595,9 +596,10 @@ function sysMessage($message){
 	}
 }
 // System related functions
-function paginateOutput($output, $pagelength=7){
+function paginateOutput($output, $page=1, $pagelength=7){
+        $start = ($page-1)*$pagelength;
 	$data = explode("\n", $output);
-	if(count($data)<=$pagelength){ return $output; }
+	
 }
 function getArray($mysqlResult){
 	if(mysql_num_rows($mysqlResult)==0){ return array(); }
