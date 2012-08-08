@@ -1,22 +1,41 @@
 <?php
+// Variables
 $name = $_POST['player'];
 $world = $_POST['playerWorld'];
 $msg = $_POST['args'];
-array_shift($args);
+
+// Includes
 include('includes/servers.php');
 include('includes/staff.php');
 include('includes/functions.php');
 include('includes/passwords.php');
 include('includes/mysql.php');
 include('includes/channels.php');
+
+// Remove the first value, leaving us with an array of all words in the chat message.
+array_shift($args);
+
+// Then turn it into a string.
 $msg = trim(implode(' ', $args));
 $msg = str_replace('    ', '', $msg);
+
+// Create a new channel handle to get the current channel.
 $channelHandle = new ChannelHandle($name);
 $channel = $channelHandle->currentChannel;
+
+// Create the log variable for later use
 $log = "[".date('m-d-y H:i:s', time())."] ".getChannelColor($channel)."[".$channel."]"." §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg."\n";
+
+// Die if the player is muted.
 if($channelHandle->isMute($channel) || $channelHandle->isMute()){ die('§cYou are currently muted!'); }
-echo formatOutput($channel, $name, $msg, $world, $channelHandle->style);
+
+// Output the message to the player first.
+tellPlayer($name, formatOutput($channel, $name, $msg, $world, $channelHandle->style));
+
+// Send the message to everyone in the channel.
 sendMessageToChannel($channel, $name, $msg, $world, array($name));
+
+// Save a log of this chat message.
 $logfile = fopen('/home/agentkid/logs/chat.log', 'a');
 fwrite($logfile, str_replace(array('§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§0', '§a', '§b', '§c', '§d', '§e', '§f'), '', $log));
 fclose($logfile);
