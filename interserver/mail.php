@@ -58,6 +58,10 @@ class MailHandle{
 				break;
 		}
 	}
+        private function getNextMessageID(){
+            $maxid = max(array_keys($this->mailData))+1;
+            return $maxid;
+        }
 	public function readMail($msgid){
 		// Read a specific mail message from the database.
                 if(!is_int($msgid)){ die('Invalid message ID!'); }
@@ -70,6 +74,11 @@ class MailHandle{
 	}
 	public function sendMail($recipient, $message){
 		// Write a new mail message.
+            $time = time();
+            $message = htmlspecialchars($message);
+            $msgid = $this->getNextMessageID();
+            $nick = $this->nick;
+            mysql_query("INSERT INTO Mail ('id', 'msgid', 'name', 'recipient', 'time', 'message', 'status') VALUES ('NULL', '$msgid', '$nick', '$recipient', '$time', '$message', '1')");
 	}
 	public function listMail($type){
 		// List all of the mail messages waiting for the person.
@@ -96,9 +105,6 @@ class MailHandle{
 				die('Invalid type!');
 		}
 	}
-	private function getMail($msgid){
-		// Get a specific mail
-	}
 	private function isValidMessageID($msgid){
 		foreach($this->mailData as $data){
 			if($data['msgid']==$msgid){ return true; }
@@ -108,5 +114,5 @@ class MailHandle{
 }
 
 $mailHandle = new MailHanel($_POST['player']);
-$mailHanele->handleCommand($_POST['args']);
+$mailHandle->handleCommand($_POST['args']);
 ?>
