@@ -20,6 +20,7 @@ $arg1 = strtoupper($args[1]);
 // Generic queries
 // Type 1 means you're speaking in that room, Type 2 means that you're just in that room and listening.
 $chatHandle = new ChannelHandle($name);
+$logHandle = new Logger('chat');
 
 // Most of the actual code
 if(channel($arg1)!=false){
@@ -69,7 +70,16 @@ if(channel($arg1)!=false){
                         if(!$channel){ die('Invalid channel!'); }
                         $channelHandle2 = new ChannelHandle($target);
                         $channelHandle2->joinChannel($channel);
+                        $logHandle->addLog("$name put $target into $channel.");
                         break;
+                case "NUKE":
+                        if(!isStaff($name)){ die('No.'); }
+                        $logHandle->addLog("$name detonated a global chat nuke.");
+                        foreach(getAllPlayers() as $mutee){
+                                mysql_query("INSERT INTO GMutes (id, name) VALUES ('NULL', '$mutee')");
+                                tellPlayer($mutee, "§cA global chat nuke detonated by order of ".getFullName($name)."\n");
+				echo "§aMuted ".getFullName($mutee)." §aglobally!";
+                        }
 		case "WHO":
 			if(channel($args[2])!=false){
 				$channel = channel($args[2]);
@@ -103,11 +113,13 @@ if(channel($arg1)!=false){
 			$query = mysql_fetch_array(mysql_query("SELECT * FROM Mutes WHERE name='$mutee' AND channel='$ch'") or die(mysql_error()));
 			if($query!=false){
 				// Player is already muted, unmute them.
+                                $logHandle->addLog("$name unmuted $mutee in $channel.");
 				mysql_query("DELETE FROM Mutes WHERE name='$mutee' AND channel='$ch'");
 				tellPlayer($mutee, "§cYou were unmuted by ".getFullName($name)." §c in the ".getColoredChannel($ch)." §cchannel!\n");
 				echo "§aUnmuted ".getFullName($mutee)." §ain channel §".$channelColors[$ch].$channelFullNames[$ch]."§a!";
 			}else{
 				// Player isn't muted, mute them.
+                                $logHandle->addLog("$name muted $mutee in $channel.");
 				mysql_query("INSERT INTO Mutes (id, name, channel) VALUES ('NULL', '$mutee', '$ch')");
 				tellPlayer($mutee, "§cYou were muted by ".getFullName($name)." §c in the ".getColoredChannel($ch)." §cchannel!\n");
 				echo "§aMuted ".getFullName($mutee)." §ain channel §".$channelColors[$ch].$channelFullNames[$ch]."§a!";
@@ -121,10 +133,12 @@ if(channel($arg1)!=false){
 			$query = mysql_fetch_array(mysql_query("SELECT * FROM GMutes WHERE name='$mutee'"));
 			if($query!=false){
 				// Player is already muted, unmute them.
+                                $logHandle->addLog("$name globally muted $mutee.");
 				mysql_query("DELETE FROM GMutes WHERE name='$mutee'");
 				echo "§aUnmuted ".getFullName($mutee)." §aglobally!";
 			}else{
 				// Player isn't muted, mute them.
+                                $logHandle->addLog("$name globally unmuted $mutee.");
 				mysql_query("INSERT INTO GMutes (id, name) VALUES ('NULL', '$mutee')");
 				echo "§aMuted ".getFullName($mutee)." §aglobally!";
 			}
@@ -132,8 +146,8 @@ if(channel($arg1)!=false){
 		case "KICK":
 			// Syntax should be /ch kick <channel> <name> [reason]
 			if(!isStaff($name)){ die('§cYou do not have permission to kick players!'); }
-			$kickee = player($args[4]);
-			$ch = channel($args[3]);
+			$kickee = player($args[3]);
+			$ch = channel($args[2]);
 			if($ch==false){ die('§cInvalid channel!'); }
 			if($kickee==false){ die('§cInvalid player!'); }
 			if(isStaff($kickee) && $name!='AgentKid'){ die('§cYou cannot kick another staff member from a channel!'); }
@@ -142,6 +156,7 @@ if(channel($arg1)!=false){
 				$reason = implode(' ', $args);
 			}
 			// Okay, checks are complete and variables are set. Now lets actually kick the player.
+                        $logHandle->addLog("$name kicked $kickee from $ch.");
 			$theirChatHandle = new ChannelHandle($kickee);
 			if(count($theirChatHandle->getChannelsIn())==0){ die('§cYou cannot kick '.getFullName($kickee).' §cfrom '.getColoredChannel($ch).' §cas it\'s the only channel they\'re in!'); }
 			mysql_query("DELETE FROM ChannelsIn WHERE name='$kickee' AND channel='$ch'");
@@ -158,6 +173,7 @@ if(channel($arg1)!=false){
 			}else{
 				tellPlayer($kickee, "§cYou were kicked from the ".getColoredChannel($ch)." §cchannel by ".getFullName($name)."§c!");
 			}
+                        echo "You kicked ".getFullName($kickee)." from ".getColoredChannel($ch);
 			break;
 		default:
 			echo "§cUnknown command! §a/ch help§c for help.\n";

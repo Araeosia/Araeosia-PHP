@@ -24,7 +24,7 @@ $channelHandle = new ChannelHandle($name);
 $channel = $channelHandle->currentChannel;
 
 // Create the log variable for later use
-$log = "[".date('m-d-y H:i:s', time())."] ".getChannelColor($channel)."[".$channel."]"." §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg."\n";
+$log = getChannelColor($channel)."[".$channel."]"." §f[§9".getWorldName($world)."§f] ".getFullName($name)."§f: ".$msg;
 
 // Die if the player is muted.
 if($channelHandle->isMute($channel) || $channelHandle->isMute()){ die('§cYou are currently muted!'); }
@@ -36,7 +36,6 @@ tellPlayer($name, formatOutput($channel, $name, $msg, $world, $channelHandle->st
 sendMessageToChannel($channel, $name, $msg, $world, array($name));
 
 // Save a log of this chat message.
-$logfile = fopen('/home/agentkid/logs/chat.log', 'a');
-fwrite($logfile, str_replace(array('§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§0', '§a', '§b', '§c', '§d', '§e', '§f'), '', $log));
-fclose($logfile);
+$logHandle = new Logger('chat');
+$logHandle->addLog($log);
 ?>

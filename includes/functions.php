@@ -1579,4 +1579,24 @@ class NBT {
 		}
 	}
 }
+class Logger{
+    private $logFileHandle;
+    function __construct($logtype){
+        $logFileHandle = fopen('/home/agentkid/logs/'.$logtype.'.log', 'a');
+        $this->logFileHandle = $logFileHandle;
+    }
+    function __destruct(){
+        fclose($this->logFileHandle);
+    }
+    public function addLog($logData){
+        $input = $this->getTimestamp()." ".$this->cleanColors($logData)."\n";
+        fwrite($this->logFileHandle, $input);
+    }
+    private function cleanColors($data){
+        return str_replace(array('§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§0', '§a', '§b', '§c', '§d', '§e', '§f'), '', $data);
+    }
+    private function getTimestamp(){
+        return "[".date('m-d-y H:i:s', time())."]";
+    }
+}
 ?>

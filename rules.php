@@ -1,4 +1,5 @@
 <?php
+include('includes/functions.php');
 $name = $_POST['player'];
 $world = $_POST['playerWorld'];
 $args = $_POST['args'];

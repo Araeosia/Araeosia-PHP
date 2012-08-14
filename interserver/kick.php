@@ -7,6 +7,7 @@ $name = $_POST['player'];
 $world = $_POST['playerWorld'];
 $server = $_GET['s'];
 $args = $_POST['args'];
+$logHandle = new Logger('chat');
 //Argument 0 is kick, Argument 1 is name, Arguments 2-∞ are the kick message
 if(!isStaff($name)){ die('§cYou don\'t have permission to use that command!'); }
 if(isStaff($args[1]) && $name!="AgentKid"){ die('§cYou cannot kick another staff member!'); }
@@ -28,6 +29,7 @@ foreach($servers as $server){
 		$JSONAPI->call('kickPlayer', array($kickee, $msg));
 		echo "Kicked ".$kickee." from Araeosia ".$server." with the message \"".$msg."\".\n";
 		$kicked=$kicked+1;
+                $logHandle->addLog("$name kicked $kickee from $server.");
 	}
 }
 if($kicked==0){ echo "§cCould not find player ".$kickee."!"; }
