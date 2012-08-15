@@ -3,7 +3,7 @@ include('includes/functions.php');
 $name = $_POST['player'];
 $world = $_POST['playerWorld'];
 $args = $_POST['args'];
-serverCheck($server, array('Freebuild'));
+serverCheck($server, array('Freebuild', 'Eco'));
 if($args[1]!='global'){
 	echo "§cRules specific to §b".$world." §care listed below. All global rules apply in this world, and can be viewed with §e/globalrules§c.\n";
 	switch($world){
@@ -24,6 +24,9 @@ if($args[1]!='global'){
 		case "Survival":
 			echo "No rules over than global rules!\n";
 			break;
+                case "Eco":
+                        echo "§b1. §f- §aNo complaining about the rules.\n§b2. §f- §aPVP is not allowed unless it is wartime.\n§b3. §f- §aWhen robbing someone, you cannot kill if they give you what they want.\n§b4. §f- §aWartime may go on at any time.\n§b5. §f- §aDo not complain about what happens to you.\n§b6. §f- §aNo not try to take over the server.\n§b7. §f- §aNo complaining about the rules.";
+                        break;
 		default:
 			echo "This world doesn't have any specific rules for some reason, but all global rules apply.\n";
 			break;
